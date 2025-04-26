@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: template-application
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  liquibase:
+    url: ${SPRING_DATASOURCE_URL}
+    change-log: classpath:liquibase/db.changelog-master.xml
+    parameters:
+      app.schema-name: notifications
+      file-opener-class: org.springframework.boot.loader.jar.JarFileOpener
+    clear-checksums: false
+    enabled: true
+    user: myuser
+    password: secret
+server:
+  port: ${SERVER_PORT:8081}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  endpoint:
+    health:
+      show-details: always
