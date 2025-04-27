@@ -43,15 +43,15 @@ dependencies {
 }
 
 tasks.withType<Test> {
-    environment("NOTIFICATIONS_SERVICE_DB_HOST", "notification-db");
+    environment("NOTIFICATIONS_SERVICE_DB_HOST", "localhost");
     environment( "NOTIFICATIONS_SERVICE_DB_NAME", "notifications");
     environment( "NOTIFICATIONS_SERVICE_DB_USERNAME", "myuser");
     environment( "NOTIFICATIONS_SERVICE_DB_PASSWORD", "secret");
     environment( "NOTIFICATIONS_SERVICE_PORT", "8081");
 
-    environment( "SPRING_DATASOURCE_URL","jdbc:postgresql://notification-db:5432/notifications");
-    environment( "SPRING_DATASOURCE_NOTIFICATIONS_SERVICENAME", "notification");
-    environment( "SPRING_DATASOURCE_PASSWORD","password");
+    environment( "SPRING_DATASOURCE_URL","jdbc:postgresql://localhost:5433/notifications");
+    environment( "SPRING_DATASOURCE_USERNAME", "myuser");
+    environment( "SPRING_DATASOURCE_PASSWORD","secret");
     environment( "SERVER_PORT","8081");
     useJUnitPlatform()
 }
