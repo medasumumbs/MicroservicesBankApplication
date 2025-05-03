@@ -1,0 +1,36 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    hostname: rabbitmq
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
+  notifications-service:
+    env_file:
+      .env
+    build:
+      context: ./notificationsService
+      dockerfile: Dockerfile
+    ports:
+      - "${NOTIFICATIONS_SERVICE_PORT}:${NOTIFICATIONS_SERVICE_PORT}"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://notifications-db:5432/${NOTIFICATIONS_SERVICE_DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${NOTIFICATIONS_SERVICE_DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${NOTIFICATIONS_SERVICE_DB_PASSWORD}
+      NOTIFICATIONS_SERVICE_PORT: ${NOTIFICATIONS_SERVICE_PORT}
+    depends_on:
+      - notifications-db
+
+  notifications-db:
+    env_file:
+      .env
+    image: postgres:16
+    container_name: notifications-db
+    environment:
+      POSTGRES_DB: ${NOTIFICATIONS_SERVICE_DB_NAME}
+      POSTGRES_USER: ${NOTIFICATIONS_SERVICE_DB_USERNAME}
+      POSTGRES_PASSWORD: ${NOTIFICATIONS_SERVICE_DB_PASSWORD}
+    ports:
+      - "5433:5432"

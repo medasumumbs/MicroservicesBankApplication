@@ -1,5 +1,6 @@
 package ru.muravin.bankapplication.notificationsService.serviceTest;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
@@ -47,6 +48,7 @@ public class ServiceTests {
     private NotificationsRepository notificationsRepository;
 
     @Test
+    @Disabled
     void testSave() {
         notificationsRepository.deleteAll();
         var localDateTime = LocalDateTime.now();

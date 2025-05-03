@@ -1,6 +1,8 @@
 spring:
   application:
-    name: template-application
+    name: notificationsService
+  config:
+    import: configserver:http://127.0.0.1:8888
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
@@ -28,7 +30,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, info
+        include: refresh,busrefresh,busshutdown,health,info
   endpoint:
     health:
       show-details: always

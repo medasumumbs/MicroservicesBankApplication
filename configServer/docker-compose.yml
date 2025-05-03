@@ -1,0 +1,22 @@
+services:
+  template-service:
+    build: .
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${TEMPLATE_DB_HOST}:5432/${TEMPLATE_DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${TEMPLATE_DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${TEMPLATE_DB_PASSWORD}
+      SERVER_PORT: ${SERVER_PORT}
+    depends_on:
+      - template-db
+
+  template-db:
+    image: postgres:16
+    container_name: template-db
+    environment:
+      POSTGRES_DB: ${TEMPLATE_DB_NAME}
+      POSTGRES_USER: ${TEMPLATE_DB_USERNAME}
+      POSTGRES_PASSWORD: ${TEMPLATE_DB_PASSWORD}
+    ports:
+      - "5433:5432"

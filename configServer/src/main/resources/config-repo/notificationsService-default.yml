@@ -1,0 +1,12 @@
+text-to-print: "Текст до изменений" # Property в микросервисе, которое мы будем изменять прямо на лету
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh,busrefresh,busshutdown,health,info
