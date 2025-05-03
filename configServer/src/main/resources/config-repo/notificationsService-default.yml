@@ -10,3 +10,7 @@ management:
     web:
       exposure:
         include: refresh,busrefresh,busshutdown,health,info
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/   # URL Eureka сервера

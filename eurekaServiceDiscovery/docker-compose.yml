@@ -1,5 +1,5 @@
 services:
-  configServer:
+  eurekaServiceDiscovery:
     build: .
     ports:
       - "${SERVER_PORT}:${SERVER_PORT}"
