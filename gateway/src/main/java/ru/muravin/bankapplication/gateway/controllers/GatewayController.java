@@ -46,4 +46,11 @@ public class GatewayController {
         System.out.println(getServiceUrl("notificationsService") + path);
         return proxy.uri(getServiceUrl("notificationsService") + path).get();
     }
+
+    @PostMapping("/accountsService/register")
+    public Mono<ResponseEntity<byte[]>> proxyAccountsService(ProxyExchange<byte[]> proxy) {
+        String path = proxy.path("/accountsService");
+        System.out.println(getServiceUrl("accountsService") + path);
+        return proxy.uri(getServiceUrl("accountsService") + path).post();
+    }
 }

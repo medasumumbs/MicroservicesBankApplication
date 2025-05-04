@@ -112,7 +112,7 @@ public class AuthenticationController {
                     if (!response.equals("OK")) {
                         attributes.put("errors", response);
                         model.addAllAttributes(attributes);
-                        return Mono.just(Rendering.redirectTo("/main").build());
+                        return Mono.just(Rendering.view("signup").modelAttributes(attributes).build());
                     }
                     model.addAllAttributes(attributes);
                     return Mono.just(Rendering.redirectTo("/main?registeredNewUser=true").build());
