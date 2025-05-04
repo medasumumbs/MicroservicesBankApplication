@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/bankMicroservicesApplication.iml" filepath="$PROJECT_DIR$/bankMicroservicesApplication.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/accountsService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/accountsService.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/accountsService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/accountsService.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/notificationsService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/notificationsService.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/notificationsService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/notificationsService.test.iml" />
     </modules>
