@@ -79,6 +79,8 @@
             <column name="id" type="bigint">
                 <constraints primaryKey="true"/>
             </column>
+            <column name="user_id" type="bigint" >
+            </column>
             <column name="currency" type="varchar(4)">
                 <constraints nullable="false" />
             </column>
@@ -92,6 +94,21 @@
         <addDefaultValue tableName="accounts" columnName="id" defaultValueSequenceNext="accounts_sequence"/>
         <rollback>
             <dropTable tableName="accounts"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="create_accounts_foreign_key_users" author="author">
+        <preConditions>
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_accounts_users"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseTableName="accounts"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_accounts_users"/>
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="accounts" constraintName="fk_accounts_users"/>
         </rollback>
     </changeSet>
 </databaseChangeLog>

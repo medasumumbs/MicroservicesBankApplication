@@ -13,10 +13,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.testcontainers.utility.TestcontainersConfiguration;
 import ru.muravin.bankapplication.notificationsService.TestApplicationConfiguration;
-import ru.muravin.bankapplication.accountsService.dto.NotificationDto;
-import ru.muravin.bankapplication.accountsService.mapper.NotificationMapper;
-import ru.muravin.bankapplication.accountsService.repository.NotificationsRepository;
-import ru.muravin.bankapplication.accountsService.service.NotificationsService;
+import ru.muravin.bankapplication.accountsService.mapper.UserMapper;
+import ru.muravin.bankapplication.accountsService.service.UserService;
 
 import java.time.LocalDateTime;
 
@@ -31,10 +29,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(MockitoExtension.class)
 public class ServiceTests {
     @MockitoBean
-    private NotificationMapper notificationMapper;
+    private UserMapper userMapper;
 
     @Autowired
-    private NotificationsService notificationsService;
+    private UserService userService;
 
     @Autowired
     private NotificationsRepository notificationsRepository;
@@ -45,7 +43,7 @@ public class ServiceTests {
         notificationsRepository.deleteAll();
         var localDateTime = LocalDateTime.now();
         NotificationDto notificationDto = new NotificationDto("abcde","a",localDateTime);
-        notificationsService.sendNotification(notificationDto);
+        userService.sendNotification(notificationDto);
         var notification = notificationsRepository.findAll().get(0);
         assertEquals("abcde", notification.getMessage());
         assertEquals("a", notification.getSender());

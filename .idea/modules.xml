@@ -6,6 +6,8 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/accountsService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/accountsService.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/notificationsService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/notificationsService.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/notificationsService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/notificationsService.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/uiService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/uiService.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/uiService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/uiService.test.iml" />
     </modules>
   </component>
 </project>
