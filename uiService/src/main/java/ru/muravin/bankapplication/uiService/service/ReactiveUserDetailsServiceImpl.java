@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 import ru.muravin.bankapplication.uiService.dto.UserDto;
 
@@ -40,7 +41,16 @@ public class ReactiveUserDetailsServiceImpl implements ReactiveUserDetailsServic
 
     @Override
     public Mono<UserDetails> findByUsername(String username) {
-        //Todo сделать rest запрос в сервис accountsService
-        return null;
+        var url = "http://gateway/accountsService/findByUsername";
+        return webClientBuilder.build()
+            .get().uri(UriComponentsBuilder.fromHttpUrl(url).queryParam("username", username).build().toUri())
+            .retrieve().bodyToMono(UserDto.class).map(userDto -> (UserDetails) userDto).onErrorResume(
+                ex -> {
+                    System.out.println(ex.getMessage());
+                    return Mono.error(ex);
+                }
+            ).onErrorResume(
+                    e -> Mono.empty()
+            );
     }
 }

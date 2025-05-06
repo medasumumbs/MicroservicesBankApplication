@@ -5,9 +5,12 @@ import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.gateway.webflux.ProxyExchange;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -52,5 +55,13 @@ public class GatewayController {
         String path = proxy.path("/accountsService");
         System.out.println(getServiceUrl("accountsService") + path);
         return proxy.uri(getServiceUrl("accountsService") + path).post();
+    }
+
+    @GetMapping("/accountsService/findByUsername")
+    public Mono<ResponseEntity<byte[]>> proxyAccountsServiceFindByUsername(ProxyExchange<byte[]> proxy, @RequestParam(required = false) MultiValueMap<String, String> params) {
+        String path = proxy.path("/accountsService");
+        System.out.println(getServiceUrl("accountsService") + path + params.getFirst("username"));
+        var uri = UriComponentsBuilder.fromHttpUrl(getServiceUrl("accountsService") + path).queryParams(params).build();
+        return proxy.uri(uri.toUriString()).get();
     }
 }

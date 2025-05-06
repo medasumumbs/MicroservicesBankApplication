@@ -1,6 +1,7 @@
 package ru.muravin.bankapplication.accountsService.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.muravin.bankapplication.accountsService.dto.UserDto;
 import ru.muravin.bankapplication.accountsService.mapper.UserMapper;
@@ -15,16 +16,26 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class UserService {
     private final UserMapper userMapper;
     private final UsersRepository usersRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserMapper userMapper, UsersRepository usersRepository) {
+    public UserService(UserMapper userMapper, UsersRepository usersRepository, PasswordEncoder passwordEncoder) {
         this.userMapper = userMapper;
         this.usersRepository = usersRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public UserDto findByUsername(String username) {
+        return usersRepository.findUserByLogin(username).map(userMapper::toDto).map(dto-> {
+            dto.setPassword(passwordEncoder.encode(dto.getPassword()));
+            return dto;
+        }).orElse(null);
     }
 
     public Long saveUser(UserDto userDto) {
@@ -58,7 +69,7 @@ public class UserService {
         }
         user.setCreatedAt(LocalDateTime.now());
         var foundUser = usersRepository.findUserByLogin(userDto.getLogin());
-        if (foundUser != null) {
+        if (foundUser.isPresent()) {
             throw new RuntimeException("Пользователь с логином " + userDto.getLogin() + " уже зарегистрирован");
         }
         User savedUser = usersRepository.save(user);
