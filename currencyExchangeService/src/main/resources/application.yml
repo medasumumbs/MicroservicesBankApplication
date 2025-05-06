@@ -24,5 +24,5 @@ spring:
     user: myuser
     password: secret
 server:
-  port: ${SERVER_PORT:8091}
+  port: 8077
 

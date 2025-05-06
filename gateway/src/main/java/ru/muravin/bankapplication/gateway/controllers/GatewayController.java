@@ -57,6 +57,13 @@ public class GatewayController {
         return proxy.uri(getServiceUrl("accountsService") + path).post();
     }
 
+    @PostMapping("/currencyExchangeService/rates")
+    public Mono<ResponseEntity<byte[]>> proxyCurrencyExchange(ProxyExchange<byte[]> proxy) {
+        String path = proxy.path("/currencyExchangeService");
+        System.out.println(getServiceUrl("currencyExchangeService") + path);
+        return proxy.uri(getServiceUrl("currencyExchangeService") + path).post();
+    }
+
     @GetMapping("/accountsService/findByUsername")
     public Mono<ResponseEntity<byte[]>> proxyAccountsServiceFindByUsername(ProxyExchange<byte[]> proxy, @RequestParam(required = false) MultiValueMap<String, String> params) {
         String path = proxy.path("/accountsService");

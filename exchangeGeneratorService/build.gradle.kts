@@ -25,17 +25,17 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
     implementation("org.springframework.cloud:spring-cloud-starter-config:4.2.2")  // Для взаимодействия с Config Server
     implementation("org.springframework.cloud:spring-cloud-starter-bus-amqp:4.2.1")// Для работы Spring Cloud Bus c RabbitM
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-eureka-client
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.2.1")
     compileOnly("org.projectlombok:lombok")
 
-    runtimeOnly("org.postgresql:postgresql")
 
     annotationProcessor("org.projectlombok:lombok")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
@@ -43,25 +43,13 @@ dependencies {
     testAnnotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
-    testImplementation("org.testcontainers:r2dbc:1.19.0")
     testImplementation("org.mapstruct:mapstruct:1.5.5.Final")
     testImplementation("org.testcontainers:junit-jupiter")
-    testImplementation("org.testcontainers:postgresql")
-    testImplementation("com.redis:testcontainers-redis:2.2.2")
 }
 
 tasks.withType<Test> {
-    environment("NOTIFICATIONS_SERVICE_DB_HOST", "localhost");
-    environment( "NOTIFICATIONS_SERVICE_DB_NAME", "notifications");
-    environment( "NOTIFICATIONS_SERVICE_DB_USERNAME", "myuser");
-    environment( "NOTIFICATIONS_SERVICE_DB_PASSWORD", "secret");
-    environment( "NOTIFICATIONS_SERVICE_PORT", "8081");
-
-    environment( "SPRING_DATASOURCE_URL","jdbc:postgresql://localhost:5433/notifications");
-    environment( "SPRING_DATASOURCE_USERNAME", "myuser");
-    environment( "SPRING_DATASOURCE_PASSWORD","secret");
-    environment( "SERVER_PORT","8077");
+    environment( "UI_SERVICE_PORT", "8087");
+    environment( "SERVER_PORT","8087");
     useJUnitPlatform()
 }

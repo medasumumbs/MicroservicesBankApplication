@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: exchangeGeneratorService
+  config:
+    import: configserver:http://127.0.0.1:8888
+server:
+  port: ${SERVER_PORT:8092}
