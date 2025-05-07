@@ -62,6 +62,6 @@ tasks.withType<Test> {
     environment( "SPRING_DATASOURCE_URL","jdbc:postgresql://localhost:5434/accounts");
     environment( "SPRING_DATASOURCE_USERNAME", "myuser");
     environment( "SPRING_DATASOURCE_PASSWORD","secret");
-    environment( "SERVER_PORT","8081");
+    environment( "SERVER_PORT","8084");
     useJUnitPlatform()
 }

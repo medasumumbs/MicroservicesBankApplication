@@ -1,3 +1,5 @@
+server:
+  port: 8084
 spring:
   application:
     name: accountsService
@@ -23,5 +25,3 @@ spring:
     enabled: true
     user: myuser
     password: secret
-server:
-  port: ${SERVER_PORT:8084}
