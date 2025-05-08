@@ -1,8 +1,10 @@
 package ru.muravin.bankapplication.accountsService.controller;
 
 import org.springframework.web.bind.annotation.*;
+import ru.muravin.bankapplication.accountsService.dto.AccountDto;
 import ru.muravin.bankapplication.accountsService.dto.UserDto;
 import ru.muravin.bankapplication.accountsService.service.UserService;
+import java.util.List;
 
 @RestController
 @RequestMapping
@@ -26,8 +28,14 @@ public class MainController {
         } else {
             return "UNKNOWN_PROBLEM";
         }
-
     }
+
+    @GetMapping("/findAccountsByUsername")
+    public List<AccountDto> getAccountsByUsername(@RequestParam("username") String username) {
+        return userService.findAccountsByUsername(username);
+    }
+
+
     @GetMapping("/findByUsername")
     public UserDto findByUsername(@RequestParam("username") String username) {
         return userService.findByUsername(username);

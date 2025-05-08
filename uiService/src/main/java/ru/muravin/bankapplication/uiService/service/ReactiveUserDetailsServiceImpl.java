@@ -1,6 +1,7 @@
 package ru.muravin.bankapplication.uiService.service;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -52,5 +53,15 @@ public class ReactiveUserDetailsServiceImpl implements ReactiveUserDetailsServic
             ).onErrorResume(
                     e -> Mono.empty()
             );
+    }
+
+    public Mono<UserDto> getCurrentUser() {
+        return ReactiveSecurityContextHolder.getContext().map(securityContext -> {
+            var user = securityContext.getAuthentication().getPrincipal();
+            if (!(user instanceof UserDto)) {
+                return UserDto.builder().build();
+            }
+            return ((UserDto) user);
+        }).defaultIfEmpty(UserDto.builder().build());
     }
 }

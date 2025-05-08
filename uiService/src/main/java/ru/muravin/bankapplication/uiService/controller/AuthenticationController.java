@@ -4,10 +4,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.web.server.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.result.view.Rendering;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -116,6 +113,52 @@ public class AuthenticationController {
                     }
                     model.addAllAttributes(attributes);
                     return Mono.just(Rendering.redirectTo("/main?registeredNewUser=true").build());
+                });
+
+            });
+        });
+
+    }
+
+    @PostMapping("/user/{login}/editPassword")
+    public Mono<Rendering> changePassword(
+            @PathVariable String login,
+            ServerWebExchange exchange,
+            Model model) {
+        Mono<CsrfToken> tokenMono = exchange.getAttribute(CsrfToken.class.getName());
+        var attributes = new HashMap<String,Object>();
+        return tokenMono.flatMap(csrfToken -> {
+            return exchange.getFormData().flatMap(data->{
+                var errors = new ArrayList<>();
+                var confirmPassword = data.getFirst("confirm_password");
+                var password = data.getFirst("password");
+                attributes.put("_csrf", csrfToken);
+                if ((confirmPassword!=null) && (password!=null) && (!confirmPassword.equals(password))) {
+                    errors.add("Пароли не совпадают");
+                }
+                attributes.put("errors", errors);
+                if (!errors.isEmpty()) {
+                    model.addAllAttributes(attributes);
+                    return Mono.just(Rendering.redirectTo("/main").modelAttributes(attributes).build());
+                }
+                ///  TODO - отправить REST-запрос на новый endpoint в accountsService для обновления пароля
+                /*return reactiveUserDetailsServiceImpl.registerUser(
+                        UserDto.builder()
+                                .dateOfBirth(dateOfBirthString)
+                                .login(login)
+                                .password(password)
+                                .lastName(fioDelimetedBySpace.split(" ")[0])
+                                .firstName(fioDelimetedBySpace.split(" ")[1])
+                                .patronymic(fioDelimetedBySpace.split(" ")[2])
+                                .build()*/
+                ).flatMap(response -> {
+                    if (!response.equals("OK")) {
+                        attributes.put("errors", response);
+                        model.addAllAttributes(attributes);
+                        return Mono.just(Rendering.view("signup").modelAttributes(attributes).build());
+                    }
+                    model.addAllAttributes(attributes);
+                    return Mono.just(Rendering.redirectTo("/main?changedPassword=true").build());
                 });
 
             });
