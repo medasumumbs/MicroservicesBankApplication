@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.muravin.bankapplication.accountsService.dto.AccountDto;
+import ru.muravin.bankapplication.accountsService.dto.ChangePasswordDto;
 import ru.muravin.bankapplication.accountsService.dto.UserDto;
 import ru.muravin.bankapplication.accountsService.mapper.AccountMapper;
 import ru.muravin.bankapplication.accountsService.mapper.UserMapper;
@@ -42,7 +43,7 @@ public class UserService {
 
     public UserDto findByUsername(String username) {
         return usersRepository.findUserByLogin(username).map(userMapper::toDto).map(dto-> {
-            dto.setPassword(passwordEncoder.encode(dto.getPassword()));
+            //dto.setPassword(passwordEncoder.encode(dto.getPassword()));
             return dto;
         }).orElse(null);
     }
@@ -51,6 +52,14 @@ public class UserService {
         return usersRepository.findUserByLogin(username).map(user->{
             return accountsRepository.findAllByUserId(String.valueOf(user.getId()));
         }).orElse(new ArrayList<>()).stream().map(accountMapper::toDto).toList();
+    }
+
+    public void updateUser(ChangePasswordDto changePasswordDto) {
+        var user = usersRepository.findUserByLogin(changePasswordDto.getLogin()).orElseThrow(
+                () -> new RuntimeException("Пользователь не существует")
+        );
+        user.setPassword(changePasswordDto.getNewPassword());
+        usersRepository.save(user);
     }
 
     public Long saveUser(UserDto userDto) {

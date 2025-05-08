@@ -27,6 +27,7 @@ public class MainController {
         return reactiveUserDetailsServiceImpl.getCurrentUser().flatMap(userDto -> {
             return tokenMono.flatMap(csrfToken -> {
                 return Mono.just(Rendering.view("main").modelAttribute("_csrf",csrfToken)
+                        .modelAttribute("changedPassword", exchange.getRequest().getQueryParams().getFirst("changedPassword"))
                         .modelAttribute("login", userDto.getLogin())
                         .modelAttribute("birthdate", userDto.getDateOfBirth())
                         .modelAttribute("name", userDto.getLastName() + " " + userDto.getFirstName() + " " + userDto.getPatronymic())

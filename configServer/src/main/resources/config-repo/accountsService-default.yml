@@ -41,3 +41,10 @@ eureka:
       defaultZone: http://localhost:8761/eureka/   # URL Eureka сервера
 server:
   port: 8084
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          filter:
+            CommonsRequestLoggingFilter: DEBUG

@@ -141,21 +141,12 @@ public class AuthenticationController {
                     model.addAllAttributes(attributes);
                     return Mono.just(Rendering.redirectTo("/main").modelAttributes(attributes).build());
                 }
-                ///  TODO - отправить REST-запрос на новый endpoint в accountsService для обновления пароля
-                /*return reactiveUserDetailsServiceImpl.registerUser(
-                        UserDto.builder()
-                                .dateOfBirth(dateOfBirthString)
-                                .login(login)
-                                .password(password)
-                                .lastName(fioDelimetedBySpace.split(" ")[0])
-                                .firstName(fioDelimetedBySpace.split(" ")[1])
-                                .patronymic(fioDelimetedBySpace.split(" ")[2])
-                                .build()*/
-                ).flatMap(response -> {
+                return reactiveUserDetailsServiceImpl.updatePassword(login, password)
+                        .flatMap(response -> {
                     if (!response.equals("OK")) {
-                        attributes.put("errors", response);
+                        attributes.put("passwordErrors", response);
                         model.addAllAttributes(attributes);
-                        return Mono.just(Rendering.view("signup").modelAttributes(attributes).build());
+                        return Mono.just(Rendering.view("main").modelAttributes(attributes).build());
                     }
                     model.addAllAttributes(attributes);
                     return Mono.just(Rendering.redirectTo("/main?changedPassword=true").build());
