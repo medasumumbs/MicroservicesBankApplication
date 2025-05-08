@@ -12,19 +12,24 @@ import java.util.List;
 @RestController
 @RequestMapping("/rates")
 public class RatesController {
-    private final CurrencyRatesService notificationsService;
+    private final CurrencyRatesService currencyRatesService;
 
     @Autowired
-    public RatesController(CurrencyRatesService notificationsService) {
-        this.notificationsService = notificationsService;
+    public RatesController(CurrencyRatesService currencyRatesService) {
+        this.currencyRatesService = currencyRatesService;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public HttpResponseDto receiveRates(
             @RequestBody List<CurrencyRateDto> ratesList) {
-        notificationsService.saveRates(ratesList);
+        currencyRatesService.saveRates(ratesList);
         return new HttpResponseDto("OK","Rates received");
+    }
+
+    @GetMapping
+    public List<CurrencyRateDto> getRates() {
+        return currencyRatesService.findAll();
     }
 
     @ExceptionHandler

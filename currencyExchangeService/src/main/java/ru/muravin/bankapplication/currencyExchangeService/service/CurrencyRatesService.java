@@ -23,4 +23,8 @@ public class CurrencyRatesService {
     public void saveRates(List<CurrencyRateDto> ratesList) {
         notificationsRepository.saveAll(ratesList.stream().map(currencyRateMapper::toEntity).toList());
     }
+
+    public List<CurrencyRateDto> findAll() {
+        return notificationsRepository.findAll().stream().map(currencyRateMapper::toDto).toList();
+    }
 }
