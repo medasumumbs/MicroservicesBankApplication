@@ -94,10 +94,10 @@
                         <div>
                             Валюта
                             <select name="currency">
-                                <option th:each="eachCurrency : ${currency}" th:value="${eachCurrency.name()}" th:text="${eachCurrency.getTitle()}"/>
+                                <option th:each="eachCurrency : ${currencies}" th:value="${eachCurrency.getCurrencyCode()}" th:text="${eachCurrency.getTitle()}"/>
                             </select>
                         </div>
-                        <input type="submit" value="Создать счёт">
+                        <input type="submit" value="Открыть счёт">
                     </form>
                 </tr>
             </table>
