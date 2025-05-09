@@ -1,0 +1,24 @@
+services:
+  notifications-service:
+    build:
+      context: ./notificationsService
+      dockerfile: Dockerfile
+    ports:
+      - "${NOTIFICATIONS_SERVICE_PORT}:${NOTIFICATIONS_SERVICE_PORT}"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${NOTIFICATIONS_SERVICE_DB_HOST}:5432/${NOTIFICATIONS_SERVICE_DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${NOTIFICATIONS_SERVICE_DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${NOTIFICATIONS_SERVICE_DB_PASSWORD}
+      NOTIFICATIONS_SERVICE_PORT: ${NOTIFICATIONS_SERVICE_PORT}
+    depends_on:
+      - notifications-db
+
+  notifications-db:
+    image: postgres:16
+    container_name: notifications-db
+    environment:
+      POSTGRES_DB: ${NOTIFICATIONS_SERVICE_DB_NAME}
+      POSTGRES_USER: ${NOTIFICATIONS_SERVICE_DB_USERNAME}
+      POSTGRES_PASSWORD: ${NOTIFICATIONS_SERVICE_DB_PASSWORD}
+    ports:
+      - "5433:5432"

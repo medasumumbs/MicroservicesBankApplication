@@ -5,9 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.muravin.bankapplication.uiService.dto.AccountDto;
+import ru.muravin.bankapplication.uiService.dto.CashInCashOutDto;
+import ru.muravin.bankapplication.uiService.dto.HttpResponseDto;
 import ru.muravin.bankapplication.uiService.dto.NewAccountDto;
 
 import java.util.List;
@@ -44,5 +45,29 @@ public class AccountsService {
     public Mono<List<AccountDto>> findAllAccountsByUser(String login) {
         return webClientBuilder.build().get().uri("http://gateway/accountsService/findAccountsByUsername?username="+login)
                 .retrieve().bodyToFlux(AccountDto.class).collectList().switchIfEmpty(Mono.empty());
+    }
+    public Mono<HttpResponseDto> withdrawCash(String login, String currency, String amount, String action) {
+        var dto = new CashInCashOutDto();
+        dto.setCurrencyCode(currency);
+        dto.setLogin(login);
+        dto.setAction(action);
+        dto.setAmount(amount);
+        return webClientBuilder
+            .build()
+            .post()
+            .uri("http://gateway/cashInCashOutService/withdrawCash")
+                .bodyValue(dto)
+            .retrieve().bodyToMono(HttpResponseDto.class)
+            .onErrorResume(
+                    WebClientResponseException.class,
+                    ex -> {
+                        if (ex.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR) {
+                            return Mono.just(new HttpResponseDto("ERROR","Внутренняя ошибка сервера: " + ex.getMessage()));
+                        } else {
+                            return Mono.error(ex);
+                        }
+                    }
+            )
+            .onErrorResume(Exception.class, ex -> Mono.just(new HttpResponseDto("ERROR","Возникла неизвестная ошибка: " + ex.getMessage())));
     }
 }

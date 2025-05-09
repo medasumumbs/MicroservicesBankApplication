@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/accountsService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/accountsService.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/accountsService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/accountsService.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cashInCashOutService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/cashInCashOutService.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cashInCashOutService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/cashInCashOutService.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/currencyExchangeService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/currencyExchangeService.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/currencyExchangeService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/currencyExchangeService.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/exchangeGeneratorService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/exchangeGeneratorService.main.iml" />

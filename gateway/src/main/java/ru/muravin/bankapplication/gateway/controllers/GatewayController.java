@@ -6,10 +6,7 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.gateway.webflux.ProxyExchange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
@@ -45,9 +42,7 @@ public class GatewayController {
 
     @GetMapping("/notificationsService/discoveredServicesList")
     public Mono<ResponseEntity<byte[]>> proxyNotificationServiceList(ProxyExchange<byte[]> proxy) {
-        String path = proxy.path("/notificationsService");
-        System.out.println(getServiceUrl("notificationsService") + path);
-        return proxy.uri(getServiceUrl("notificationsService") + path).get();
+        return proxy(proxy);
     }
 
     @PostMapping("/accountsService/register")
@@ -90,4 +85,12 @@ public class GatewayController {
         var uri = UriComponentsBuilder.fromHttpUrl(getServiceUrl("accountsService") + path).queryParams(params).build();
         return proxy.uri(uri.toUriString()).get();
     }
+
+    @PostMapping("/cashInCashOutService/**")
+    public Mono<ResponseEntity<byte[]>> proxyCashInCashOutService(ProxyExchange<byte[]> proxy, @RequestParam(required = false) MultiValueMap<String, String> params) {
+        String path = proxy.path("/cashInCashOutService");
+        System.out.println(getServiceUrl("cashInCashOutService") + path);
+        return proxy.uri(getServiceUrl("cashInCashOutService") + path).post();
+    }
+
 }
