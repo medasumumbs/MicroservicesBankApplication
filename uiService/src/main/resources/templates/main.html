@@ -93,7 +93,7 @@
                     </tr>
                     <tr th:each="account : ${accounts}">
                         <td style="font-weight:bold;" th:text="${account.getCurrency().getTitle()}"/>
-                        <td th:text="${('Счёт № ' + account.getAccountNumber() + ': ' + account.getValue()+' '+account.getCurrency().name())}"/>
+                        <td th:text="${('Счёт № ' + account.getAccountNumber() + ': ' + account.getBalance()+' '+account.getCurrency().getName())}"/>
                     </tr>
                     <tr>
                         <td/>

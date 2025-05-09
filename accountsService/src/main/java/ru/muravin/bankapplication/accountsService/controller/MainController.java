@@ -37,7 +37,7 @@ public class MainController {
 
     @GetMapping("/findAccountsByUsername")
     public List<AccountDto> getAccountsByUsername(@RequestParam("username") String username) {
-        return userService.findAccountsByUsername(username);
+        return accountsService.findAccountsByUsername(username);
     }
 
 

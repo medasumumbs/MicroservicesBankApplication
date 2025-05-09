@@ -1,4 +1,4 @@
-package ru.muravin.bankapplication.uiService.dto;
+package ru.muravin.bankapplication.accountsService.dto;
 
 import lombok.Builder;
 import lombok.Data;

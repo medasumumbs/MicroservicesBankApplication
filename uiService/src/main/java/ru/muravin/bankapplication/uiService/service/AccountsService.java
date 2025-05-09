@@ -7,7 +7,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import ru.muravin.bankapplication.uiService.dto.AccountDto;
 import ru.muravin.bankapplication.uiService.dto.NewAccountDto;
+
+import java.util.List;
 
 @Service
 public class AccountsService {
@@ -37,5 +40,9 @@ public class AccountsService {
                     }
             )
             .onErrorResume(Exception.class, ex -> Mono.just("Возникла неизвестная ошибка: " + ex.getMessage()));
+    }
+    public Mono<List<AccountDto>> findAllAccountsByUser(String login) {
+        return webClientBuilder.build().get().uri("http://gateway/accountsService/findAccountsByUsername?username="+login)
+                .retrieve().bodyToFlux(AccountDto.class).collectList().switchIfEmpty(Mono.empty());
     }
 }

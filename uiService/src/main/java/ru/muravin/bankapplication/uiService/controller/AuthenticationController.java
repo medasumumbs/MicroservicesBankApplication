@@ -42,12 +42,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup")
-    public Mono<Rendering> registerUser(/*@RequestParam String login,
-                                        @RequestParam String password,
-                                        @RequestParam(name = "confirm_password") String confirmPassword,
-                                        @RequestParam(name = "name") String fioDelimitedBySpace,
-                                        @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date dateOfBirth,*/
-                                        ServerWebExchange exchange,
+    public Mono<Rendering> registerUser(ServerWebExchange exchange,
                                         Model model) {
         Mono<CsrfToken> tokenMono = exchange.getAttribute(CsrfToken.class.getName());
         var attributes = new HashMap<String,Object>();
@@ -146,7 +141,7 @@ public class AuthenticationController {
                     if (!response.equals("OK")) {
                         attributes.put("passwordErrors", response);
                         model.addAllAttributes(attributes);
-                        return Mono.just(Rendering.view("main").modelAttributes(attributes).build());
+                        return Mono.just(Rendering.redirectTo("/main").modelAttributes(attributes).build());
                     }
                     model.addAllAttributes(attributes);
                     return Mono.just(Rendering.redirectTo("/main?changedPassword=true").build());

@@ -51,15 +51,16 @@ public class AccountsController {
                     model.addAllAttributes(attributes);
                     return Mono.just(Rendering.redirectTo("/main").modelAttributes(attributes).build());
                 }
-                return accountsService.addAccount(login, currency)
-                    .flatMap(response -> {
-                        return reactiveUserDetailsServiceImpl.getCurrentUser().flatMap(userDto -> {
+                return accountsService.addAccount(login, currency).flatMap(response -> {
+                    return reactiveUserDetailsServiceImpl.getCurrentUser().flatMap(userDto -> {
+                        return accountsService.findAllAccountsByUser(userDto.getLogin()).flatMap(accountDtos -> {
                             return currenciesService.getCurrenciesList().collectList().flatMap(currencyDtos -> {
                                 if (!response.equals("OK")) {
                                     attributes.put("passwordErrors", response);
                                     model.addAllAttributes(attributes);
                                     return Mono.just(Rendering.view("main").modelAttributes(attributes)
                                             .modelAttribute("birthdate", userDto.getDateOfBirth())
+                                            .modelAttribute("accounts", accountDtos)
                                             .modelAttribute("name", userDto.getLastName() + " " + userDto.getFirstName() + " " + userDto.getPatronymic())
                                             .modelAttribute("currencies", currencyDtos)
                                             .build());
@@ -69,6 +70,7 @@ public class AccountsController {
                             });
                         });
                     });
+                });
             });
         });
 

@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class AccountDto {
-    private String currencyCode;
+    private CurrencyDto currency;
     private String accountNumber;
     private Double balance;
 }

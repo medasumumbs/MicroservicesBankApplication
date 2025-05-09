@@ -48,11 +48,7 @@ public class UserService {
         }).orElse(null);
     }
 
-    public List<AccountDto> findAccountsByUsername(String username) {
-        return usersRepository.findUserByLogin(username).map(user->{
-            return accountsRepository.findAllByUserId(String.valueOf(user.getId()));
-        }).orElse(new ArrayList<>()).stream().map(accountMapper::toDto).toList();
-    }
+
 
     public void updateUser(ChangePasswordDto changePasswordDto) {
         var user = usersRepository.findUserByLogin(changePasswordDto.getLogin()).orElseThrow(
