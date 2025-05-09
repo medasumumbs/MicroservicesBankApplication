@@ -64,6 +64,11 @@ public class GatewayController {
     public Mono<ResponseEntity<byte[]>> proxyChangePassword(ProxyExchange<byte[]> proxy) {
         return proxyAccountsService(proxy);
     }
+    @PostMapping("/accountsService/addAccount")
+    public Mono<ResponseEntity<byte[]>> proxyAddAccount(ProxyExchange<byte[]> proxy) {
+        return proxyAccountsService(proxy);
+    }
+
 
     @PostMapping("/currencyExchangeService/rates")
     public Mono<ResponseEntity<byte[]>> proxyCurrencyExchange(ProxyExchange<byte[]> proxy) {

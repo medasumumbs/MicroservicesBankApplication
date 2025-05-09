@@ -3,7 +3,9 @@ package ru.muravin.bankapplication.accountsService.controller;
 import org.springframework.web.bind.annotation.*;
 import ru.muravin.bankapplication.accountsService.dto.AccountDto;
 import ru.muravin.bankapplication.accountsService.dto.ChangePasswordDto;
+import ru.muravin.bankapplication.accountsService.dto.NewAccountDto;
 import ru.muravin.bankapplication.accountsService.dto.UserDto;
+import ru.muravin.bankapplication.accountsService.service.AccountsService;
 import ru.muravin.bankapplication.accountsService.service.UserService;
 import java.util.List;
 
@@ -11,9 +13,11 @@ import java.util.List;
 @RequestMapping
 public class MainController {
     private final UserService userService;
+    private final AccountsService accountsService;
 
-    public MainController(UserService userService) {
+    public MainController(UserService userService, AccountsService accountsService) {
         this.userService = userService;
+        this.accountsService = accountsService;
     }
 
     @PostMapping("/register")
@@ -53,4 +57,10 @@ public class MainController {
         userService.updateUserInfo(userDto);
         return "OK";
     }
+
+    @PostMapping("/addAccount")
+    public String addAccount(@RequestBody NewAccountDto newAccountDto) {
+        return accountsService.addAccount(newAccountDto);
+    }
+
 }

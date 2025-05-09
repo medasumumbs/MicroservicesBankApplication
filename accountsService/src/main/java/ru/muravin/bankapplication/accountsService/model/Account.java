@@ -12,21 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "accounts")
-/*
-* <column name="id" type="bigint">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="user_id" type="bigint" >
-            </column>
-            <column name="currency" type="varchar(4)">
-                <constraints nullable="false" />
-            </column>
-            <column name="balance" type="decimal">
-                <constraints nullable="false" />
-            </column>
-            <column name="created_at" type="timestamp">
-                <constraints nullable="false" />
-            </column>*/
+@Setter
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
