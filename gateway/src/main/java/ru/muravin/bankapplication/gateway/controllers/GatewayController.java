@@ -56,6 +56,10 @@ public class GatewayController {
         System.out.println(getServiceUrl("accountsService") + path);
         return proxy.uri(getServiceUrl("accountsService") + path).post();
     }
+    @PostMapping("/accountsService/updateUserInfo")
+    public Mono<ResponseEntity<byte[]>> proxyAccountsServiceUpdateUserInfo(ProxyExchange<byte[]> proxy) {
+        return proxyAccountsService(proxy);
+    }
     @PostMapping("/accountsService/changePassword")
     public Mono<ResponseEntity<byte[]>> proxyChangePassword(ProxyExchange<byte[]> proxy) {
         return proxyAccountsService(proxy);

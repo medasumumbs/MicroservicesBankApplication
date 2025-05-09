@@ -12,17 +12,16 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "users")
+@Setter
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String login;
-    @Setter
     private String password;
     private String name;
     private String lastName;
     private String patronymic;
     private LocalDate dateOfBirth;
-    @Setter
     private LocalDateTime createdAt;
 }

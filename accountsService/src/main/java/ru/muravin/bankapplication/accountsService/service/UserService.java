@@ -67,6 +67,34 @@ public class UserService {
         if (userDto.getPassword() == null) {
             throw new IllegalArgumentException("Не передан пароль");
         }
+        validateUserAndThrowIfError(userDto);
+        user.setCreatedAt(LocalDateTime.now());
+        var foundUser = usersRepository.findUserByLogin(userDto.getLogin());
+        if (foundUser.isPresent()) {
+            throw new RuntimeException("Пользователь с логином " + userDto.getLogin() + " уже зарегистрирован");
+        }
+        User savedUser = usersRepository.save(user);
+        return savedUser.getId();
+    }
+
+    public void updateUserInfo(UserDto userDto) {
+        validateUserAndThrowIfError(userDto);
+        var user = usersRepository.findUserByLogin(userDto.getLogin()).orElseThrow(() -> {
+            return new RuntimeException("Пользователь " + userDto.getLogin() + " не найден");
+        });
+        try {
+            var date = new SimpleDateFormat("yyyy-MM-dd").parse(userDto.getDateOfBirth());
+            var localDate = LocalDate.ofInstant(date.toInstant(), ZoneId.systemDefault());
+            user.setDateOfBirth(localDate);
+        } catch (Exception ignored) {}
+        user.setName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setPatronymic(userDto.getPatronymic());
+        usersRepository.save(user);
+
+    }
+
+    private void validateUserAndThrowIfError(UserDto userDto) {
         if (userDto.getDateOfBirth() == null) {
             throw new IllegalArgumentException("Не передана дата рождения пользователя");
         }
@@ -91,12 +119,5 @@ public class UserService {
                 throw new IllegalArgumentException("Пользователь не может быть несовершеннолетним");
             }
         }
-        user.setCreatedAt(LocalDateTime.now());
-        var foundUser = usersRepository.findUserByLogin(userDto.getLogin());
-        if (foundUser.isPresent()) {
-            throw new RuntimeException("Пользователь с логином " + userDto.getLogin() + " уже зарегистрирован");
-        }
-        User savedUser = usersRepository.save(user);
-        return savedUser.getId();
     }
 }

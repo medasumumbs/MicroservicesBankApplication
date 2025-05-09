@@ -67,28 +67,44 @@
     </td>
 
     <tr><td style="padding:2px;">
+            <form method="post" th:action="${'/user/'+login+'/changeInfo'}">
+                <table style="width:100%;margin-left:auto;margin-right:auto;border-radius:2%;padding:10px;background-color:whitesmoke;">
+                    <tr th:if="${userAccountsErrors!=null}" th:each="userAccountsError : ${userAccountsErrors}">
+                        <td style="color:red;" th:text="${userAccountsError}"/>
+                    </tr>
+                    <tr th:if="${userIsUpdated}">
+                        <td>
+                            <span style="color: green">Данные успешно обновлены</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold;">Фамилия Имя Отчество</td>
+                        <td th:text="${name}"/>
+                        <td>
+                            <input name="name" type="text" style="width:100%"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold;">Дата рождения</td>
+                        <td th:text="${birthdate}"/>
+                        <td>
+                            <input name="birthDate" type="date" style="width:100%"/>
+                        </td>
+                    </tr>
+                    <tr th:each="account : ${accounts}">
+                        <td style="font-weight:bold;" th:text="${account.getCurrency().getTitle()}"/>
+                        <td th:text="${('Счёт № ' + account.getAccountNumber() + ': ' + account.getValue()+' '+account.getCurrency().name())}"/>
+                    </tr>
+                    <tr>
+                        <td/>
+                        <td><input type="hidden"
+                                   th:name="_csrf"
+                                   th:value="${_csrf.token}"/></td>
+                        <td><input type="submit" value="Изменить данные пользователя"></td>
+                    </tr>
+                </table>
+            </form>
             <table style="width:100%;margin-left:auto;margin-right:auto;border-radius:2%;padding:10px;background-color:whitesmoke;">
-                <tr th:if="${userAccountsErrors!=null}" th:each="userAccountsError : ${userAccountsErrors}">
-                    <td style="color:red;" th:text="${userAccountsError}"/>
-                </tr>
-                <tr>
-                    <td style="font-weight:bold;">Фамилия Имя Отчество</td>
-                    <td th:text="${name}"/>
-                    <td>
-                        <input name="name" type="text" style="width:100%"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="font-weight:bold;">Дата рождения</td>
-                    <td th:text="${birthdate}"/>
-                    <td>
-                        <input name="birthdate" type="date" style="width:100%"/>
-                    </td>
-                </tr>
-                <tr th:each="account : ${accounts}">
-                    <td style="font-weight:bold;" th:text="${account.getCurrency().getTitle()}"/>
-                    <td th:text="${('Счёт № ' + account.getAccountNumber() + ': ' + account.getValue()+' '+account.getCurrency().name())}"/>
-                </tr>
                 <tr>
                     <form method="post" th:action="${'/user/'+login+'/accounts'}">
                         <div>
@@ -97,6 +113,9 @@
                                 <option th:each="eachCurrency : ${currencies}" th:value="${eachCurrency.getCurrencyCode()}" th:text="${eachCurrency.getTitle()}"/>
                             </select>
                         </div>
+                        <input type="hidden"
+                               th:name="_csrf"
+                               th:value="${_csrf.token}"/>
                         <input type="submit" value="Открыть счёт">
                     </form>
                 </tr>

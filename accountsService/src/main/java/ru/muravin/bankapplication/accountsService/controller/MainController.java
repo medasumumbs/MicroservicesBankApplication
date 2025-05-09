@@ -48,4 +48,9 @@ public class MainController {
         userService.updateUser(changePasswordDto);
         return "OK";
     }
+    @PostMapping("/updateUserInfo")
+    public String updateUserInfo(@RequestBody UserDto userDto) {
+        userService.updateUserInfo(userDto);
+        return "OK";
+    }
 }
