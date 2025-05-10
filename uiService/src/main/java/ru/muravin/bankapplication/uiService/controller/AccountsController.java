@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.server.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -91,7 +90,7 @@ public class AccountsController {
                             ).flatMap(result -> {
                                 if (!result.getStatusCode().equals("OK")) {
                                     return Mono.just(Rendering.view("main").modelAttribute("_csrf", csrfToken)
-                                            .modelAttribute("cashErrors", List.of(result))
+                                            .modelAttribute("cashErrors", List.of("Подозрительная операция: " + result.getStatusMessage()))
                                             .modelAttribute("login", userDto.getLogin())
                                             .modelAttribute("currencies", currencyDtos)
                                             .modelAttribute("accounts", accountDtos)

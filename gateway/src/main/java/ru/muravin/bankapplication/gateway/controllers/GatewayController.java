@@ -93,4 +93,11 @@ public class GatewayController {
         return proxy.uri(getServiceUrl("cashInCashOutService") + path).post();
     }
 
+    @PostMapping("/antifraudService/**")
+    public Mono<ResponseEntity<byte[]>> proxyAntifraudService(ProxyExchange<byte[]> proxy, @RequestParam(required = false) MultiValueMap<String, String> params) {
+        String path = proxy.path("/antifraudService");
+        System.out.println(getServiceUrl("antifraudService") + path);
+        return proxy.uri(getServiceUrl("antifraudService") + path).post();
+    }
+
 }
