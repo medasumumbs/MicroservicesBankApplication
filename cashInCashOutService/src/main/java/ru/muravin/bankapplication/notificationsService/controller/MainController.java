@@ -29,6 +29,12 @@ public class MainController {
         if (!antifraudResponse.getStatusCode().equals("OK")) {
             return ResponseEntity.ok(antifraudResponse);
         }
+        var accountsServiceResponse = restTemplate.postForObject(
+                "http://gateway/accountsService/cashInOrCashOut",cashInCashOutDto,String.class
+        );
+        if (!accountsServiceResponse.equals("OK")) {
+            return ResponseEntity.ok(new HttpResponseDto("ERROR", accountsServiceResponse));
+        }
         if (action.equals("GET")) {
             return ResponseEntity.ok(new HttpResponseDto("OK","Деньги успешно списаны"));
         }

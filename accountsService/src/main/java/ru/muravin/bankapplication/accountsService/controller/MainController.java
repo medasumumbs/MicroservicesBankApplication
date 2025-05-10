@@ -1,10 +1,7 @@
 package ru.muravin.bankapplication.accountsService.controller;
 
 import org.springframework.web.bind.annotation.*;
-import ru.muravin.bankapplication.accountsService.dto.AccountDto;
-import ru.muravin.bankapplication.accountsService.dto.ChangePasswordDto;
-import ru.muravin.bankapplication.accountsService.dto.NewAccountDto;
-import ru.muravin.bankapplication.accountsService.dto.UserDto;
+import ru.muravin.bankapplication.accountsService.dto.*;
 import ru.muravin.bankapplication.accountsService.service.AccountsService;
 import ru.muravin.bankapplication.accountsService.service.UserService;
 import java.util.List;
@@ -61,6 +58,17 @@ public class MainController {
     @PostMapping("/addAccount")
     public String addAccount(@RequestBody NewAccountDto newAccountDto) {
         return accountsService.addAccount(newAccountDto);
+    }
+
+    @PostMapping("/cashInOrCashOut")
+    public String cashOperation(@RequestBody OperationDto operationDto) {
+        if (operationDto.getAction().equals("PUT")) {
+            return accountsService.cashIn(operationDto);
+        }
+        if (operationDto.getAction().equals("GET")) {
+            return accountsService.cashOut(operationDto);
+        }
+        return "Не удалось распознать операцию " + operationDto.getAction();
     }
 
 }

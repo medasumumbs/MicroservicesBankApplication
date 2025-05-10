@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.muravin.bankapplication.accountsService.dto.AccountDto;
 import ru.muravin.bankapplication.accountsService.dto.NewAccountDto;
+import ru.muravin.bankapplication.accountsService.dto.OperationDto;
 import ru.muravin.bankapplication.accountsService.mapper.AccountMapper;
 import ru.muravin.bankapplication.accountsService.model.Account;
 import ru.muravin.bankapplication.accountsService.repository.AccountsRepository;
@@ -18,7 +19,7 @@ import java.util.List;
 public class AccountsService {
     private final UsersRepository usersRepository;
     private final AccountMapper accountMapper;
-    private AccountsRepository accountsRepository;
+    private final AccountsRepository accountsRepository;
 
     @Autowired
     public AccountsService(AccountsRepository accountsRepository, UsersRepository usersRepository, AccountMapper accountMapper) {
@@ -48,14 +49,57 @@ public class AccountsService {
     }
 
     public List<AccountDto> findAccountsByUsername(String username) {
-        var currencyTitles = new HashMap<String,String>();
-        currencyTitles.put("USD", "Доллар США");
-        currencyTitles.put("EUR", "Евро");
-        currencyTitles.put("RUB", "Рубль");
+        var currencyTitles = getCurrencyTitlesMap();
         return usersRepository.findUserByLogin(username).map(user->{
             return accountsRepository.findAllByUserId(String.valueOf(user.getId()));
         }).orElse(new ArrayList<>()).stream().map(accountMapper::toDto)
             .peek(accountDto -> accountDto.getCurrency().setTitle(currencyTitles.get(accountDto.getCurrency().getCurrencyCode())))
             .toList();
+    }
+
+    private static HashMap<String, String> getCurrencyTitlesMap() {
+        var currencyTitles = new HashMap<String,String>();
+        currencyTitles.put("USD", "Доллар США");
+        currencyTitles.put("EUR", "Евро");
+        currencyTitles.put("RUB", "Рубль");
+        return currencyTitles;
+    }
+    private static String getCurrencyTitle(String currencyCode) {
+        return getCurrencyTitlesMap().get(currencyCode);
+    }
+
+    public String cashIn(OperationDto operationDto) {
+        var user = usersRepository.findUserByLogin(operationDto.getLogin()).orElse(null);
+        if (user == null) {
+            return "Пользователь " + operationDto.getLogin() + " не найден";
+        }
+        var account = accountsRepository.findByUserIdAndCurrency(String.valueOf(user.getId()), operationDto.getCurrencyCode());
+        if (account == null) {
+            return "Счет в валюте '" + getCurrencyTitle(operationDto.getCurrencyCode()) + "' не открыт для пользователя "
+                    + operationDto.getLogin();
+        }
+        account.setBalance(account.getBalance() + Float.parseFloat(operationDto.getAmount()));
+        accountsRepository.save(account);
+        return "OK";
+    }
+
+    public String cashOut(OperationDto operationDto) {
+        var user = usersRepository.findUserByLogin(operationDto.getLogin()).orElse(null);
+        if (user == null) {
+            return "Пользователь " + operationDto.getLogin() + " не найден";
+        }
+        var account = accountsRepository.findByUserIdAndCurrency(String.valueOf(user.getId()), operationDto.getCurrencyCode());
+        if (account == null) {
+            return "Счет в валюте '" + getCurrencyTitle(operationDto.getCurrencyCode()) + "' не открыт для пользователя "
+                    + operationDto.getLogin();
+        }
+        var amount = Float.parseFloat(operationDto.getAmount());
+        if (account.getBalance() < amount) {
+            return "На счету недостаточно средств для списания - не хватает "
+                    +  (amount - account.getBalance()) + " единиц в валюте: '" + getCurrencyTitle(operationDto.getCurrencyCode()) + "'";
+        }
+        account.setBalance(account.getBalance() - Float.parseFloat(operationDto.getAmount()));
+        accountsRepository.save(account);
+        return "OK";
     }
 }

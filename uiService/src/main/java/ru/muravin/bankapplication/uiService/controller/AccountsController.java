@@ -90,7 +90,7 @@ public class AccountsController {
                             ).flatMap(result -> {
                                 if (!result.getStatusCode().equals("OK")) {
                                     return Mono.just(Rendering.view("main").modelAttribute("_csrf", csrfToken)
-                                            .modelAttribute("cashErrors", List.of("Подозрительная операция: " + result.getStatusMessage()))
+                                            .modelAttribute("cashErrors", List.of(result.getStatusMessage()))
                                             .modelAttribute("login", userDto.getLogin())
                                             .modelAttribute("currencies", currencyDtos)
                                             .modelAttribute("accounts", accountDtos)
