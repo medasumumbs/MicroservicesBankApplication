@@ -106,4 +106,37 @@ public class AccountsController {
             });
         });
     }
+    @PostMapping("/user/{login}/transfer")
+    public Mono<Rendering> transfer(ServerWebExchange exchange, @PathVariable String login) {
+        Mono<CsrfToken> tokenMono = exchange.getAttribute(CsrfToken.class.getName());
+        return currenciesService.getCurrenciesList().collectList().flatMap(currencyDtos -> {
+            return reactiveUserDetailsServiceImpl.getCurrentUser().flatMap(userDto -> {
+                return accountsService.findAllAccountsByUser(userDto.getLogin()).flatMap(accountDtos -> {
+                    return tokenMono.flatMap(csrfToken -> {
+                        return exchange.getFormData().flatMap(form->{
+                            return accountsService.transfer(
+                                    form.getFirst("from_currency"),
+                                    form.getFirst("to_currency"),
+                                    userDto.getLogin(),
+                                    login,
+                                    form.getFirst("value")
+                            ).flatMap(result -> {
+                                if (!result.getStatusCode().equals("OK")) {
+                                    return Mono.just(Rendering.view("main").modelAttribute("_csrf", csrfToken)
+                                            .modelAttribute("transferErrors", List.of(result.getStatusMessage()))
+                                            .modelAttribute("login", userDto.getLogin())
+                                            .modelAttribute("currencies", currencyDtos)
+                                            .modelAttribute("accounts", accountDtos)
+                                            .modelAttribute("birthdate", userDto.getDateOfBirth())
+                                            .modelAttribute("name", userDto.getLastName() + " " + userDto.getFirstName() + " " + userDto.getPatronymic())
+                                            .build());
+                                }
+                                return Mono.just(Rendering.redirectTo("/main").build());
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    }
 }

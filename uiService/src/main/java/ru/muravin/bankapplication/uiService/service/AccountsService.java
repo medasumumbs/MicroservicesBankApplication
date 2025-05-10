@@ -5,11 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.reactive.result.view.Rendering;
 import reactor.core.publisher.Mono;
-import ru.muravin.bankapplication.uiService.dto.AccountDto;
-import ru.muravin.bankapplication.uiService.dto.CashInCashOutDto;
-import ru.muravin.bankapplication.uiService.dto.HttpResponseDto;
-import ru.muravin.bankapplication.uiService.dto.NewAccountDto;
+import ru.muravin.bankapplication.uiService.dto.*;
 
 import java.util.List;
 
@@ -57,6 +55,32 @@ public class AccountsService {
             .post()
             .uri("http://gateway/cashInCashOutService/withdrawCash")
                 .bodyValue(dto)
+            .retrieve().bodyToMono(HttpResponseDto.class)
+            .onErrorResume(
+                    WebClientResponseException.class,
+                    ex -> {
+                        if (ex.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR) {
+                            return Mono.just(new HttpResponseDto("ERROR","Внутренняя ошибка сервера: " + ex.getMessage()));
+                        } else {
+                            return Mono.error(ex);
+                        }
+                    }
+            )
+            .onErrorResume(Exception.class, ex -> Mono.just(new HttpResponseDto("ERROR","Возникла неизвестная ошибка: " + ex.getMessage())));
+    }
+
+    public Mono<HttpResponseDto> transfer(String fromCurrency, String toCurrency, String fromLogin, String toLogin, String value) {
+        var dto = new TransferDto();
+        dto.setAmount(value);
+        dto.setFromAccount(fromLogin);
+        dto.setToAccount(toLogin);
+        dto.setFromCurrency(fromCurrency);
+        dto.setToCurrency(toCurrency);
+        return webClientBuilder
+            .build()
+            .post()
+            .uri("http://gateway/transferService/transfer")
+            .bodyValue(dto)
             .retrieve().bodyToMono(HttpResponseDto.class)
             .onErrorResume(
                     WebClientResponseException.class,

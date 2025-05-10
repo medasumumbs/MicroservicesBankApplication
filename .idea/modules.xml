@@ -14,6 +14,8 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/exchangeGeneratorService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/exchangeGeneratorService.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/notificationsService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/notificationsService.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/notificationsService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/notificationsService.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/transferService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/transferService.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/transferService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/transferService.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/uiService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/uiService.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/uiService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/uiService.test.iml" />
     </modules>

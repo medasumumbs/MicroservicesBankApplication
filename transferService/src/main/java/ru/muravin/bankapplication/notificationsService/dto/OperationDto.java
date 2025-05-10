@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class OperationDto {
-    private String currencyCode;
     private String fromCurrency;
     private String toCurrency;
     private String login;

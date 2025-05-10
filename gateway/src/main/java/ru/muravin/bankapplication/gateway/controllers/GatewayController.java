@@ -44,7 +44,6 @@ public class GatewayController {
     public Mono<ResponseEntity<byte[]>> proxyNotificationServiceList(ProxyExchange<byte[]> proxy) {
         return proxy(proxy);
     }
-
     @PostMapping("/accountsService/register")
     public Mono<ResponseEntity<byte[]>> proxyAccountsService(ProxyExchange<byte[]> proxy) {
         String path = proxy.path("/accountsService");
@@ -102,5 +101,10 @@ public class GatewayController {
         System.out.println(getServiceUrl("antifraudService") + path);
         return proxy.uri(getServiceUrl("antifraudService") + path).post();
     }
-
+    @PostMapping("/transferService/transfer")
+    public Mono<ResponseEntity<byte[]>> proxyTransferService(ProxyExchange<byte[]> proxy) {
+        String path = proxy.path("/transferService");
+        System.out.println(getServiceUrl("transferService") + path);
+        return proxy.uri(getServiceUrl("transferService") + path).post();
+    }
 }
