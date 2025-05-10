@@ -6,8 +6,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import ru.muravin.bankapplication.notificationsService.dto.AccountInfoDto;
+import ru.muravin.bankapplication.notificationsService.dto.CurrencyRateDto;
 import ru.muravin.bankapplication.notificationsService.dto.HttpResponseDto;
 import ru.muravin.bankapplication.notificationsService.dto.OperationDto;
+
+import java.util.List;
 
 @RestController
 @RequestMapping
@@ -21,6 +25,60 @@ public class MainController {
 
     @PostMapping(value = "/transfer")
     public ResponseEntity<HttpResponseDto> transfer(@RequestBody OperationDto transfer) {
+        if (transfer.getToAccount().equals(transfer.getFromAccount()) && transfer.getFromCurrency().equals(transfer.getToCurrency())) {
+            return ResponseEntity.ok(new HttpResponseDto(
+                "ERROR",
+                "Счет получателя и счёт отправителя - один и тот же счёт. Перевод отклонён"
+            ));
+        }
+        var fromAccountInfo = restTemplate.getForObject(
+                "http://gateway/accountsService/getAccountInfo?username="
+                        +transfer.getFromAccount()+"&currency="+transfer.getFromCurrency(),
+                AccountInfoDto.class
+        );
+        if (fromAccountInfo == null) {
+            return ResponseEntity.ok(
+                new HttpResponseDto(
+                    "ERROR",
+                    "У пользователя " + transfer.getFromAccount() + " не открыт счет в выбранной валюте"
+                )
+            );
+        }
+
+        var toAccountInfo = restTemplate.getForObject(
+                "http://gateway/accountsService/getAccountInfo?username="
+                        +transfer.getToAccount()+"&currency="+transfer.getToCurrency(),
+                AccountInfoDto.class
+        );
+        if (toAccountInfo == null) {
+            return ResponseEntity.ok(
+                new HttpResponseDto(
+                    "ERROR",
+                    "У пользователя " + transfer.getToAccount() + " не открыт счет в выбранной валюте"
+                )
+            );
+        }
+        var toAccountNumber = toAccountInfo.getAccountNumber();
+        var fromAccountNumber = fromAccountInfo.getAccountNumber();
+        float finalAmount = 0f;
+        if (transfer.getFromCurrency().equals(transfer.getToCurrency())) {
+            finalAmount = Float.parseFloat(transfer.getAmount());
+        } else {
+            /*
+            * .build().get().uri("http://gateway/currencyExchangeService/rates").retrieve()
+                .bodyToFlux(CurrencyRateDto.class).switchIfEmpty(Flux.empty()).map(currencyRateDto -> {
+                    return CurrencyDto.builder()
+                            .currencyCode(currencyRateDto.getCurrencyCode())
+                            .title(titlesByCodesMap.get(currencyRateDto.getCurrencyCode()))
+                            .build();
+                });
+            * */
+            List<CurrencyRateDto> currencyRates = restTemplate.getForObject("http://gateway/currencyExchangeService/rates",List.class);
+            System.out.println(currencyRates);
+            /// TODO сформировать две суммы - одну для списания с исходного счёта, вторую - для зачисления на целевой счет
+            /// TODO первая сумма = первой сумме, вторая - умножить исходную на курс продажи, разделить на курс покупки
+        }
+
         var antifraudResponse = restTemplate.postForObject(
                 "http://gateway/antifraudService/checkOperations",transfer,HttpResponseDto.class
         );
