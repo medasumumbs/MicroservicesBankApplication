@@ -3,12 +3,11 @@ package ru.muravin.bankapplication.transferService.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import ru.muravin.bankapplication.transferService.dto.AccountInfoDto;
-import ru.muravin.bankapplication.transferService.dto.CurrencyRateDto;
-import ru.muravin.bankapplication.transferService.dto.HttpResponseDto;
-import ru.muravin.bankapplication.transferService.dto.OperationDto;
+import ru.muravin.bankapplication.transferService.dto.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping
@@ -55,17 +54,6 @@ public class MainController {
                 )
             );
         }
-        var toAccountNumber = toAccountInfo.getAccountNumber();
-        var fromAccountNumber = fromAccountInfo.getAccountNumber();
-        float finalAmount = 0f;
-        if (transfer.getFromCurrency().equals(transfer.getToCurrency())) {
-            finalAmount = Float.parseFloat(transfer.getAmount());
-        } else {
-            List<CurrencyRateDto> currencyRates = restTemplate.getForObject("http://gateway/currencyExchangeService/rates",List.class);
-            System.out.println(currencyRates);
-            /// TODO сформировать две суммы - одну для списания с исходного счёта, вторую - для зачисления на целевой счет
-            /// TODO первая сумма = первой сумме, вторая - умножить исходную на курс продажи, разделить на курс покупки
-        }
 
         var antifraudResponse = restTemplate.postForObject(
                 "http://gateway/antifraudService/checkOperations",transfer,HttpResponseDto.class
@@ -73,22 +61,61 @@ public class MainController {
         if (!antifraudResponse.getStatusCode().equals("OK")) {
             return ResponseEntity.ok(antifraudResponse);
         }
-        return ResponseEntity.ok(new HttpResponseDto("OK","Перевод успешен"));
-        /*
+
+        float finalAmountFrom = Float.parseFloat(transfer.getAmount());;
+        float finalAmountTo = 0f;
+        if (transfer.getFromCurrency().equals(transfer.getToCurrency())) {
+            finalAmountTo = finalAmountFrom;
+
+        } else {
+            List<CurrencyRateDto> currencyRates = restTemplate.getForObject(
+                    "http://gateway/currencyExchangeService/rates",List.class);
+            Map<String, CurrencyRateDto> currencyRatesMap = new HashMap();
+            currencyRates.forEach(currencyRateDto -> {
+                currencyRatesMap.put(currencyRateDto.getCurrencyCode(), currencyRateDto);
+            });
+            finalAmountTo =  (currencyRatesMap.get(transfer.getFromCurrency()).getSellRate() * finalAmountFrom)
+                    / (currencyRatesMap.get(transfer.getToCurrency()).getBuyRate());
+        }
+
+        if (finalAmountFrom > fromAccountInfo.getBalance()) {
+            Map<String, String> currencies = new HashMap<>();
+            currencies.put("RUB", "Российский рубль");
+            currencies.put("EUR", "Евро");
+            currencies.put("USD", "Доллар США");
+            return ResponseEntity.ok(
+                new HttpResponseDto(
+                    "ERROR",
+                    "На счёте недостаточно средств для списания. Не хватает: " +
+                            (finalAmountFrom - fromAccountInfo.getBalance()) + " в валюте " +
+                            currencies.get(transfer.getFromCurrency()))
+            );
+        }
+
+        var toAccountNumber = toAccountInfo.getAccountNumber();
+        var fromAccountNumber = fromAccountInfo.getAccountNumber();
+
+        CheckedTransferDto finalRequestDto = new CheckedTransferDto();
+        finalRequestDto.setAmountFrom(finalAmountFrom);
+        finalRequestDto.setAmountTo(finalAmountTo);
+        finalRequestDto.setFromAccountNumber(fromAccountNumber);
+        finalRequestDto.setToAccountNumber(toAccountNumber);
+
         var accountsServiceResponse = restTemplate.postForObject(
-                "http://gateway/accountsService/transfer",transfer,String.class
+                "http://gateway/accountsService/transfer",finalRequestDto,String.class
         );
-        /*
+        if (accountsServiceResponse == null) {
+            return ResponseEntity.ok(
+                new HttpResponseDto("ERROR","Не получен ответ от сервиса исполнения транзакций")
+            );
+        }
         if (!accountsServiceResponse.equals("OK")) {
-            return ResponseEntity.ok(new HttpResponseDto("ERROR", accountsServiceResponse));
+            return ResponseEntity.ok(
+                new HttpResponseDto("ERROR", accountsServiceResponse)
+            );
         }
-        if (action.equals("GET")) {
-            return ResponseEntity.ok(new HttpResponseDto("OK","Деньги успешно списаны"));
-        }
-        if (action.equals("PUT")) {
-            return ResponseEntity.ok(new HttpResponseDto("OK","Деньги успешно зачислены"));
-        }*/
-        //return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok(new HttpResponseDto("OK","Перевод успешен"));
     }
     @ExceptionHandler
     public HttpResponseDto handleException(Exception ex) {
