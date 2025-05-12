@@ -7,6 +7,7 @@ import ru.muravin.bankapplication.accountsService.dto.NewAccountDto;
 import ru.muravin.bankapplication.accountsService.dto.OperationDto;
 import ru.muravin.bankapplication.accountsService.mapper.AccountMapper;
 import ru.muravin.bankapplication.accountsService.model.Account;
+import ru.muravin.bankapplication.accountsService.model.User;
 import ru.muravin.bankapplication.accountsService.repository.AccountsRepository;
 import ru.muravin.bankapplication.accountsService.repository.UsersRepository;
 
@@ -101,5 +102,14 @@ public class AccountsService {
         account.setBalance(account.getBalance() - Float.parseFloat(operationDto.getAmount()));
         accountsRepository.save(account);
         return "OK";
+    }
+
+    public AccountDto findAccountByUsernameAndCurrency(String username, String currency) {
+        return accountMapper.toDto(
+            accountsRepository.findByUserIdAndCurrency(
+                String.valueOf(usersRepository.findUserByLogin(username).map(User::getId).orElse(null)),
+                currency
+            )
+        );
     }
 }

@@ -1,4 +1,4 @@
-package ru.muravin.bankapplication.notificationsService.dto;
+package ru.muravin.bankapplication.transferService.dto;
 
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package ru.muravin.bankapplication.notificationsService.dto;
+package ru.muravin.bankapplication.transferService.dto;
 
 import lombok.Data;
 
@@ -6,6 +6,6 @@ import lombok.Data;
 public class AccountInfoDto {
     private String accountNumber;
     private String login;
-    private String currency;
+    private CurrencyDto currency;
     private Float balance;
 }

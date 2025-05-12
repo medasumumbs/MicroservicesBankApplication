@@ -1,15 +1,12 @@
-package ru.muravin.bankapplication.notificationsService.controller;
+package ru.muravin.bankapplication.transferService.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Mono;
-import ru.muravin.bankapplication.notificationsService.dto.AccountInfoDto;
-import ru.muravin.bankapplication.notificationsService.dto.CurrencyRateDto;
-import ru.muravin.bankapplication.notificationsService.dto.HttpResponseDto;
-import ru.muravin.bankapplication.notificationsService.dto.OperationDto;
+import ru.muravin.bankapplication.transferService.dto.AccountInfoDto;
+import ru.muravin.bankapplication.transferService.dto.CurrencyRateDto;
+import ru.muravin.bankapplication.transferService.dto.HttpResponseDto;
+import ru.muravin.bankapplication.transferService.dto.OperationDto;
 
 import java.util.List;
 

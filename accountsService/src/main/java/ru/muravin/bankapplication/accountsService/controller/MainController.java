@@ -75,4 +75,9 @@ public class MainController {
     public List<UserDto> getUsers() {
         return userService.findAll().stream().peek(userDto -> userDto.setPassword(null)).collect(Collectors.toList());
     }
+
+    @GetMapping("/getAccountInfo")
+    public AccountDto getAccountInfo(@RequestParam String currency, @RequestParam String username) {
+        return accountsService.findAccountByUsernameAndCurrency(username, currency);
+    }
 }

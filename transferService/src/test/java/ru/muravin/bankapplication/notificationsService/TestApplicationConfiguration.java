@@ -4,6 +4,7 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import ru.muravin.bankapplication.transferService.TransferServiceApplication;
 
 @TestConfiguration
 public class TestApplicationConfiguration {
