@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -42,13 +43,12 @@ public class UserService {
     }
 
     public UserDto findByUsername(String username) {
-        return usersRepository.findUserByLogin(username).map(userMapper::toDto).map(dto-> {
-            //dto.setPassword(passwordEncoder.encode(dto.getPassword()));
-            return dto;
-        }).orElse(null);
+        return usersRepository.findUserByLogin(username).map(userMapper::toDto).orElse(null);
     }
 
-
+    public List<UserDto> findAll() {
+        return usersRepository.findAll().stream().map(userMapper::toDto).collect(Collectors.toList());
+    }
 
     public void updateUser(ChangePasswordDto changePasswordDto) {
         var user = usersRepository.findUserByLogin(changePasswordDto.getLogin()).orElseThrow(

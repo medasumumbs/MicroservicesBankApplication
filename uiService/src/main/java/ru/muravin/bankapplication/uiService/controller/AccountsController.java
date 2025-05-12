@@ -17,6 +17,7 @@ import ru.muravin.bankapplication.uiService.service.ReactiveUserDetailsServiceIm
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequestMapping
@@ -59,12 +60,15 @@ public class AccountsController {
                                 if (!response.equals("OK")) {
                                     attributes.put("passwordErrors", response);
                                     model.addAllAttributes(attributes);
-                                    return Mono.just(Rendering.view("main").modelAttributes(attributes)
-                                            .modelAttribute("birthdate", userDto.getDateOfBirth())
-                                            .modelAttribute("accounts", accountDtos)
-                                            .modelAttribute("name", userDto.getLastName() + " " + userDto.getFirstName() + " " + userDto.getPatronymic())
-                                            .modelAttribute("currencies", currencyDtos)
-                                            .build());
+                                    return accountsService.findAllUsers().collectList().flatMap(allUsers -> {
+                                        return Mono.just(Rendering.view("main").modelAttributes(attributes)
+                                                .modelAttribute("birthdate", userDto.getDateOfBirth())
+                                                .modelAttribute("accounts", accountDtos)
+                                                .modelAttribute("name", userDto.getLastName() + " " + userDto.getFirstName() + " " + userDto.getPatronymic())
+                                                .modelAttribute("currencies", currencyDtos)
+                                                .modelAttribute("users", allUsers)
+                                                .build());
+                                    });
                                 }
                                 model.addAllAttributes(attributes);
                                 return Mono.just(Rendering.redirectTo("/main").build());
@@ -89,14 +93,17 @@ public class AccountsController {
                                     userDto.getLogin(), form.getFirst("currency"), form.getFirst("value"), form.getFirst("action")
                             ).flatMap(result -> {
                                 if (!result.getStatusCode().equals("OK")) {
-                                    return Mono.just(Rendering.view("main").modelAttribute("_csrf", csrfToken)
+                                    return accountsService.findAllUsers().collectList().flatMap(allUsers -> {
+                                        return Mono.just(Rendering.view("main").modelAttribute("_csrf", csrfToken)
                                             .modelAttribute("cashErrors", List.of(result.getStatusMessage()))
                                             .modelAttribute("login", userDto.getLogin())
                                             .modelAttribute("currencies", currencyDtos)
                                             .modelAttribute("accounts", accountDtos)
+                                            .modelAttribute("users", allUsers)
                                             .modelAttribute("birthdate", userDto.getDateOfBirth())
                                             .modelAttribute("name", userDto.getLastName() + " " + userDto.getFirstName() + " " + userDto.getPatronymic())
                                             .build());
+                                    });
                                 }
                                 return Mono.just(Rendering.redirectTo("/main").build());
                             });
@@ -107,13 +114,14 @@ public class AccountsController {
         });
     }
     @PostMapping("/user/{login}/transfer")
-    public Mono<Rendering> transfer(ServerWebExchange exchange, @PathVariable String login) {
+    public Mono<Rendering> transfer(ServerWebExchange exchange, @PathVariable(name = "login") String currentUserLogin) {
         Mono<CsrfToken> tokenMono = exchange.getAttribute(CsrfToken.class.getName());
         return currenciesService.getCurrenciesList().collectList().flatMap(currencyDtos -> {
             return reactiveUserDetailsServiceImpl.getCurrentUser().flatMap(userDto -> {
                 return accountsService.findAllAccountsByUser(userDto.getLogin()).flatMap(accountDtos -> {
                     return tokenMono.flatMap(csrfToken -> {
                         return exchange.getFormData().flatMap(form->{
+                            var login = form.getFirst("to_login");
                             return accountsService.transfer(
                                     form.getFirst("from_currency"),
                                     form.getFirst("to_currency"),
@@ -121,15 +129,26 @@ public class AccountsController {
                                     login,
                                     form.getFirst("value")
                             ).flatMap(result -> {
+                                var transferErrorsModelKey = "";
+                                System.out.println("Login from: " + userDto.getLogin() + " to: " + login);
+                                if (Objects.equals(login, userDto.getLogin())) {
+                                    transferErrorsModelKey = "transferErrors";
+                                } else {
+                                    transferErrorsModelKey = "transferOtherErrors";
+                                }
                                 if (!result.getStatusCode().equals("OK")) {
-                                    return Mono.just(Rendering.view("main").modelAttribute("_csrf", csrfToken)
-                                            .modelAttribute("transferErrors", List.of(result.getStatusMessage()))
+                                    String finalTransferErrorsModelKey = transferErrorsModelKey;
+                                    return accountsService.findAllUsers().collectList().flatMap(allUsers -> {
+                                        return Mono.just(Rendering.view("main").modelAttribute("_csrf", csrfToken)
+                                            .modelAttribute(finalTransferErrorsModelKey, List.of(result.getStatusMessage()))
                                             .modelAttribute("login", userDto.getLogin())
                                             .modelAttribute("currencies", currencyDtos)
                                             .modelAttribute("accounts", accountDtos)
+                                            .modelAttribute("users", allUsers)
                                             .modelAttribute("birthdate", userDto.getDateOfBirth())
                                             .modelAttribute("name", userDto.getLastName() + " " + userDto.getFirstName() + " " + userDto.getPatronymic())
                                             .build());
+                                    });
                                 }
                                 return Mono.just(Rendering.redirectTo("/main").build());
                             });

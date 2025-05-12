@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.reactive.result.view.Rendering;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.muravin.bankapplication.uiService.dto.*;
 
@@ -93,5 +94,28 @@ public class AccountsService {
                     }
             )
             .onErrorResume(Exception.class, ex -> Mono.just(new HttpResponseDto("ERROR","Возникла неизвестная ошибка: " + ex.getMessage())));
+    }
+
+    public Flux<UserDto> findAllUsers() {
+        return webClientBuilder
+            .build()
+            .get()
+            .uri("http://gateway/accountsService/users")
+            .retrieve().bodyToFlux(UserDto.class)
+            .onErrorResume(
+                    WebClientResponseException.class,
+                    ex -> {
+                        if (ex.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR) {
+                            System.out.println(ex.getMessage() + ": " + ex.getResponseBodyAsString());
+                            return Flux.empty();
+                        } else {
+                            return Flux.error(ex);
+                        }
+                    }
+            )
+            .onErrorResume(Exception.class, ex -> {
+                System.out.println(ex.getMessage());
+                return Flux.empty();
+            });
     }
 }

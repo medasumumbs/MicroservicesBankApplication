@@ -5,6 +5,7 @@ import ru.muravin.bankapplication.accountsService.dto.*;
 import ru.muravin.bankapplication.accountsService.service.AccountsService;
 import ru.muravin.bankapplication.accountsService.service.UserService;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping
@@ -70,5 +71,8 @@ public class MainController {
         }
         return "Не удалось распознать операцию " + operationDto.getAction();
     }
-
+    @GetMapping("/users")
+    public List<UserDto> getUsers() {
+        return userService.findAll().stream().peek(userDto -> userDto.setPassword(null)).collect(Collectors.toList());
+    }
 }

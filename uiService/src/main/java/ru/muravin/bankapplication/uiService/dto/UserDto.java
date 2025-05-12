@@ -47,4 +47,8 @@ public class UserDto implements UserDetails {
     private String lastName;
     private String patronymic;
     private String dateOfBirth;
+
+    public String getName() {
+        return firstName + " " + lastName;
+    }
 }

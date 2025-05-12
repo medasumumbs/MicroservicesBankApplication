@@ -64,15 +64,6 @@ public class MainController {
         if (transfer.getFromCurrency().equals(transfer.getToCurrency())) {
             finalAmount = Float.parseFloat(transfer.getAmount());
         } else {
-            /*
-            * .build().get().uri("http://gateway/currencyExchangeService/rates").retrieve()
-                .bodyToFlux(CurrencyRateDto.class).switchIfEmpty(Flux.empty()).map(currencyRateDto -> {
-                    return CurrencyDto.builder()
-                            .currencyCode(currencyRateDto.getCurrencyCode())
-                            .title(titlesByCodesMap.get(currencyRateDto.getCurrencyCode()))
-                            .build();
-                });
-            * */
             List<CurrencyRateDto> currencyRates = restTemplate.getForObject("http://gateway/currencyExchangeService/rates",List.class);
             System.out.println(currencyRates);
             /// TODO сформировать две суммы - одну для списания с исходного счёта, вторую - для зачисления на целевой счет
