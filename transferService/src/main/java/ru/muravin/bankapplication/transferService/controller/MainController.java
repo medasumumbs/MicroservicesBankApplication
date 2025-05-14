@@ -6,6 +6,7 @@ import org.springframework.web.client.RestTemplate;
 import ru.muravin.bankapplication.transferService.dto.*;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,26 +57,26 @@ public class MainController {
         }
 
         var antifraudResponse = restTemplate.postForObject(
-                "http://gateway/antifraudService/checkOperations",transfer,HttpResponseDto.class
+            "http://gateway/antifraudService/checkOperations",transfer,HttpResponseDto.class
         );
         if (!antifraudResponse.getStatusCode().equals("OK")) {
             return ResponseEntity.ok(antifraudResponse);
         }
 
-        float finalAmountFrom = Float.parseFloat(transfer.getAmount());;
-        float finalAmountTo = 0f;
+        Double finalAmountFrom = Double.parseDouble(transfer.getAmount());;
+        Double finalAmountTo = 0d;
         if (transfer.getFromCurrency().equals(transfer.getToCurrency())) {
             finalAmountTo = finalAmountFrom;
 
         } else {
-            List<CurrencyRateDto> currencyRates = restTemplate.getForObject(
+            List<LinkedHashMap> currencyRates = restTemplate.getForObject(
                     "http://gateway/currencyExchangeService/rates",List.class);
-            Map<String, CurrencyRateDto> currencyRatesMap = new HashMap();
+            Map<String, LinkedHashMap> currencyRatesMap = new HashMap<>();
             currencyRates.forEach(currencyRateDto -> {
-                currencyRatesMap.put(currencyRateDto.getCurrencyCode(), currencyRateDto);
+                currencyRatesMap.put((String) currencyRateDto.get("currencyCode"), currencyRateDto);
             });
-            finalAmountTo =  (currencyRatesMap.get(transfer.getFromCurrency()).getSellRate() * finalAmountFrom)
-                    / (currencyRatesMap.get(transfer.getToCurrency()).getBuyRate());
+            finalAmountTo =  ((Double)currencyRatesMap.get(transfer.getFromCurrency()).get("sellRate") * finalAmountFrom)
+                    / ((Double)currencyRatesMap.get(transfer.getToCurrency()).get("buyRate"));
         }
 
         if (finalAmountFrom > fromAccountInfo.getBalance()) {

@@ -66,6 +66,10 @@ public class GatewayController {
     public Mono<ResponseEntity<byte[]>> proxyCashInOrCashOut(ProxyExchange<byte[]> proxy) {
         return proxyAccountsService(proxy);
     }
+    @PostMapping("/accountsService/transfer")
+    public Mono<ResponseEntity<byte[]>> proxyAccountsTransfer(ProxyExchange<byte[]> proxy) {
+        return proxyAccountsService(proxy);
+    }
 
     @GetMapping("/accountsService/**")
     public Mono<ResponseEntity<byte[]>> proxyAccountsServiceFindByUsername(ProxyExchange<byte[]> proxy, @RequestParam(required = false) MultiValueMap<String, String> params) {
