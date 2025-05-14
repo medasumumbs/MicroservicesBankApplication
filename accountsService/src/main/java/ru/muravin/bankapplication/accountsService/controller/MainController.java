@@ -80,4 +80,9 @@ public class MainController {
     public AccountDto getAccountInfo(@RequestParam String currency, @RequestParam String username) {
         return accountsService.findAccountByUsernameAndCurrency(username, currency);
     }
+
+    @PostMapping("/transfer")
+    public String transfer(@RequestBody CheckedTransferDto transferDto) {
+        return accountsService.transfer(transferDto);
+    }
 }

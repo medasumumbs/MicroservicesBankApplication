@@ -2,7 +2,9 @@ package ru.muravin.bankapplication.accountsService.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.muravin.bankapplication.accountsService.dto.AccountDto;
+import ru.muravin.bankapplication.accountsService.dto.CheckedTransferDto;
 import ru.muravin.bankapplication.accountsService.dto.NewAccountDto;
 import ru.muravin.bankapplication.accountsService.dto.OperationDto;
 import ru.muravin.bankapplication.accountsService.mapper.AccountMapper;
@@ -111,5 +113,25 @@ public class AccountsService {
                 currency
             )
         );
+    }
+
+    @Transactional
+    public String transfer(CheckedTransferDto transferDto) {
+        var accountFrom = accountsRepository.findById(Long.valueOf(transferDto.getFromAccountNumber())).orElse(null);
+        if (accountFrom == null) {
+            return "Не найден счет № " + transferDto.getFromAccountNumber() + "; Счет был закрыт.";
+        }
+        if (accountFrom.getBalance() < transferDto.getAmountFrom()) {
+            return "Недостаточно средств для перевода на счету № " + transferDto.getFromAccountNumber();
+        }
+        var accountTo = accountsRepository.findById(Long.valueOf(transferDto.getToAccountNumber())).orElse(null);
+        if (accountTo == null) {
+            return "Не найден счет № " + transferDto.getToAccountNumber() + "; Счет был закрыт";
+        }
+        accountFrom.setBalance(accountFrom.getBalance() - Float.parseFloat(String.valueOf(transferDto.getAmountFrom())));
+        accountsRepository.save(accountFrom);
+        accountTo.setBalance(accountTo.getBalance() + Float.parseFloat(String.valueOf(transferDto.getAmountTo())));
+        accountsRepository.save(accountTo);
+        return "OK";
     }
 }
