@@ -25,6 +25,10 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    //implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.cloud:spring-cloud-starter-gateway:4.2.2")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+
     // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-gateway-webflux
     implementation("org.springframework.cloud:spring-cloud-gateway-webflux:4.2.2")
     implementation("org.springframework.cloud:spring-cloud-starter-config:4.2.2")  // Для взаимодействия с Config Server

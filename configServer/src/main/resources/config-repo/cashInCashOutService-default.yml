@@ -4,6 +4,11 @@ spring:
     port: 5672
     username: guest
     password: guest
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:7980/realms/demo/protocol/openid-connect/certs
 management:
   endpoints:
     web:
