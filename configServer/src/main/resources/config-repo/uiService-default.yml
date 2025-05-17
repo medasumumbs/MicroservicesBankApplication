@@ -4,6 +4,9 @@ spring:
     port: 5672
     username: guest
     password: guest
+  webflux:
+    session:
+      timeout: 1800s # 30 минут
 management:
   endpoints:
     web:

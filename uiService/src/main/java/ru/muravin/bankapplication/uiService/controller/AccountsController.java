@@ -1,12 +1,15 @@
 package ru.muravin.bankapplication.uiService.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.server.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.result.view.Rendering;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -25,12 +28,20 @@ public class AccountsController {
     private final AccountsService accountsService;
     private final ReactiveUserDetailsServiceImpl reactiveUserDetailsServiceImpl;
     private final CurrenciesService currenciesService;
+    private final WebClient.Builder webClientBuilder;
 
     @Autowired
-    public AccountsController(AccountsService accountsService, ReactiveUserDetailsServiceImpl reactiveUserDetailsServiceImpl, CurrenciesService currenciesService) {
+    public AccountsController(AccountsService accountsService, ReactiveUserDetailsServiceImpl reactiveUserDetailsServiceImpl, CurrenciesService currenciesService, WebClient.Builder webClientBuilder) {
         this.accountsService = accountsService;
         this.reactiveUserDetailsServiceImpl = reactiveUserDetailsServiceImpl;
         this.currenciesService = currenciesService;
+        this.webClientBuilder = webClientBuilder;
+    }
+
+    @GetMapping("/currencyExchangeService/rates")
+    public Mono<ResponseEntity<byte[]>> proxyCurrencyExchangeGetRates() {
+        return webClientBuilder.build().get().uri("http://gateway/currencyExchangeService/rates").retrieve()
+                .bodyToMono(String.class).map(String::getBytes).map(ResponseEntity::ok);
     }
 
     @PostMapping("/user/{login}/accounts")

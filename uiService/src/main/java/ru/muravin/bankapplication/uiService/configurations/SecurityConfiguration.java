@@ -20,7 +20,10 @@ import org.springframework.security.web.server.authentication.AuthenticationWebF
 import org.springframework.security.web.server.authentication.ServerHttpBasicAuthenticationConverter;
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
 import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
+import org.springframework.security.web.server.csrf.CsrfWebFilter;
 import org.springframework.web.server.WebSession;
+import org.springframework.web.server.session.CookieWebSessionIdResolver;
+import org.springframework.web.server.session.WebSessionIdResolver;
 import reactor.core.publisher.Mono;
 import ru.muravin.bankapplication.uiService.service.ReactiveUserDetailsServiceImpl;
 
@@ -74,7 +77,26 @@ public class SecurityConfiguration {
                             .pathMatchers("/logout", "/login").permitAll()
                             .anyExchange().authenticated();
                 })
+                //.addFilterAt(csrfWebFilter(), SecurityWebFiltersOrder.CSRF)
+                //.csrf(csrfSpec -> csrfSpec.disable())
                 .securityContextRepository(new WebSessionServerSecurityContextRepository())
                 .build();
     }
+
+    /*@Bean
+    public CsrfWebFilter csrfWebFilter() {
+        return new CsrfWebFilter();
+    }
+    @Bean
+    public WebSessionIdResolver webSessionIdResolver() {
+        CookieWebSessionIdResolver resolver = new CookieWebSessionIdResolver();
+        resolver.setCookieName("SESSION"); // можно переименовать, если нужно
+        resolver.addCookieInitializer((builder) -> {
+            builder.path("/"); // путь
+            builder.httpOnly(true);
+            builder.secure(false); // true, если HTTPS
+            builder.sameSite("None"); // или "None" для кросс-доменных запросов
+        });
+        return resolver;
+    }*/
 }
