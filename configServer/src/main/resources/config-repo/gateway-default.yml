@@ -1,13 +1,13 @@
 spring:
-  #cloud:
-  #  gateway:
-  #    routes:
-  #      - id: to-service-cashInCashOut
-  #        uri: http://localhost:8095       # адрес сервиса B
-  #        predicates:
-  #          - Path=/withdrawCash
-  #        filters:
-  #          - TokenRelay=gateway-client      # используем TokenRelay с нашим clientRegistrationId
+  cloud:
+    gateway:
+      routes:
+        - id: all
+          uri: http:/**    # адрес сервиса B
+          predicates:
+            - Path=/**
+          filters:
+            - TokenRelay=gateway-client      # используем TokenRelay с нашим clientRegistrationId
   security:
     oauth2:
       client:
@@ -17,8 +17,8 @@ spring:
         registration:
           gateway-client:
             provider: keycloak
-            client-id: gateway_client_id        # ID зарегистрированного клиента
-            client-secret: super-secret-password
+            client-id: gateway-client        # ID зарегистрированного клиента
+            client-secret: 5sHK5bQy8UTTX7ZqQGmJsQmm5yD9TeDU
             scope: resource.read
             authorization-grant-type: client_credentials
 management:

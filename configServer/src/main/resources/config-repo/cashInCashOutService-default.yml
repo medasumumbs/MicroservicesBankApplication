@@ -4,11 +4,15 @@ spring:
     port: 5672
     username: guest
     password: guest
+  main:
+    allow-bean-definition-overriding:
+      true
   security:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:7980/realms/demo/protocol/openid-connect/certs
+          issuer-uri: http://localhost:7980/realms/master
+          #jwk-set-uri: http://localhost:7980/realms/demo/protocol/openid-connect/certs
 management:
   endpoints:
     web:

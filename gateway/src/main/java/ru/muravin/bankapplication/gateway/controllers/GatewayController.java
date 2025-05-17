@@ -9,6 +9,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
+import ru.muravin.bankapplication.gateway.services.SecurityTokenService;
 
 import java.util.List;
 
@@ -17,6 +18,8 @@ public class GatewayController {
 
     @Autowired
     private DiscoveryClient discoveryClient;
+    @Autowired
+    private SecurityTokenService securityTokenService;
 
     public String getServiceUrl(String serviceId) {
         List<ServiceInstance> instances = discoveryClient.getInstances(serviceId);
@@ -94,6 +97,8 @@ public class GatewayController {
 
     @PostMapping("/cashInCashOutService/**")
     public Mono<ResponseEntity<byte[]>> proxyCashInCashOutService(ProxyExchange<byte[]> proxy, @RequestParam(required = false) MultiValueMap<String, String> params) {
+        var tokenMono = securityTokenService.getBearerToken().block();
+        System.out.println("TOKEN: " + tokenMono);
         String path = proxy.path("/cashInCashOutService");
         System.out.println(getServiceUrl("cashInCashOutService") + path);
         return proxy.uri(getServiceUrl("cashInCashOutService") + path).post();
