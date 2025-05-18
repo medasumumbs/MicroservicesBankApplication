@@ -50,9 +50,7 @@ public class GatewayController {
     }
     @PostMapping("/accountsService/register")
     public Mono<ResponseEntity<byte[]>> proxyAccountsService(ProxyExchange<byte[]> proxy) {
-        String path = proxy.path("/accountsService");
-        System.out.println(getServiceUrl("accountsService") + path);
-        return proxy.uri(getServiceUrl("accountsService") + path).post();
+        return postWithAuthorization(proxy,"accountsService");
     }
     @PostMapping("/accountsService/updateUserInfo")
     public Mono<ResponseEntity<byte[]>> proxyAccountsServiceUpdateUserInfo(ProxyExchange<byte[]> proxy) {
@@ -77,10 +75,20 @@ public class GatewayController {
 
     @GetMapping("/accountsService/**")
     public Mono<ResponseEntity<byte[]>> proxyAccountsServiceFindByUsername(ProxyExchange<byte[]> proxy, @RequestParam(required = false) MultiValueMap<String, String> params) {
-        String path = proxy.path("/accountsService");
-        System.out.println(getServiceUrl("accountsService") + path + params.getFirst("username"));
-        var uri = UriComponentsBuilder.fromHttpUrl(getServiceUrl("accountsService") + path).queryParams(params).build();
-        return proxy.uri(uri.toUriString()).get();
+        return getWithAuthorization(proxy, params, "accountsService");
+    }
+
+    private Mono<ResponseEntity<byte[]>> getWithAuthorization(ProxyExchange<byte[]> proxy,
+                                                              MultiValueMap<String, String> params,
+                                                              String serviceName) {
+        var token = securityTokenService.getBearerToken().block();
+        String path = proxy.path("/" + serviceName);
+        var uri = UriComponentsBuilder.fromHttpUrl(getServiceUrl(serviceName) + path).queryParams(params).build();
+        System.out.println("Request URI: " + uri.toString());
+        return proxy.uri(uri.toUriString())
+                .header("Authorization", "Bearer " + token)
+                .sensitive()
+                .get();
     }
 
     @PostMapping("/currencyExchangeService/rates")
@@ -98,12 +106,16 @@ public class GatewayController {
 
     @PostMapping("/cashInCashOutService/**")
     public Mono<ResponseEntity<byte[]>> proxyCashInCashOutService(ProxyExchange<byte[]> proxy, @RequestParam(required = false) MultiValueMap<String, String> params) {
+        return postWithAuthorization(proxy,"cashInCashOutService");
+    }
+
+    private Mono<ResponseEntity<byte[]>> postWithAuthorization(ProxyExchange<byte[]> proxy, String serviceName) {
         var token = securityTokenService.getBearerToken().block();
         System.out.println("TOKEN: " + token);
-        String path = proxy.path("/cashInCashOutService");
-        System.out.println(getServiceUrl("cashInCashOutService") + path);
-        return proxy.uri(getServiceUrl("cashInCashOutService") + path)
-                .header("Authorization","Bearer "+token)
+        String path = proxy.path("/"+serviceName);
+        System.out.println(getServiceUrl(serviceName) + path);
+        return proxy.uri(getServiceUrl(serviceName) + path)
+                .header("Authorization", "Bearer " + token)
                 .sensitive()
                 .post();
     }
