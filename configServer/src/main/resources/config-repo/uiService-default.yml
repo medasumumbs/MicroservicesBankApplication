@@ -1,3 +1,10 @@
+cashInCashOutService:
+  fullUrl: http://172.21.48.1:8095
+  client: cashInCashOutService
+  secret: F3PnrhRuMtxh30N67vgxAkOJqY3KYpwW
+  scope: profile
+  registrationId: cashInCashOutService
+  tokenUri: http://localhost:7980/realms/master/protocol/openid-connect/token
 spring:
   rabbitmq:
     host: localhost

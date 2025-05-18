@@ -1,5 +1,6 @@
 package ru.muravin.bankapplication.uiService.service;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,6 +20,11 @@ public class CurrenciesService {
 
     public CurrenciesService(WebClient.Builder webClientBuilder) {
         this.webClientBuilder = webClientBuilder;
+    }
+
+    public Mono<ResponseEntity<byte[]>> getRates() {
+       return webClientBuilder.build().get().uri("http://gateway/currencyExchangeService/rates").retrieve()
+                .bodyToMono(String.class).map(String::getBytes).map(ResponseEntity::ok);
     }
 
     public Mono<UserDetails> findByUsername(String username) {

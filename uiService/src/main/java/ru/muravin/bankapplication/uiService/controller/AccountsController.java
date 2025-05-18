@@ -28,20 +28,17 @@ public class AccountsController {
     private final AccountsService accountsService;
     private final ReactiveUserDetailsServiceImpl reactiveUserDetailsServiceImpl;
     private final CurrenciesService currenciesService;
-    private final WebClient.Builder webClientBuilder;
 
     @Autowired
-    public AccountsController(AccountsService accountsService, ReactiveUserDetailsServiceImpl reactiveUserDetailsServiceImpl, CurrenciesService currenciesService, WebClient.Builder webClientBuilder) {
+    public AccountsController(AccountsService accountsService, ReactiveUserDetailsServiceImpl reactiveUserDetailsServiceImpl, CurrenciesService currenciesService) {
         this.accountsService = accountsService;
         this.reactiveUserDetailsServiceImpl = reactiveUserDetailsServiceImpl;
         this.currenciesService = currenciesService;
-        this.webClientBuilder = webClientBuilder;
     }
 
     @GetMapping("/currencyExchangeService/rates")
     public Mono<ResponseEntity<byte[]>> proxyCurrencyExchangeGetRates() {
-        return webClientBuilder.build().get().uri("http://gateway/currencyExchangeService/rates").retrieve()
-                .bodyToMono(String.class).map(String::getBytes).map(ResponseEntity::ok);
+        return currenciesService.getRates();
     }
 
     @PostMapping("/user/{login}/accounts")
