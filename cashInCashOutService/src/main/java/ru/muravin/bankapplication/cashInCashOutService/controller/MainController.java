@@ -5,15 +5,18 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import ru.muravin.bankapplication.cashInCashOutService.dto.HttpResponseDto;
 import ru.muravin.bankapplication.cashInCashOutService.dto.OperationDto;
+import ru.muravin.bankapplication.cashInCashOutService.service.NotificationsServiceClient;
 
 @RestController
 @RequestMapping
 public class MainController {
 
     private final RestTemplate restTemplate;
+    private final NotificationsServiceClient notificationsServiceClient;
 
-    public MainController(RestTemplate restTemplate) {
+    public MainController(RestTemplate restTemplate, NotificationsServiceClient notificationsServiceClient) {
         this.restTemplate = restTemplate;
+        this.notificationsServiceClient = notificationsServiceClient;
     }
 
     @PostMapping(value = "/withdrawCash") //username="+login+"&currency="+currency+"&amount="+amount
@@ -38,6 +41,7 @@ public class MainController {
         if (action.equals("PUT")) {
             return ResponseEntity.ok(new HttpResponseDto("OK","Деньги успешно зачислены"));
         }
+        notificationsServiceClient.sendNotification("CashInOrCashOut " + cashInCashOutDto);
         return ResponseEntity.notFound().build();
     }
     @ExceptionHandler
