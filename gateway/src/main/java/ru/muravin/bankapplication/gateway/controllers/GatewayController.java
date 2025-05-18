@@ -30,6 +30,19 @@ public class GatewayController {
         return null;
     }
 
+    private Mono<ResponseEntity<byte[]>> getWithAuthorization(ProxyExchange<byte[]> proxy,
+                                                              MultiValueMap<String, String> params,
+                                                              String serviceName) {
+        var token = securityTokenService.getBearerToken().block();
+        String path = proxy.path("/" + serviceName);
+        var uri = UriComponentsBuilder.fromHttpUrl(getServiceUrl(serviceName) + path).queryParams(params).build();
+        System.out.println("Request URI: " + uri.toString());
+        return proxy.uri(uri.toUriString())
+                .header("Authorization", "Bearer " + token)
+                .sensitive()
+                .get();
+    }
+
     @PostMapping("/notificationsService/notifications")
     public Mono<ResponseEntity<byte[]>> proxyNotificationsPost(ProxyExchange<byte[]> proxy) {
         String path = proxy.path("/notificationsService");
@@ -76,19 +89,6 @@ public class GatewayController {
     @GetMapping("/accountsService/**")
     public Mono<ResponseEntity<byte[]>> proxyAccountsServiceFindByUsername(ProxyExchange<byte[]> proxy, @RequestParam(required = false) MultiValueMap<String, String> params) {
         return getWithAuthorization(proxy, params, "accountsService");
-    }
-
-    private Mono<ResponseEntity<byte[]>> getWithAuthorization(ProxyExchange<byte[]> proxy,
-                                                              MultiValueMap<String, String> params,
-                                                              String serviceName) {
-        var token = securityTokenService.getBearerToken().block();
-        String path = proxy.path("/" + serviceName);
-        var uri = UriComponentsBuilder.fromHttpUrl(getServiceUrl(serviceName) + path).queryParams(params).build();
-        System.out.println("Request URI: " + uri.toString());
-        return proxy.uri(uri.toUriString())
-                .header("Authorization", "Bearer " + token)
-                .sensitive()
-                .get();
     }
 
     @PostMapping("/currencyExchangeService/rates")

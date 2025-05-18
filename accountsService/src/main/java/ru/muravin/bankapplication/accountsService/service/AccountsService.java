@@ -23,12 +23,14 @@ public class AccountsService {
     private final UsersRepository usersRepository;
     private final AccountMapper accountMapper;
     private final AccountsRepository accountsRepository;
+    private final NotificationsServiceClient notificationsServiceClient;
 
     @Autowired
-    public AccountsService(AccountsRepository accountsRepository, UsersRepository usersRepository, AccountMapper accountMapper) {
+    public AccountsService(AccountsRepository accountsRepository, UsersRepository usersRepository, AccountMapper accountMapper, NotificationsServiceClient notificationsServiceClient) {
         this.accountsRepository = accountsRepository;
         this.usersRepository = usersRepository;
         this.accountMapper = accountMapper;
+        this.notificationsServiceClient = notificationsServiceClient;
     }
 
     public String addAccount(NewAccountDto newAccountDto) {
@@ -48,6 +50,7 @@ public class AccountsService {
         account.setCreatedAt(LocalDateTime.now());
         account.setUserId(String.valueOf(user.getId()));
         accountsRepository.save(account);
+        notificationsServiceClient.sendNotification("Registered user " + newAccountDto.getLogin());
         return "OK";
     }
 
@@ -83,6 +86,9 @@ public class AccountsService {
         }
         account.setBalance(account.getBalance() + Float.parseFloat(operationDto.getAmount()));
         accountsRepository.save(account);
+        notificationsServiceClient.sendNotification(
+            "Cash In " + operationDto.getLogin() + " sum = " + operationDto.getAmount()
+        );
         return "OK";
     }
 
@@ -103,6 +109,9 @@ public class AccountsService {
         }
         account.setBalance(account.getBalance() - Float.parseFloat(operationDto.getAmount()));
         accountsRepository.save(account);
+        notificationsServiceClient.sendNotification(
+                "Cash Out " + operationDto.getLogin() + " sum = " + operationDto.getAmount()
+        );
         return "OK";
     }
 
@@ -132,6 +141,7 @@ public class AccountsService {
         accountsRepository.save(accountFrom);
         accountTo.setBalance(accountTo.getBalance() + Float.parseFloat(String.valueOf(transferDto.getAmountTo())));
         accountsRepository.save(accountTo);
+        notificationsServiceClient.sendNotification("Transfer: " + transferDto);
         return "OK";
     }
 }

@@ -1,4 +1,4 @@
-package ru.muravin.bankapplication.notificationsService.configuration;
+package ru.muravin.bankapplication.cashInCashOutService.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

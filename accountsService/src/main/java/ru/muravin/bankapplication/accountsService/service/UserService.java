@@ -3,7 +3,6 @@ package ru.muravin.bankapplication.accountsService.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.muravin.bankapplication.accountsService.dto.AccountDto;
 import ru.muravin.bankapplication.accountsService.dto.ChangePasswordDto;
 import ru.muravin.bankapplication.accountsService.dto.UserDto;
 import ru.muravin.bankapplication.accountsService.mapper.AccountMapper;
@@ -12,17 +11,14 @@ import ru.muravin.bankapplication.accountsService.model.User;
 import ru.muravin.bankapplication.accountsService.repository.AccountsRepository;
 import ru.muravin.bankapplication.accountsService.repository.UsersRepository;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,14 +28,16 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final AccountsRepository accountsRepository;
     private final AccountMapper accountMapper;
+    private final NotificationsServiceClient notificationsServiceClient;
 
     @Autowired
-    public UserService(UserMapper userMapper, UsersRepository usersRepository, PasswordEncoder passwordEncoder, AccountsRepository accountsRepository, AccountMapper accountMapper) {
+    public UserService(UserMapper userMapper, UsersRepository usersRepository, PasswordEncoder passwordEncoder, AccountsRepository accountsRepository, AccountMapper accountMapper, NotificationsServiceClient notificationsServiceClient) {
         this.userMapper = userMapper;
         this.usersRepository = usersRepository;
         this.passwordEncoder = passwordEncoder;
         this.accountsRepository = accountsRepository;
         this.accountMapper = accountMapper;
+        this.notificationsServiceClient = notificationsServiceClient;
     }
 
     public UserDto findByUsername(String username) {
@@ -56,6 +54,7 @@ public class UserService {
         );
         user.setPassword(changePasswordDto.getNewPassword());
         usersRepository.save(user);
+        notificationsServiceClient.sendNotification("Password updated for user " + user.getLogin());
     }
 
     public Long saveUser(UserDto userDto) {
@@ -70,6 +69,7 @@ public class UserService {
             throw new RuntimeException("Пользователь с логином " + userDto.getLogin() + " уже зарегистрирован");
         }
         User savedUser = usersRepository.save(user);
+        notificationsServiceClient.sendNotification("User registered " + userDto);
         return savedUser.getId();
     }
 
@@ -86,6 +86,8 @@ public class UserService {
         user.setName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setPatronymic(userDto.getPatronymic());
+        notificationsServiceClient.sendNotification("User information updated "
+                + user.toString() + " -> " + userDto.toString());
         usersRepository.save(user);
 
     }

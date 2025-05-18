@@ -1,4 +1,4 @@
-package ru.muravin.bankapplication.notificationsService;
+package ru.muravin.bankapplication.cashInCashOutService;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
