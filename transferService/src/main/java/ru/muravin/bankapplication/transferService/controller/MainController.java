@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import ru.muravin.bankapplication.transferService.dto.*;
+import ru.muravin.bankapplication.transferService.service.NotificationsServiceClient;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -15,9 +16,11 @@ import java.util.Map;
 public class MainController {
 
     private final RestTemplate restTemplate;
+    private final NotificationsServiceClient notificationsServiceClient;
 
-    public MainController(RestTemplate restTemplate) {
+    public MainController(RestTemplate restTemplate, NotificationsServiceClient notificationsServiceClient) {
         this.restTemplate = restTemplate;
+        this.notificationsServiceClient = notificationsServiceClient;
     }
 
     @PostMapping(value = "/transfer")
@@ -115,6 +118,8 @@ public class MainController {
                 new HttpResponseDto("ERROR", accountsServiceResponse)
             );
         }
+
+        notificationsServiceClient.sendNotification("Transfer Successful " + transfer);
 
         return ResponseEntity.ok(new HttpResponseDto("OK","Перевод успешен"));
     }
