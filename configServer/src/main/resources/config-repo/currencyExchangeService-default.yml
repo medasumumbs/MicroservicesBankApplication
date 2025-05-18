@@ -9,6 +9,11 @@ spring:
     url: jdbc:postgresql://localhost:5433/notifications
     username: myuser
     password: secret
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:7980/realms/master
   jpa:
     hibernate:
       ddl-auto: update

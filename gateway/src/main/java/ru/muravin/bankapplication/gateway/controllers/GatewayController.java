@@ -30,6 +30,17 @@ public class GatewayController {
         return null;
     }
 
+    private Mono<ResponseEntity<byte[]>> postWithAuthorization(ProxyExchange<byte[]> proxy, String serviceName) {
+        var token = securityTokenService.getBearerToken().block();
+        System.out.println("TOKEN: " + token);
+        String path = proxy.path("/"+serviceName);
+        System.out.println(getServiceUrl(serviceName) + path);
+        return proxy.uri(getServiceUrl(serviceName) + path)
+                .header("Authorization", "Bearer " + token)
+                .sensitive()
+                .post();
+    }
+
     private Mono<ResponseEntity<byte[]>> getWithAuthorization(ProxyExchange<byte[]> proxy,
                                                               MultiValueMap<String, String> params,
                                                               String serviceName) {
@@ -89,31 +100,16 @@ public class GatewayController {
 
     @PostMapping("/currencyExchangeService/rates")
     public Mono<ResponseEntity<byte[]>> proxyCurrencyExchange(ProxyExchange<byte[]> proxy) {
-        String path = proxy.path("/currencyExchangeService");
-        System.out.println(getServiceUrl("currencyExchangeService") + path);
-        return proxy.uri(getServiceUrl("currencyExchangeService") + path).post();
+        return postWithAuthorization(proxy, "currencyExchangeService");
     }
     @GetMapping("/currencyExchangeService/rates")
     public Mono<ResponseEntity<byte[]>> proxyCurrencyExchangeGetRates(ProxyExchange<byte[]> proxy) {
-        String path = proxy.path("/currencyExchangeService");
-        System.out.println(getServiceUrl("currencyExchangeService") + path);
-        return proxy.uri(getServiceUrl("currencyExchangeService") + path).get();
+        return getWithAuthorization(proxy, null,"currencyExchangeService");
     }
 
     @PostMapping("/cashInCashOutService/**")
     public Mono<ResponseEntity<byte[]>> proxyCashInCashOutService(ProxyExchange<byte[]> proxy, @RequestParam(required = false) MultiValueMap<String, String> params) {
         return postWithAuthorization(proxy,"cashInCashOutService");
-    }
-
-    private Mono<ResponseEntity<byte[]>> postWithAuthorization(ProxyExchange<byte[]> proxy, String serviceName) {
-        var token = securityTokenService.getBearerToken().block();
-        System.out.println("TOKEN: " + token);
-        String path = proxy.path("/"+serviceName);
-        System.out.println(getServiceUrl(serviceName) + path);
-        return proxy.uri(getServiceUrl(serviceName) + path)
-                .header("Authorization", "Bearer " + token)
-                .sensitive()
-                .post();
     }
 
     @PostMapping("/antifraudService/**")
