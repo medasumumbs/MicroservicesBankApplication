@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.gateway.webflux.ProxyExchange;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -97,11 +98,14 @@ public class GatewayController {
 
     @PostMapping("/cashInCashOutService/**")
     public Mono<ResponseEntity<byte[]>> proxyCashInCashOutService(ProxyExchange<byte[]> proxy, @RequestParam(required = false) MultiValueMap<String, String> params) {
-        var tokenMono = securityTokenService.getBearerToken().block();
-        System.out.println("TOKEN: " + tokenMono);
+        var token = securityTokenService.getBearerToken().block();
+        System.out.println("TOKEN: " + token);
         String path = proxy.path("/cashInCashOutService");
         System.out.println(getServiceUrl("cashInCashOutService") + path);
-        return proxy.uri(getServiceUrl("cashInCashOutService") + path).post();
+        return proxy.uri(getServiceUrl("cashInCashOutService") + path)
+                .header("Authorization","Bearer "+token)
+                .sensitive()
+                .post();
     }
 
     @PostMapping("/antifraudService/**")

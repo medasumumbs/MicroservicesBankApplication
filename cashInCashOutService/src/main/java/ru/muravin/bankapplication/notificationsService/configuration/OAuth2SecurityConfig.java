@@ -1,79 +1,67 @@
 package ru.muravin.bankapplication.notificationsService.configuration;
 
-
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
-import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
-import org.springframework.security.oauth2.jwt.ReactiveJwtDecoders;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtDecoders;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
-import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverter;
-import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.beans.factory.annotation.Value;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import org.springframework.security.web.SecurityFilterChain;
 
+import java.util.Collection;
 import java.util.List;
-
+import java.util.stream.Collectors;
 
 @Configuration
-@EnableWebFluxSecurity
+@EnableWebSecurity
+@EnableMethodSecurity
 public class OAuth2SecurityConfig {
 
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
-    private String JWTIssuerUri;
+    private String jwtIssuerUri;
 
     @Bean
-    public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http,
-                                                      Converter<Jwt, Mono<AbstractAuthenticationToken>> jwtAuthenticationConverter) {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   JwtAuthenticationConverter jwtAuthenticationConverter) throws Exception {
         return http
-                .authorizeExchange(exchanges -> exchanges.anyExchange().authenticated())
-                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+                .csrf(csrf -> csrf.disable())
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwtSpec -> jwtSpec
+                        .jwt(jwt -> jwt
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter)
                         )
-                ).build();
+                )
+                .build();
     }
+
     @Bean
-    public Converter<Jwt, Mono<AbstractAuthenticationToken>> jwtAuthenticationConverter() {
-        ReactiveJwtAuthenticationConverter jwtAuthenticationConverter = new ReactiveJwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter((jwt) -> {
-            var rolesList = (List<String>)jwt.getClaim("roles");
-            if (rolesList == null || rolesList.isEmpty()) {
-                return Flux.empty();
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+        converter.setJwtGrantedAuthoritiesConverter(jwt -> {
+            System.out.println(jwt.getClaims());
+            List<String> roles = jwt.getClaim("roles");
+            if (roles == null || roles.isEmpty()) {
+                return List.of();
             }
-            var authorityList = rolesList.stream().map(role->new SimpleGrantedAuthority("ROLE_"+role)).toList();
-            return Flux.fromIterable(authorityList);
+            return roles.stream()
+                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                    .collect(Collectors.toList());
         });
-        return jwtAuthenticationConverter;
+        return converter;
     }
-
 
     @Bean
-    public ReactiveJwtDecoder jwtDecoder() {
-        return ReactiveJwtDecoders.fromIssuerLocation(JWTIssuerUri);
+    public JwtDecoder jwtDecoder() {
+        return JwtDecoders.fromIssuerLocation(jwtIssuerUri);
     }
-/*        @Bean
-        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-            http
-                    .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
-                    .authorizeHttpRequests(authorizeRequests ->
-                            authorizeRequests
-                                    .anyRequest().authenticated() // All other requests need authentication
-                    )
-                    .oauth2ResourceServer(oauth2 ->
-                            oauth2.jwt(Customizer.withDefaults()) // Enable JWT-based authentication for the resource server
-                    );
-            return http.build();
-        }*/
-    }
+}
