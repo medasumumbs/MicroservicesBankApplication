@@ -114,14 +114,10 @@ public class GatewayController {
 
     @PostMapping("/antifraudService/**")
     public Mono<ResponseEntity<byte[]>> proxyAntifraudService(ProxyExchange<byte[]> proxy, @RequestParam(required = false) MultiValueMap<String, String> params) {
-        String path = proxy.path("/antifraudService");
-        System.out.println(getServiceUrl("antifraudService") + path);
-        return proxy.uri(getServiceUrl("antifraudService") + path).post();
+        return postWithAuthorization(proxy,"antifraudService");
     }
     @PostMapping("/transferService/transfer")
     public Mono<ResponseEntity<byte[]>> proxyTransferService(ProxyExchange<byte[]> proxy) {
-        String path = proxy.path("/transferService");
-        System.out.println(getServiceUrl("transferService") + path);
-        return proxy.uri(getServiceUrl("transferService") + path).post();
+        return postWithAuthorization(proxy, "transferService");
     }
 }
