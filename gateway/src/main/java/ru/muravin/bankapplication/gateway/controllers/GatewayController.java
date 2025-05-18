@@ -45,21 +45,17 @@ public class GatewayController {
 
     @PostMapping("/notificationsService/notifications")
     public Mono<ResponseEntity<byte[]>> proxyNotificationsPost(ProxyExchange<byte[]> proxy) {
-        String path = proxy.path("/notificationsService");
-        System.out.println(getServiceUrl("notificationsService") + path);
-        return proxy.uri(getServiceUrl("notificationsService") + path).post();
+        return postWithAuthorization(proxy, "notificationsService");
     }
 
     @GetMapping("/notificationsService/texts")
     public Mono<ResponseEntity<byte[]>> proxy(ProxyExchange<byte[]> proxy) {
-        String path = proxy.path("/notificationsService");
-        System.out.println(getServiceUrl("notificationsService") + path);
-        return proxy.uri(getServiceUrl("notificationsService") + path).get();
+        return getWithAuthorization(proxy, null,"notificationsService");
     }
 
     @GetMapping("/notificationsService/discoveredServicesList")
     public Mono<ResponseEntity<byte[]>> proxyNotificationServiceList(ProxyExchange<byte[]> proxy) {
-        return proxy(proxy);
+        return getWithAuthorization(proxy, null,"notificationsService");
     }
     @PostMapping("/accountsService/register")
     public Mono<ResponseEntity<byte[]>> proxyAccountsService(ProxyExchange<byte[]> proxy) {
