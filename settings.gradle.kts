@@ -1,0 +1,12 @@
+rootProject.name = "bankMicroservicesApplication"
+include("accountsService")
+include("antifraudService")
+include("cashInCashOutService")
+include("configServer")
+include("currencyExchangeService")
+include("eurekaServiceDiscovery")
+include("exchangeGeneratorService")
+include("notificationsService")
+include("transferService")
+include("uiService")
+include("gateway")

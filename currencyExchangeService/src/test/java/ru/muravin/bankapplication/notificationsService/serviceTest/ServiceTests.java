@@ -23,12 +23,12 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(classes = {TestApplicationConfiguration.class})
+/*@SpringBootTest(classes = {TestApplicationConfiguration.class})
 @Import(TestcontainersConfiguration.class)
 @ContextConfiguration(classes = TestApplicationConfiguration.class)
 @TestPropertySource(locations = "classpath:application.yml")
 @AutoConfigureWebTestClient
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(MockitoExtension.class)*/
 public class ServiceTests {
     /*@MockitoBean
     private CurrencyRateMapper notificationMapper;

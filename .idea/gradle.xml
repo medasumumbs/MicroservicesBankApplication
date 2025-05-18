@@ -9,6 +9,17 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/accountsService" />
+            <option value="$PROJECT_DIR$/antifraudService" />
+            <option value="$PROJECT_DIR$/cashInCashOutService" />
+            <option value="$PROJECT_DIR$/configServer" />
+            <option value="$PROJECT_DIR$/currencyExchangeService" />
+            <option value="$PROJECT_DIR$/eurekaServiceDiscovery" />
+            <option value="$PROJECT_DIR$/exchangeGeneratorService" />
+            <option value="$PROJECT_DIR$/gateway" />
+            <option value="$PROJECT_DIR$/notificationsService" />
+            <option value="$PROJECT_DIR$/transferService" />
+            <option value="$PROJECT_DIR$/uiService" />
           </set>
         </option>
       </GradleProjectSettings>

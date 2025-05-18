@@ -8,14 +8,28 @@
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.36/5a30490a6e14977d97d9c73c924c1f1b5311ea95/lombok-1.18.36.jar" />
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mapstruct/mapstruct-processor/1.5.5.Final/897f6f115930b936287bef552bf5fe28cc64717d/mapstruct-processor-1.5.5.Final.jar" />
         </processorPath>
-        <module name="uiService.main" />
+        <module name="bankMicroservicesApplication.notificationsService.main" />
+        <module name="bankMicroservicesApplication.accountsService.main" />
+        <module name="bankMicroservicesApplication.transferService.main" />
+        <module name="bankMicroservicesApplication.cashInCashOutService.main" />
+        <module name="bankMicroservicesApplication.exchangeGeneratorService.main" />
+        <module name="bankMicroservicesApplication.antifraudService.main" />
+        <module name="bankMicroservicesApplication.uiService.main" />
+        <module name="bankMicroservicesApplication.currencyExchangeService.main" />
       </profile>
       <profile name="Gradle Imported" enabled="true">
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mapstruct/mapstruct-processor/1.5.5.Final/897f6f115930b936287bef552bf5fe28cc64717d/mapstruct-processor-1.5.5.Final.jar" />
         </processorPath>
-        <module name="uiService.test" />
+        <module name="bankMicroservicesApplication.notificationsService.test" />
+        <module name="bankMicroservicesApplication.antifraudService.test" />
+        <module name="bankMicroservicesApplication.transferService.test" />
+        <module name="bankMicroservicesApplication.cashInCashOutService.test" />
+        <module name="bankMicroservicesApplication.accountsService.test" />
+        <module name="bankMicroservicesApplication.uiService.test" />
+        <module name="bankMicroservicesApplication.currencyExchangeService.test" />
+        <module name="bankMicroservicesApplication.exchangeGeneratorService.test" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
