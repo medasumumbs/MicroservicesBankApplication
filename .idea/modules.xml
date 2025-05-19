@@ -2,38 +2,22 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/accountsService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/accountsService.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/accountsService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/accountsService.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/antifraudService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/antifraudService.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/antifraudService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/antifraudService.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/accountsService/bankMicroservicesApplication.accountsService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/accountsService/bankMicroservicesApplication.accountsService.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/accountsService/bankMicroservicesApplication.accountsService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/accountsService/bankMicroservicesApplication.accountsService.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/antifraudService/bankMicroservicesApplication.antifraudService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/antifraudService/bankMicroservicesApplication.antifraudService.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/antifraudService/bankMicroservicesApplication.antifraudService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/antifraudService/bankMicroservicesApplication.antifraudService.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cashInCashOutService/bankMicroservicesApplication.cashInCashOutService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/cashInCashOutService/bankMicroservicesApplication.cashInCashOutService.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cashInCashOutService/bankMicroservicesApplication.cashInCashOutService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/cashInCashOutService/bankMicroservicesApplication.cashInCashOutService.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/currencyExchangeService/bankMicroservicesApplication.currencyExchangeService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/currencyExchangeService/bankMicroservicesApplication.currencyExchangeService.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/currencyExchangeService/bankMicroservicesApplication.currencyExchangeService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/currencyExchangeService/bankMicroservicesApplication.currencyExchangeService.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/exchangeGeneratorService/bankMicroservicesApplication.exchangeGeneratorService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/exchangeGeneratorService/bankMicroservicesApplication.exchangeGeneratorService.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/exchangeGeneratorService/bankMicroservicesApplication.exchangeGeneratorService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/exchangeGeneratorService/bankMicroservicesApplication.exchangeGeneratorService.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/notificationsService/bankMicroservicesApplication.notificationsService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/notificationsService/bankMicroservicesApplication.notificationsService.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/notificationsService/bankMicroservicesApplication.notificationsService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/notificationsService/bankMicroservicesApplication.notificationsService.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/transferService/bankMicroservicesApplication.transferService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/transferService/bankMicroservicesApplication.transferService.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/transferService/bankMicroservicesApplication.transferService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/transferService/bankMicroservicesApplication.transferService.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/uiService/bankMicroservicesApplication.uiService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/uiService/bankMicroservicesApplication.uiService.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/uiService/bankMicroservicesApplication.uiService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/uiService/bankMicroservicesApplication.uiService.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cashInCashOutService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/cashInCashOutService.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cashInCashOutService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/cashInCashOutService.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/currencyExchangeService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/currencyExchangeService.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/currencyExchangeService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/currencyExchangeService.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/exchangeGeneratorService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/exchangeGeneratorService.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/exchangeGeneratorService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/exchangeGeneratorService.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/notificationsService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/notificationsService.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/notificationsService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/notificationsService.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/transferService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/transferService.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/transferService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/transferService.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/uiService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/uiService.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/uiService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/uiService.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/accounts_service/bankMicroservicesApplication.accounts_service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/accounts_service/bankMicroservicesApplication.accounts_service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/accounts_service/bankMicroservicesApplication.accounts_service.test.iml" filepath="$PROJECT_DIR$/.idea/modules/accounts_service/bankMicroservicesApplication.accounts_service.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/antifraud_service/bankMicroservicesApplication.antifraud_service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/antifraud_service/bankMicroservicesApplication.antifraud_service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/antifraud_service/bankMicroservicesApplication.antifraud_service.test.iml" filepath="$PROJECT_DIR$/.idea/modules/antifraud_service/bankMicroservicesApplication.antifraud_service.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cash_in_cash_out_service/bankMicroservicesApplication.cash_in_cash_out_service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/cash_in_cash_out_service/bankMicroservicesApplication.cash_in_cash_out_service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cash_in_cash_out_service/bankMicroservicesApplication.cash_in_cash_out_service.test.iml" filepath="$PROJECT_DIR$/.idea/modules/cash_in_cash_out_service/bankMicroservicesApplication.cash_in_cash_out_service.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/currency_exchange_service/bankMicroservicesApplication.currency_exchange_service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/currency_exchange_service/bankMicroservicesApplication.currency_exchange_service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/currency_exchange_service/bankMicroservicesApplication.currency_exchange_service.test.iml" filepath="$PROJECT_DIR$/.idea/modules/currency_exchange_service/bankMicroservicesApplication.currency_exchange_service.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/exchange_generator_service/bankMicroservicesApplication.exchange_generator_service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/exchange_generator_service/bankMicroservicesApplication.exchange_generator_service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/exchange_generator_service/bankMicroservicesApplication.exchange_generator_service.test.iml" filepath="$PROJECT_DIR$/.idea/modules/exchange_generator_service/bankMicroservicesApplication.exchange_generator_service.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/notifications_service/bankMicroservicesApplication.notifications_service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/notifications_service/bankMicroservicesApplication.notifications_service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/notifications_service/bankMicroservicesApplication.notifications_service.test.iml" filepath="$PROJECT_DIR$/.idea/modules/notifications_service/bankMicroservicesApplication.notifications_service.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/transfer_service/bankMicroservicesApplication.transfer_service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/transfer_service/bankMicroservicesApplication.transfer_service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/transfer_service/bankMicroservicesApplication.transfer_service.test.iml" filepath="$PROJECT_DIR$/.idea/modules/transfer_service/bankMicroservicesApplication.transfer_service.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ui_service/bankMicroservicesApplication.ui_service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ui_service/bankMicroservicesApplication.ui_service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ui_service/bankMicroservicesApplication.ui_service.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ui_service/bankMicroservicesApplication.ui_service.test.iml" />
     </modules>
   </component>
 </project>

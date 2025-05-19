@@ -8,38 +8,107 @@
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.36/5a30490a6e14977d97d9c73c924c1f1b5311ea95/lombok-1.18.36.jar" />
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mapstruct/mapstruct-processor/1.5.5.Final/897f6f115930b936287bef552bf5fe28cc64717d/mapstruct-processor-1.5.5.Final.jar" />
         </processorPath>
-        <module name="bankMicroservicesApplication.notificationsService.main" />
-        <module name="bankMicroservicesApplication.accountsService.main" />
-        <module name="bankMicroservicesApplication.transferService.main" />
-        <module name="bankMicroservicesApplication.cashInCashOutService.main" />
-        <module name="bankMicroservicesApplication.exchangeGeneratorService.main" />
-        <module name="bankMicroservicesApplication.antifraudService.main" />
-        <module name="bankMicroservicesApplication.uiService.main" />
-        <module name="bankMicroservicesApplication.currencyExchangeService.main" />
+        <module name="bankMicroservicesApplication.ui_service.main" />
+        <module name="bankMicroservicesApplication.accounts_service.main" />
+        <module name="bankMicroservicesApplication.currency_exchange_service.main" />
+        <module name="bankMicroservicesApplication.transfer_service.main" />
+        <module name="bankMicroservicesApplication.cash_in_cash_out_service.main" />
+        <module name="bankMicroservicesApplication.notifications_service.main" />
+        <module name="bankMicroservicesApplication.exchange_generator_service.main" />
+        <module name="bankMicroservicesApplication.antifraud_service.main" />
       </profile>
       <profile name="Gradle Imported" enabled="true">
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mapstruct/mapstruct-processor/1.5.5.Final/897f6f115930b936287bef552bf5fe28cc64717d/mapstruct-processor-1.5.5.Final.jar" />
         </processorPath>
-        <module name="bankMicroservicesApplication.notificationsService.test" />
-        <module name="bankMicroservicesApplication.antifraudService.test" />
-        <module name="bankMicroservicesApplication.transferService.test" />
-        <module name="bankMicroservicesApplication.cashInCashOutService.test" />
-        <module name="bankMicroservicesApplication.accountsService.test" />
-        <module name="bankMicroservicesApplication.uiService.test" />
-        <module name="bankMicroservicesApplication.currencyExchangeService.test" />
-        <module name="bankMicroservicesApplication.exchangeGeneratorService.test" />
+        <module name="bankMicroservicesApplication.ui_service.test" />
+        <module name="bankMicroservicesApplication.transfer_service.test" />
+        <module name="bankMicroservicesApplication.accounts_service.test" />
+        <module name="bankMicroservicesApplication.currency_exchange_service.test" />
+        <module name="bankMicroservicesApplication.cash_in_cash_out_service.test" />
+        <module name="bankMicroservicesApplication.notifications_service.test" />
+        <module name="bankMicroservicesApplication.antifraud_service.test" />
+        <module name="bankMicroservicesApplication.exchange_generator_service.test" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
+    <bytecodeTargetLevel target="21">
+      <module name="accountsService" target="21" />
+      <module name="accountsService.main" target="21" />
+      <module name="accountsService.test" target="21" />
+      <module name="antifraudService" target="21" />
+      <module name="antifraudService.main" target="21" />
+      <module name="antifraudService.test" target="21" />
+      <module name="bankMicroservicesApplication.accountsService" target="21" />
+      <module name="bankMicroservicesApplication.accountsService.main" target="21" />
+      <module name="bankMicroservicesApplication.accountsService.test" target="21" />
+      <module name="bankMicroservicesApplication.antifraudService" target="21" />
+      <module name="bankMicroservicesApplication.antifraudService.main" target="21" />
+      <module name="bankMicroservicesApplication.antifraudService.test" target="21" />
+      <module name="bankMicroservicesApplication.cashInCashOutService" target="21" />
+      <module name="bankMicroservicesApplication.cashInCashOutService.main" target="21" />
+      <module name="bankMicroservicesApplication.cashInCashOutService.test" target="21" />
+      <module name="bankMicroservicesApplication.configServer" target="21" />
+      <module name="bankMicroservicesApplication.configServer.main" target="21" />
+      <module name="bankMicroservicesApplication.configServer.test" target="21" />
+      <module name="bankMicroservicesApplication.currencyExchangeService" target="21" />
+      <module name="bankMicroservicesApplication.currencyExchangeService.main" target="21" />
+      <module name="bankMicroservicesApplication.currencyExchangeService.test" target="21" />
+      <module name="bankMicroservicesApplication.eurekaServiceDiscovery" target="21" />
+      <module name="bankMicroservicesApplication.eurekaServiceDiscovery.main" target="21" />
+      <module name="bankMicroservicesApplication.eurekaServiceDiscovery.test" target="21" />
+      <module name="bankMicroservicesApplication.exchangeGeneratorService" target="21" />
+      <module name="bankMicroservicesApplication.exchangeGeneratorService.main" target="21" />
+      <module name="bankMicroservicesApplication.exchangeGeneratorService.test" target="21" />
+      <module name="bankMicroservicesApplication.notificationsService" target="21" />
+      <module name="bankMicroservicesApplication.notificationsService.main" target="21" />
+      <module name="bankMicroservicesApplication.notificationsService.test" target="21" />
+      <module name="bankMicroservicesApplication.transferService" target="21" />
+      <module name="bankMicroservicesApplication.transferService.main" target="21" />
+      <module name="bankMicroservicesApplication.transferService.test" target="21" />
+      <module name="bankMicroservicesApplication.uiService" target="21" />
+      <module name="bankMicroservicesApplication.uiService.main" target="21" />
+      <module name="bankMicroservicesApplication.uiService.test" target="21" />
+      <module name="cashInCashOutService" target="21" />
+      <module name="cashInCashOutService.main" target="21" />
+      <module name="cashInCashOutService.test" target="21" />
+      <module name="configServer" target="21" />
+      <module name="configServer.main" target="21" />
+      <module name="configServer.test" target="21" />
+      <module name="currencyExchangeService" target="21" />
+      <module name="currencyExchangeService.main" target="21" />
+      <module name="currencyExchangeService.test" target="21" />
+      <module name="eurekaServiceDiscovery" target="21" />
+      <module name="eurekaServiceDiscovery.main" target="21" />
+      <module name="eurekaServiceDiscovery.test" target="21" />
+      <module name="exchangeGeneratorService" target="21" />
+      <module name="exchangeGeneratorService.main" target="21" />
+      <module name="exchangeGeneratorService.test" target="21" />
+      <module name="gateway" target="21" />
+      <module name="gateway.main" target="21" />
+      <module name="gateway.test" target="21" />
+      <module name="notificationsService" target="21" />
+      <module name="notificationsService.main" target="21" />
+      <module name="notificationsService.test" target="21" />
       <module name="ru.practicum.templateApplicationForBank" target="21" />
+      <module name="ru.practicum.templateApplicationForBank.main" target="21" />
       <module name="ru.practicum.templateApplicationForBank.main~1" target="21" />
       <module name="ru.practicum.templateApplicationForBank.main~2" target="21" />
+      <module name="ru.practicum.templateApplicationForBank.test" target="21" />
       <module name="ru.practicum.templateApplicationForBank.test~1" target="21" />
       <module name="ru.practicum.templateApplicationForBank.test~2" target="21" />
+      <module name="ru.practicum.uiService" target="21" />
+      <module name="ru.practicum.uiService.main" target="21" />
+      <module name="ru.practicum.uiService.test" target="21" />
+      <module name="templateApplicationForBank" target="21" />
       <module name="templateApplicationForBank.main" target="21" />
       <module name="templateApplicationForBank.test" target="21" />
+      <module name="transferService" target="21" />
+      <module name="transferService.main" target="21" />
+      <module name="transferService.test" target="21" />
+      <module name="uiService" target="21" />
+      <module name="uiService.main" target="21" />
+      <module name="uiService.test" target="21" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -1,5 +1,0 @@
-services:
-  eurekaServiceDiscovery:
-    build: .
-    ports:
-      - "${SERVER_PORT}:${SERVER_PORT}"

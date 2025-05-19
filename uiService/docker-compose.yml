@@ -1,9 +1,0 @@
-services:
-  ui-service:
-    build:
-      context: ./uiService
-      dockerfile: Dockerfile
-    ports:
-      - "${UI_SERVICE_PORT}:${UI_SERVICE_PORT}"
-    environment:
-      UI_SERVICE_PORT: ${UI_SERVICE_PORT}

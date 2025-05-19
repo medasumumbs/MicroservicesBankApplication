@@ -1,0 +1,114 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                           http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="create_user_sequence" author="author">
+        <preConditions>
+            <not>
+                <sequenceExists sequenceName="user_sequence"/>
+            </not>
+        </preConditions>
+        <createSequence sequenceName="user_sequence" incrementBy="1"/>
+        <rollback>
+            <dropSequence sequenceName="user_sequence"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="create_user_table" author="author">
+        <preConditions>
+            <not>
+                <tableExists tableName="users"/>
+            </not>
+        </preConditions>
+        <createTable tableName="users">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="login" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="password" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="lastName" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="patronymic" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="dateOfBirth" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <sql>
+            ALTER TABLE users ADD CONSTRAINT dateOfBirth_check CHECK ((DCURRENT_DATE - dateOfBirth) &gt;= 18 )
+        </sql>
+        <addDefaultValue tableName="users" columnName="id" defaultValueSequenceNext="user_sequence"/>
+        <rollback>
+            <dropTable tableName="users"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="create_accounts_sequence" author="author">
+        <preConditions>
+            <not>
+                <sequenceExists sequenceName="accounts_sequence"/>
+            </not>
+        </preConditions>
+        <createSequence sequenceName="accounts_sequence" incrementBy="1"/>
+        <rollback>
+            <dropSequence sequenceName="accounts_sequence"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="create_accounts_table" author="author">
+        <preConditions>
+            <not>
+                <tableExists tableName="accounts"/>
+            </not>
+        </preConditions>
+        <createTable tableName="accounts">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="bigint" >
+            </column>
+            <column name="currency" type="varchar(4)">
+                <constraints nullable="false" />
+            </column>
+            <column name="balance" type="decimal">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <addDefaultValue tableName="accounts" columnName="id" defaultValueSequenceNext="accounts_sequence"/>
+        <rollback>
+            <dropTable tableName="accounts"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="create_accounts_foreign_key_users" author="author">
+        <preConditions>
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_accounts_users"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseTableName="accounts"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_accounts_users"/>
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="accounts" constraintName="fk_accounts_users"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
