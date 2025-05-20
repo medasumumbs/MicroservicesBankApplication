@@ -2,7 +2,7 @@ spring:
   application:
     name: notificationsService
   config:
-    import: configserver:http://127.0.0.1:8888
+    import: configserver:http://config-server:8888
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}

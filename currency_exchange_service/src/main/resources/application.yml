@@ -2,7 +2,7 @@ spring:
   application:
     name: currencyExchangeService
   config:
-    import: configserver:http://127.0.0.1:8888
+    import: configserver:http://config-server:8888
 server:
   port: 8093
 
