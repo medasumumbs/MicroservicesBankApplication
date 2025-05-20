@@ -9,7 +9,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockReset;
@@ -19,6 +21,7 @@ import org.testcontainers.shaded.org.checkerframework.checker.units.qual.A;
 import org.testcontainers.utility.TestcontainersConfiguration;
 import ru.muravin.bankapplication.notificationsService.NotificationsServiceApplication;
 import ru.muravin.bankapplication.notificationsService.TestApplicationConfiguration;
+import ru.muravin.bankapplication.notificationsService.configurations.OAuth2SecurityConfig;
 import ru.muravin.bankapplication.notificationsService.dto.NotificationDto;
 import ru.muravin.bankapplication.notificationsService.mapper.NotificationMapper;
 import ru.muravin.bankapplication.notificationsService.mapper.NotificationMapperImpl;
@@ -31,14 +34,19 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(classes = {TestApplicationConfiguration.class})
-@Import(TestcontainersConfiguration.class)
-@ContextConfiguration(classes = TestApplicationConfiguration.class)
+@SpringBootTest(properties = "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration," +
+                "org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration",
+        classes = {TestApplicationConfiguration.class, NotificationsServiceApplication.class})
 @TestPropertySource(locations = "classpath:application.yml")
 @AutoConfigureWebTestClient
 @ExtendWith(MockitoExtension.class)
-@Disabled
 public class ServiceTests {
+    @MockitoBean
+    private OAuth2SecurityConfig oAuth2SecurityConfig;
+
+    @MockitoBean
+    private JwtAuthenticationConverter jwtAuthenticationConverter;
+
     @MockitoBean
     private NotificationMapper notificationMapper;
 
