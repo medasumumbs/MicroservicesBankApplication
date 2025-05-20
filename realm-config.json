@@ -1,0 +1,23 @@
+{
+  "realm": "master",
+  "enabled": true,
+  "attributes": {
+    "frontendUrl": "http://keycloak:8080"
+  },
+  "clients": [
+    {
+      "clientId": "cashInCashOutService",
+      "secret": "F3PnrhRuMtxh30N67vgxAkOJqY3KYpwW",
+      "redirectUris": ["*"],
+      "webOrigins": [],
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": true,
+      "serviceAccountsEnabled": true,
+      "publicClient": false,
+      "authorizationServicesEnabled": true,
+      "defaultClientScopes": ["openid", "profile"],
+      "optionalClientScopes": []
+    }
+  ]
+}

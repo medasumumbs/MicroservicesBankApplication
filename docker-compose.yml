@@ -42,7 +42,9 @@ services:
       KC_METRICS_ENABLED: "true"
     networks:
       - general_network
-    command: start-dev
+    volumes:
+      - ./realm-config.json:/opt/keycloak/data/import/realm-config.json
+    command: start-dev --import-realm
     ports:
       - "7980:8080"
 
@@ -295,17 +297,3 @@ services:
       - general_network
 networks:
   general_network:
-#  keycloak-init:
-#    image: curlimages/curl:latest
-#    container_name: keycloak_init
-#    depends_on:
-#      - keycloak
-#    entrypoint: [ "/bin/sh", "-c" ]
-#    command: >
-#      "
-#      until curl -s http://keycloak:7980/realms/master > /dev/null; do echo 'Waiting for Keycloak to start...'; sleep 5; done;
-#      curl -X POST -H 'Content-Type: application/json' \
-#        -d '{\"clientId\":\"paymentsService\",\"enabled\":true,\"redirectUris\":[\"http://localhost:3000/*\"]}' \
-#        http://admin:admin_password@keycloak:7980/admin/realms/master/clients;
-#      echo 'Client registered successfully.'
-#      "

@@ -4,7 +4,7 @@ cashInCashOutService:
   secret: F3PnrhRuMtxh30N67vgxAkOJqY3KYpwW
   scope: profile
   registrationId: cashInCashOutService
-  tokenUri: http://keycloakContainer:7980/realms/master/protocol/openid-connect/token
+  tokenUri: http://keycloak:8080/realms/master/protocol/openid-connect/token
 spring:
   cloud:
     gateway:
