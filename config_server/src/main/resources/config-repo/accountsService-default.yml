@@ -1,6 +1,6 @@
 spring:
   rabbitmq:
-    host: localhost
+    host: rabbitmq
     port: 5672
     username: guest
     password: guest
@@ -8,7 +8,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:7980/realms/master
+          issuer-uri: http://keycloakContainer:7980/realms/master
   datasource:
     url: jdbc:postgresql://localhost:5433/notifications
     username: myuser
@@ -43,7 +43,7 @@ eureka:
     prefer-ip-address: true
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/   # URL Eureka сервера
+      defaultZone: http://eureka-service-discovery:8761/eureka/
 server:
   port: 8084
 logging:

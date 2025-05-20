@@ -4,7 +4,7 @@ cashInCashOutService:
   secret: F3PnrhRuMtxh30N67vgxAkOJqY3KYpwW
   scope: profile
   registrationId: cashInCashOutService
-  tokenUri: http://localhost:7980/realms/master/protocol/openid-connect/token
+  tokenUri: http://keycloakContainer:7980/realms/master/protocol/openid-connect/token
 spring:
   cloud:
     gateway:
@@ -16,18 +16,7 @@ spring:
           filters:
             - TokenRelay=gateway-client      # используем TokenRelay с нашим clientRegistrationId
   security:
-    #oauth2:
-    #  client:
-    #    provider:
-    #      keycloak:
-    #        token-uri: http://localhost:7980/realms/demo/protocol/openid-connect/token
-    #    registration:
-    #       gateway-client:
-    #       provider: keycloak
-    #       client-id: gateway-client        # ID зарегистрированного клиента
-    #       client-secret: 5sHK5bQy8UTTX7ZqQGmJsQmm5yD9TeDU
-    #       scope: resource.read
-    #       authorization-grant-type: client_credentials
+
 management:
   endpoints:
     web:
@@ -39,4 +28,4 @@ eureka:
     prefer-ip-address: true
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/   # URL Eureka сервера
+      defaultZone: http://eureka-service-discovery:8761/eureka/
