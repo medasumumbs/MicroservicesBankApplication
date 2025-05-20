@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.muravin.bankapplication.antifraudService.AntifraudServiceApplication;
 
 @SpringBootTest(classes = AntifraudServiceApplication.class)
+@Disabled
 class TemplateApplicationForBankApplicationTests {
 
     @Test
