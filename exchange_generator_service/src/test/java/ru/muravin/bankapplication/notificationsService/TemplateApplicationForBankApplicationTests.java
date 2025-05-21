@@ -3,9 +3,10 @@ package ru.muravin.bankapplication.notificationsService;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.muravin.bankapplication.exchangeGeneratorService.ExchangeGeneratorServiceApplication;
+import org.springframework.context.annotation.Import;
+import org.testcontainers.utility.TestcontainersConfiguration;
 
-@SpringBootTest(classes = ExchangeGeneratorServiceApplication.class)
+@SpringBootTest
 @Disabled
 class TemplateApplicationForBankApplicationTests {
 

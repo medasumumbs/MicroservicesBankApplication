@@ -22,7 +22,7 @@ public class RatesGenerationService {
         this.webClientBuilder = webClientBuilder;
     }
 
-    public Mono<Float> createRandomFloat() {
+    public static Mono<Float> createRandomFloat() {
         var currentTimeMillisLast5Digits = System.currentTimeMillis() % 100000;
         return Mono.just((float) (currentTimeMillisLast5Digits / 100.0));
     }

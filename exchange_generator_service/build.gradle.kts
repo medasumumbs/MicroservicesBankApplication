@@ -46,6 +46,8 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.mapstruct:mapstruct:1.5.5.Final")
     testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("io.projectreactor:reactor-test")
+    testImplementation("org.mockito:mockito-core")
 }
 
 tasks.withType<Test> {
