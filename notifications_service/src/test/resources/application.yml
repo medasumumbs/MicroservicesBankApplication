@@ -3,10 +3,10 @@ spring:
     allow-bean-definition-overriding:
       true
   security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://test-issuer.local
+    #oauth2:
+      #resourceserver:
+        #jwt:
+        #  issuer-uri: http://test-issuer.local
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
