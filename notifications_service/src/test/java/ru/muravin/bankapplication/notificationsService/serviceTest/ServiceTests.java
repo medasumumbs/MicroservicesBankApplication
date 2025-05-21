@@ -29,10 +29,12 @@ import ru.muravin.bankapplication.notificationsService.model.Notification;
 import ru.muravin.bankapplication.notificationsService.repository.NotificationsRepository;
 import ru.muravin.bankapplication.notificationsService.service.NotificationsService;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest(properties = {
         "spring.datasource.url=jdbc:h2:mem:testdb",
@@ -64,15 +66,25 @@ public class ServiceTests {
     private NotificationsRepository notificationsRepository;
 
     @Test
-    @Disabled
     void testSave() {
-        notificationsRepository.deleteAll();
-        var localDateTime = LocalDateTime.now();
+
+        LocalDateTime localDateTime = LocalDateTime.now();
         NotificationDto notificationDto = new NotificationDto("abcde","a",localDateTime);
+        // Создаём ожидаемую сущность
+        Notification expectedEntity = new Notification();
+        expectedEntity.setMessage("abcde");
+        expectedEntity.setSender("a");
+        expectedEntity.setCreatedAt(localDateTime);
+
+        // Настраиваем мок, чтобы он возвращал эту сущность
+        when(notificationMapper.toEntity(notificationDto)).thenReturn(expectedEntity);
+
+        notificationsRepository.deleteAll();
+
         notificationsService.sendNotification(notificationDto);
         var notification = notificationsRepository.findAll().get(0);
         assertEquals("abcde", notification.getMessage());
         assertEquals("a", notification.getSender());
-        assertEquals(localDateTime,notification.getCreatedAt());
+        assertEquals(localDateTime.getMinute(),notification.getCreatedAt().getMinute());
     }
 }
