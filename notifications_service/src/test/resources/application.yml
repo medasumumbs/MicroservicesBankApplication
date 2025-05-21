@@ -24,6 +24,9 @@ spring:
   cloud:
     config:
       enabled: false
+eureka:
+  client:
+    enabled: false
 server:
   port: 8081
 text-to-print: "Текст до изменений" # Property в микросервисе, которое мы будем изменять прямо на лету

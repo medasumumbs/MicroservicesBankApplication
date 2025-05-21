@@ -8,7 +8,6 @@ import org.testcontainers.utility.TestcontainersConfiguration;
 
 @SpringBootTest
 @Disabled
-@Import(TestcontainersConfiguration.class)
 class TemplateApplicationForBankApplicationTests {
 
     @Test

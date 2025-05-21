@@ -12,14 +12,10 @@ import org.testcontainers.utility.TestcontainersConfiguration;
 import ru.muravin.bankapplication.notificationsService.mapper.NotificationMapper;
 
 @TestConfiguration
-@Import(TestcontainersConfiguration.class)
 public class TestApplicationConfiguration {
 
     @Bean
     public NotificationMapper notificationMapper() {
         return Mappers.getMapper(NotificationMapper.class);
-    }
-    public static void main(String[] args) {
-        SpringApplication.from(NotificationsServiceApplication::main).with(TestContainersConfiguration.class).run(args);
     }
 }
