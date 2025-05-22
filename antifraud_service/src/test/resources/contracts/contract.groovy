@@ -3,30 +3,29 @@ package contracts
 import org.springframework.cloud.contract.spec.Contract
 
 Contract.make {
-    description "Should create a notification and return 201 with response DTO"
+    name("Should return OK for GET action")
+    description("Verifies that the checkOperations endpoint returns OK for a valid GET request")
 
     request {
-        method 'POST'
-        url '/notifications'
-        body([
-                message: "Test message",
-                sender: "System",
-                timestamp: "2025-04-05T10:00:00"
-        ])
+        method POST()
+        url("/checkOperations")
         headers {
-            contentType('application/json')
+            contentType(applicationJson())
         }
+        body([
+                action: "GET",
+                amount: "500"
+        ])
     }
 
     response {
-        status 201
+        status 200
+        headers {
+            contentType(applicationJson())
+        }
         body([
                 statusCode: "OK",
-                statusMessage: "Notification created",
-                notificationId: value(producer(regex('[0-9]+'))) // ID — любое число
+                statusMessage: "Деньги можно снять"
         ])
-        headers {
-            contentType('application/json')
-        }
     }
 }

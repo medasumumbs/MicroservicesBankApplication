@@ -1,4 +1,4 @@
-package ru.muravin.bankapplication.notificationsService;
+package ru.muravin.bankapplication.antifraudService;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
