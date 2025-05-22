@@ -1,4 +1,4 @@
-package ru.muravin.bankapplication.notificationsService.controllerTest;
+package ru.muravin.bankapplication.accountsService.controllerTest;
 /*
 
 import com.fasterxml.jackson.databind.ObjectMapper;

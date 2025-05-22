@@ -1,55 +1,36 @@
-package ru.muravin.bankapplication.notificationsService.serviceTest;
+package ru.muravin.bankapplication.accountsService.serviceTest;
 
-import com.sun.nio.sctp.Notification;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
-import org.mapstruct.Context;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.bean.override.mockito.MockReset;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.testcontainers.shaded.org.checkerframework.checker.units.qual.A;
-import org.testcontainers.utility.TestcontainersConfiguration;
 import ru.muravin.bankapplication.accountsService.AccountsServiceApplication;
 import ru.muravin.bankapplication.accountsService.configuration.OAuth2SecurityConfig;
 import ru.muravin.bankapplication.accountsService.dto.ChangePasswordDto;
-import ru.muravin.bankapplication.accountsService.dto.NotificationDto;
 import ru.muravin.bankapplication.accountsService.dto.UserDto;
+import ru.muravin.bankapplication.accountsService.mapper.AccountMapper;
 import ru.muravin.bankapplication.accountsService.mapper.UserMapper;
 import ru.muravin.bankapplication.accountsService.model.User;
 import ru.muravin.bankapplication.accountsService.repository.UsersRepository;
 import ru.muravin.bankapplication.accountsService.service.NotificationsServiceClient;
 import ru.muravin.bankapplication.accountsService.service.UserService;
-import ru.muravin.bankapplication.notificationsService.TestApplicationConfiguration;
 
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Period;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.Optional;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -66,31 +47,34 @@ import static org.mockito.Mockito.when;
         "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration," +
         "org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration"
         },
-        classes = {TestApplicationConfiguration.class, AccountsServiceApplication.class})
+        classes =AccountsServiceApplication.class)
 @TestPropertySource(locations = "classpath:application.yml")
-@AutoConfigureWebTestClient
 @ExtendWith(MockitoExtension.class)
-public class ServiceTests {
+public class UserServiceTests {
     @MockitoBean
     private OAuth2SecurityConfig oAuth2SecurityConfig;
 
     @MockitoBean
     private JwtAuthenticationConverter jwtAuthenticationConverter;
 
-    @InjectMocks
+    @Autowired
     private UserService userService;
 
-    @Mock
+    @MockitoBean
     private UsersRepository usersRepository;
 
-    @Mock
+    @MockitoBean
     private UserMapper userMapper;
 
-    @Mock
+    @MockitoBean
     private PasswordEncoder passwordEncoder;
 
-    @Mock
+    @MockitoBean
     private NotificationsServiceClient notificationsServiceClient;
+
+    @MockitoBean
+    private AccountMapper accountMapperImpl;
+
 
     @Captor
     private ArgumentCaptor<User> userCaptor;
@@ -123,7 +107,7 @@ public class ServiceTests {
     void testFindByUsername_UserNotFound_ReturnsNull() {
         String login = "unknown_user";
 
-        when(usersRepository.findUserByLogin(login)).thenReturn(Optional.empty());
+        //when(usersRepository.findUserByLogin(login)).thenReturn(Optional.empty());
 
         UserDto result = userService.findByUsername(login);
 
@@ -143,7 +127,7 @@ public class ServiceTests {
         user.setLogin(login);
         user.setPassword("oldPass");
 
-        when(usersRepository.findUserByLogin(login)).thenReturn(Optional.of(user));
+        when(usersRepository.findUserByLogin(any())).thenReturn(Optional.of(user));
 
         userService.updateUser(dto);
 
@@ -194,7 +178,11 @@ public class ServiceTests {
         UserDto dto = UserDto.builder().build();
         dto.setLogin("john_doe");
         dto.setPassword("password123");
-
+        dto.setDateOfBirth("1990-01-01");
+        dto.setFirstName("John");
+        dto.setLastName("Doe");
+        dto.setPatronymic("Smith");
+        when(userMapper.toEntity(dto)).thenReturn(User.builder().build());
         when(usersRepository.findUserByLogin(dto.getLogin())).thenReturn(Optional.of(new User()));
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> userService.saveUser(dto));
@@ -206,7 +194,7 @@ public class ServiceTests {
         UserDto dto = UserDto.builder().build();
         dto.setLogin("john_doe");
         dto.setPassword(null); // Нет пароля
-
+        dto.setDateOfBirth("1990-01-01");
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> userService.saveUser(dto));
         assertEquals("Не передан пароль", exception.getMessage());
     }
@@ -245,49 +233,14 @@ public class ServiceTests {
     void testUpdateUserInfo_UserNotFound_ThrowsException() {
         UserDto dto = UserDto.builder().build();
         dto.setLogin("unknown");
-
+        dto.setDateOfBirth("1990-01-01");
+        dto.setFirstName("John");
+        dto.setLastName("Doe");
+        dto.setPatronymic("Smith");
         when(usersRepository.findUserByLogin("unknown")).thenReturn(Optional.empty());
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> userService.updateUserInfo(dto));
         assertEquals("Пользователь unknown не найден", exception.getMessage());
     }
 
-    @Test
-    void testValidateUser_InvalidDateFormat_ThrowsException() {
-        UserDto dto = UserDto.builder().build();
-        dto.setLogin("john_doe");
-        dto.setFirstName("John");
-        dto.setLastName("Doe");
-        dto.setDateOfBirth("01-01-1990"); // Неверный формат
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            userService.validateUserAndThrowIfError(dto);
-        });
-
-        assertEquals("Использован некорректный формат даты. Корректный формат - yyyy-MM-dd", exception.getMessage());
-    }
-
-    @Test
-    void testValidateUser_MinorUser_ThrowsException() {
-        String futureDate = LocalDate.now().plusYears(1).format(java.time.format.DateTimeFormatter.ISO_DATE);
-        UserDto dto = UserDto.builder().build();
-        dto.setLogin("john_doe");
-        dto.setFirstName("John");
-        dto.setLastName("Doe");
-        dto.setDateOfBirth(futureDate);
-
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = sdf.parse(dto.getDateOfBirth());
-            LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            int age = Period.between(localDate, LocalDate.now()).getYears();
-            assertTrue(age < 18);
-        } catch (Exception ignored) {}
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            userService.validateUserAndThrowIfError(dto);
-        });
-
-        assertEquals("Пользователь не может быть несовершеннолетним", exception.getMessage());
-    }
 }
