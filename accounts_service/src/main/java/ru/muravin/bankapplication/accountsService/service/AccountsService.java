@@ -63,7 +63,7 @@ public class AccountsService {
             .toList();
     }
 
-    private static HashMap<String, String> getCurrencyTitlesMap() {
+    public static HashMap<String, String> getCurrencyTitlesMap() {
         var currencyTitles = new HashMap<String,String>();
         currencyTitles.put("USD", "Доллар США");
         currencyTitles.put("EUR", "Евро");
