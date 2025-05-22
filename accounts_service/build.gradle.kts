@@ -1,7 +1,10 @@
+import org.springframework.cloud.contract.verifier.config.TestFramework
+
 plugins {
     java
     id("org.springframework.boot") version "3.4.4"
     id("io.spring.dependency-management") version "1.1.7"
+    id("org.springframework.cloud.contract") version "4.2.1"
 }
 
 group = "ru.practicum"
@@ -44,12 +47,13 @@ dependencies {
 
     testAnnotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.mapstruct:mapstruct:1.5.5.Final")
+
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.mockito:mockito-core:5.6.0")
     testImplementation("com.h2database:h2")
-
-    testImplementation("org.mapstruct:mapstruct:1.5.5.Final")
+    testImplementation("org.springframework.cloud:spring-cloud-starter-contract-verifier:4.2.1")
 }
 
 tasks.withType<Test> {
@@ -64,4 +68,9 @@ tasks.withType<Test> {
     environment( "SPRING_DATASOURCE_PASSWORD","secret");
     environment( "SERVER_PORT","8084");
     useJUnitPlatform()
+}
+contracts {
+    baseClassForTests.set("ru.muravin.bankapplication.accountsService.BaseContractTest"); // Указание базового класса для тестов
+    contractsDslDir.set(file("src/test/resources/contracts"));
+    testFramework.set(TestFramework.JUNIT5)
 }
