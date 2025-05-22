@@ -92,7 +92,7 @@ public class UserService {
 
     }
 
-    private void validateUserAndThrowIfError(UserDto userDto) {
+    public void validateUserAndThrowIfError(UserDto userDto) {
         if (userDto.getDateOfBirth() == null) {
             throw new IllegalArgumentException("Не передана дата рождения пользователя");
         }
