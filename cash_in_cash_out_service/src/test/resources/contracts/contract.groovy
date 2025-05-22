@@ -3,30 +3,28 @@ package contracts
 import org.springframework.cloud.contract.spec.Contract
 
 Contract.make {
-    description "Should create a notification and return 201 with response DTO"
-
+    description "Should successfully process a withdrawal"
     request {
-        method 'POST'
-        url '/notifications'
+        method POST()
+        url("/withdrawCash")
         body([
-                message: "Test message",
-                sender: "System",
-                timestamp: "2025-04-05T10:00:00"
+                action     : "GET",
+                login      : "john_doe",
+                currencyCode: "USD",
+                amount     : "100"
         ])
         headers {
-            contentType('application/json')
+            contentType(applicationJson())
         }
     }
-
     response {
-        status 201
+        status 200
         body([
-                statusCode: "OK",
-                statusMessage: "Notification created",
-                notificationId: value(producer(regex('[0-9]+'))) // ID — любое число
+                statusCode   : "OK",
+                statusMessage: "Деньги успешно списаны"
         ])
         headers {
-            contentType('application/json')
+            contentType(applicationJson())
         }
     }
 }
