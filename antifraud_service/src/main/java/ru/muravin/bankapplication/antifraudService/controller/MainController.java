@@ -12,6 +12,7 @@ public class MainController {
     @PostMapping(value = "/checkOperations")
     public ResponseEntity<HttpResponseDto> CheckOperation(@RequestBody OperationDto operationDto) {
         var action = operationDto.getAction();
+        if (action == null) action = "";
         var amount = Float.parseFloat(operationDto.getAmount());
         if (amount > 100000) {
             return ResponseEntity.ok(new HttpResponseDto("FRAUD","Слишком большая сумма"));
