@@ -1,0 +1,38 @@
+spring:
+  main:
+    allow-bean-definition-overriding:
+      true
+  security:
+    #oauth2:
+      #resourceserver:
+        #jwt:
+        #  issuer-uri: http://test-issuer.local
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+      - org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration
+  application:
+    name: notificationsService
+  datasource:
+    url: jdbc:h2:mem:testdb
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  liquibase:
+    url: jdbc:h2:mem:testdb
+  cloud:
+    config:
+      enabled: false
+eureka:
+  client:
+    enabled: false
+server:
+  port: 8081
+text-to-print: "Текст до изменений" # Property в микросервисе, которое мы будем изменять прямо на лету
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh,busrefresh,busshutdown,health,info
