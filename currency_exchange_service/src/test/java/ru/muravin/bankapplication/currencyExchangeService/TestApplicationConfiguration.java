@@ -1,6 +1,7 @@
-package ru.muravin.bankapplication.notificationsService;
-
+package ru.muravin.bankapplication.currencyExchangeService;
+/*
 import org.mapstruct.factory.Mappers;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -20,3 +21,4 @@ public class TestApplicationConfiguration {
         SpringApplication.from(CurrencyExchangeServiceApplication::main).with(TestContainersConfiguration.class).run(args);
     }
 }
+*/

@@ -48,9 +48,8 @@ dependencies {
     testImplementation("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.mapstruct:mapstruct:1.5.5.Final")
-    testImplementation("org.testcontainers:junit-jupiter")
-    testImplementation("org.testcontainers:postgresql")
-    testImplementation("com.redis:testcontainers-redis:2.2.2")
+    testImplementation("org.mockito:mockito-core:5.6.0")
+    testImplementation("org.springframework.cloud:spring-cloud-starter-contract-verifier:4.2.1")
 }
 
 tasks.withType<Test> {
