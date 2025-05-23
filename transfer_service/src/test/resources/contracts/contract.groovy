@@ -3,15 +3,16 @@ package contracts
 import org.springframework.cloud.contract.spec.Contract
 
 Contract.make {
-    description "Should successfully process a withdrawal"
+    description "Should complete transfer successfully"
     request {
         method POST()
-        url("/withdrawCash")
+        url("/transfer")
         body([
-                action     : "GET",
-                login      : "john_doe",
-                currencyCode: "USD",
-                amount     : "100"
+                fromAccount : "john_doe",
+                toAccount   : "jane_doe",
+                fromCurrency: "RUB",
+                toCurrency  : "RUB",
+                amount      : "100"
         ])
         headers {
             contentType(applicationJson())
@@ -21,7 +22,7 @@ Contract.make {
         status 200
         body([
                 statusCode   : "OK",
-                statusMessage: "Деньги успешно списаны"
+                statusMessage: "Перевод успешен"
         ])
         headers {
             contentType(applicationJson())
