@@ -1,0 +1,96 @@
+package ru.muravin.bankapplication.transferService.serviceTest;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.web.client.RestTemplate;
+import ru.muravin.bankapplication.transferService.TransferServiceApplication;
+import ru.muravin.bankapplication.transferService.configuration.OAuth2SecurityConfig;
+import ru.muravin.bankapplication.transferService.dto.NotificationDto;
+import ru.muravin.bankapplication.transferService.service.NotificationsServiceClient;
+
+import java.time.LocalDateTime;
+
+import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+@SpringBootTest(properties = {
+        "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration," +
+                "org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration"
+},
+        classes = {TransferServiceApplication.class})
+@TestPropertySource(locations = "classpath:application.yml")
+@AutoConfigureWebTestClient
+@ExtendWith(MockitoExtension.class)
+public class ServiceTests {
+    @MockitoBean
+    private OAuth2SecurityConfig oAuth2SecurityConfig;
+
+    @MockitoBean
+    private JwtAuthenticationConverter jwtAuthenticationConverter;
+    @MockitoBean
+    private ApplicationContext applicationContext;
+
+    @MockitoBean
+    private RestTemplate restTemplate;
+
+    @Autowired
+    private NotificationsServiceClient notificationsServiceClient;
+
+    private String notificationText = "User registered john_doe";
+
+    @BeforeEach
+    void setUp() {
+        when(applicationContext.getApplicationName()).thenReturn("accounts-service");
+    }
+
+    @Test
+    void sendNotification_ShouldCallRestTemplateWithCorrectDto() {
+        // Given
+        when(applicationContext.getApplicationName()).thenReturn("accounts-service");
+
+        when(restTemplate.postForObject(any(), any(), any())).thenReturn("OK");
+
+        // When
+        notificationsServiceClient.sendNotification(notificationText);
+
+        // Then
+        verify(restTemplate, times(1)).postForObject(
+                eq("http://gateway/notificationsService/notifications"),
+                argThat(dto -> {
+                    var dtoObj = (NotificationDto) dto;
+                    return dtoObj.getMessage().equals(notificationText) &&
+                            dtoObj.getTimestamp() != null;}),
+                eq(String.class)
+        );
+    }
+
+    @Test
+    void sendNotification_WhenRestTemplateThrowsException_ShouldNotFail() {
+        // Given
+        doThrow(new RuntimeException("Connection refused"))
+                .when(restTemplate).postForObject(
+                        any(),
+                        any(),
+                        any()
+                );
+
+        // When & Then
+        assertThatNoException()
+                .isThrownBy(() -> notificationsServiceClient.sendNotification(notificationText));
+
+        // Проверяем, что RestTemplate был вызван
+        verify(restTemplate, times(1)).postForObject(
+                eq("http://gateway/notificationsService/notifications"),
+                any(NotificationDto.class),
+                eq(String.class)
+        );
+    }
+}
