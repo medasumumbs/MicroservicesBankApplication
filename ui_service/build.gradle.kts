@@ -50,6 +50,8 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.6.0")
     // https://mvnrepository.com/artifact/org.springframework.security/spring-security-test
     testImplementation("org.springframework.security:spring-security-test:6.5.0")
+    // https://mvnrepository.com/artifact/io.projectreactor/reactor-test
+    testImplementation("io.projectreactor:reactor-test:3.7.6")
 }
 
 tasks.withType<Test> {
