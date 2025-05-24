@@ -47,6 +47,9 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.mapstruct:mapstruct:1.5.5.Final")
     testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.mockito:mockito-core:5.6.0")
+    // https://mvnrepository.com/artifact/org.springframework.security/spring-security-test
+    testImplementation("org.springframework.security:spring-security-test:6.5.0")
 }
 
 tasks.withType<Test> {
