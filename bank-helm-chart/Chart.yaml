@@ -1,0 +1,40 @@
+apiVersion: v2
+name: umbrella-chart
+description: A Helm chart for managing different environments.
+type: application
+version: 0.1.0
+appVersion: "1.0"
+dependencies:
+  - name: notifications-service
+    version: "0.1.0"
+    repository: "file://./charts/notifications-service"
+  - name: ui-service
+    version: "0.1.0"
+    repository: "file://./charts/ui-service"
+  - name: accounts-service
+    version: "0.1.0"
+    repository: "file://./charts/accounts-service"
+  - name: antifraud-service
+    version: "0.1.0"
+    repository: "file://./charts/antifraud-service"
+  - name: cash-in-cash-out-service
+    version: "0.1.0"
+    repository: "file://./charts/cash-in-cash-out-service"
+  - name: exchange-generation-service
+    version: "0.1.0"
+    repository: "file://./charts/exchange-generation-service"
+  - name: gateway-service
+    version: "0.1.0"
+    repository: "file://./charts/gateway-service"
+  - name: keycloak
+    version: 0.2.0
+    repository: "file://./charts/keycloak"
+  - name: transfer-service
+    version: 0.1.0
+    repository: "file://./charts/transfer-service"
+  # Dependency for Customer DB (e.g., PostgreSQL)
+  - name: postgresql
+    version: 0.0.3 # Using a specific known stable version from Bitnami history
+    repository: https://raw.githubusercontent.com/bitnami/charts/refs/heads/archive-full-index/bitnami/
+    alias: notifications-db # Alias to distinguish this instance
+    condition: notifications-db.enabled # Allow disabling if needed

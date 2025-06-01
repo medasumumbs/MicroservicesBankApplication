@@ -1,0 +1,10 @@
+# Файл используется для записи маппинга портов микросервисов
+UI - 8087
+AccountsService - 8084
+Antifraud - 8096
+Currency Exchange - 8093
+Currency Exchange Generator - 8092
+Gateway - 8080
+Notifications - 8081
+Transfer - 8100
+Cash In Cash Out - 8095

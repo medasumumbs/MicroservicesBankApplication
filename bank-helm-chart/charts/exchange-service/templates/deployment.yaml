@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -c
+    kompose.version: 1.36.0 (ae2a39403)
+  labels:
+    io.kompose.service: exchange-service
+  name: exchange-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: exchange-service
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -c
+        kompose.version: 1.36.0 (ae2a39403)
+      labels:
+        io.kompose.service: exchange-service
+    spec:
+      containers:
+        - env:
+            - name: NOTIFICATIONS_SERVICE_PORT
+              value: "8081"
+          envFrom:
+            - configMapRef:
+                name: env
+          image: exchange-service
+          name: exchange-service
+          ports:
+            - containerPort: 8093
+              protocol: TCP
+      restartPolicy: Always

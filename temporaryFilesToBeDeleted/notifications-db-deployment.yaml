@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -c
+    kompose.version: 1.36.0 (ae2a39403)
+  labels:
+    io.kompose.service: notifications-db
+  name: notifications-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: notifications-db
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -c
+        kompose.version: 1.36.0 (ae2a39403)
+      labels:
+        io.kompose.service: notifications-db
+    spec:
+      containers:
+        - env:
+            - name: POSTGRES_DB
+              value: notifications
+            - name: POSTGRES_PASSWORD
+              value: secret
+            - name: POSTGRES_USER
+              value: myuser
+          envFrom:
+            - configMapRef:
+                name: env
+          image: postgres:16
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready -U myuser
+            failureThreshold: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+          name: notifications-db
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+      restartPolicy: Always
