@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "transfer-service.fullname" . }}
+  labels:
+    {{- include "transfer-service.labels" . | nindent 4 }}
+data:
+  application.yml: |
+    spring:
+      application:
+        name: transferService
+      config:
+        import: configserver:http://config-server:8888
+
+    server:
+      port: 8100
+
+      rabbitmq:
+        host: rabbitmq
+        port: 5672
+        username: guest
+        password: guest
+      security:
+        oauth2:
+          resourceserver:
+            jwt:
+              issuer-uri: http://keycloak:8080/realms/master
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: refresh,busrefresh,busshutdown,health,info
+      endpoint:
+        health:
+          show-details: always
+    eureka:
+      instance:
+        hostname: localhost
+        prefer-ip-address: true
+      client:
+        serviceUrl:
+          defaultZone: http://eureka-service-discovery:8761/eureka/   # URL Eureka сервера
+
+    logging:
+      level:
+        org:
+          springframework:
+            web:
+              filter:
+                CommonsRequestLoggingFilter: DEBUG

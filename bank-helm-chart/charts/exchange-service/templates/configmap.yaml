@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "exchange-service.fullname" . }}
+  labels:
+    {{- include "exchange-service.labels" . | nindent 4 }}
+data:
+  application.yml: |
+    server:
+      port: 8093
+    text-to-print: "Текст до изменений" # Property в микросервисе, которое мы будем изменять прямо на лету
+    spring:
+      application:
+        name: currencyExchangeService
+      config:
+        import: configserver:http://config-server:8888
+      rabbitmq:
+        host: rabbitmq
+        port: 5672
+        username: guest
+        password: guest
+      datasource:
+        url: jdbc:postgresql://localhost:5433/notifications
+        username: myuser
+        password: secret
+      security:
+        oauth2:
+          resourceserver:
+            jwt:
+              issuer-uri: http://keycloak:8080/realms/master
+      jpa:
+        hibernate:
+          ddl-auto: update
+        show-sql: true
+        database-platform:
+          org.hibernate.dialect.PostgreSQLDialect
+      liquibase:
+        url: jdbc:postgresql://localhost:5433/notifications
+        change-log: classpath:liquibase/db.changelog-master.xml
+        parameters:
+          app.schema-name: currencyExchange
+          file-opener-class: org.springframework.boot.loader.jar.JarFileOpener
+        clear-checksums: false
+        enabled: true
+        user: myuser
+        password: secret
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: refresh,busrefresh,busshutdown,health,info
+    eureka:
+      instance:
+        hostname: localhost
+        prefer-ip-address: true
+      client:
+        serviceUrl:
+          defaultZone: http://eureka-service-discovery:8761/eureka/

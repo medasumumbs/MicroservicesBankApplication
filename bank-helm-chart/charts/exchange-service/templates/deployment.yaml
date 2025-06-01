@@ -20,13 +20,19 @@ spec:
       labels:
         io.kompose.service: exchange-service
     spec:
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "exchange-service-appliaction.fullname" }}
       containers:
         - env:
             - name: NOTIFICATIONS_SERVICE_PORT
               value: "8081"
-          envFrom:
-            - configMapRef:
-                name: env
+            - name: SPRING_CONFIG_LOCATION
+              value: file:///app/config
+          volumeMounts:
+            - mountPath: /app/config
+              name: config-volume
           image: exchange-service
           name: exchange-service
           ports:

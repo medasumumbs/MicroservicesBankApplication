@@ -21,12 +21,19 @@ spec:
         io.kompose.service: gateway-service
     spec:
       containers:
-        - envFrom:
-            - configMapRef:
-                name: env
+        - env:
+            - name: SPRING_CONFIG_LOCATION
+              value: file:///app/config
+          volumeMounts:
+            - mountPath: /app/config
+              name: config-volume
           image: gateway-service
           name: gateway-service
           ports:
             - containerPort: 8080
               protocol: TCP
       restartPolicy: Always
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "gateway-service-appliaction.fullname" }}

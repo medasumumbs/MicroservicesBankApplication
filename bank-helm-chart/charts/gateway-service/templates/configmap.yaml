@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "gateway-service.fullname" . }}
+  labels:
+    {{- include "gateway-service.labels" . | nindent 4 }}
+data:
+  application.yml: |
+    cashInCashOutService:
+      fullUrl: http://172.21.48.1:8095
+      client: cashInCashOutService
+      secret: F3PnrhRuMtxh30N67vgxAkOJqY3KYpwW
+      scope: profile
+      registrationId: cashInCashOutService
+      tokenUri: http://keycloak:8080/realms/master/protocol/openid-connect/token
+    server:
+      port: 8080
+    spring:
+      application:
+        name: gateway
+      config:
+        import: configserver:http://config-server:8888
+      cloud:
+        gateway:
+          routes:
+            - id: all
+              uri: http:/**    # адрес сервиса B
+              predicates:
+                - Path=/**
+              filters:
+                - TokenRelay=gateway-client      # используем TokenRelay с нашим clientRegistrationId
+      security:
+
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: refresh,busrefresh,busshutdown,health,info
+    eureka:
+      instance:
+        hostname: localhost
+        prefer-ip-address: true
+      client:
+        serviceUrl:
+          defaultZone: http://eureka-service-discovery:8761/eureka/

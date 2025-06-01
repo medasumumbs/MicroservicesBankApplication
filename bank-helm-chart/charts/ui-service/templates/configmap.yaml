@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ui-service.fullname" . }}
+  labels:
+    {{- include "ui-service.labels" . | nindent 4 }}
+data:
+  application.yml: |
+    cashInCashOutService:
+      fullUrl: http://172.21.48.1:8095
+      client: cashInCashOutService
+      secret: F3PnrhRuMtxh30N67vgxAkOJqY3KYpwW
+      scope: profile
+      registrationId: cashInCashOutService
+      tokenUri: http://keycloakContainer:7980/realms/master/protocol/openid-connect/token
+    server:
+      port: ${SERVER_PORT:8087}
+    spring:
+      application:
+        name: uiService
+      config:
+        import: configserver:http://config-server:8888
+      rabbitmq:
+        host: rabbitmq
+        port: 5672
+        username: guest
+        password: guest
+      webflux:
+        session:
+          timeout: 1800s # 30 минут
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: refresh,busrefresh,busshutdown,health,info
+      endpoint:
+        health:
+          show-details: always
+    eureka:
+      instance:
+        hostname: eureka-service-discovery
+        prefer-ip-address: true
+      client:
+        serviceUrl:
+          defaultZone: http://eureka-service-discovery:8761/eureka/   # URL Eureka сервера

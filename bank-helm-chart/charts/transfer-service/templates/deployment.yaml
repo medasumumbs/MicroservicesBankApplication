@@ -24,6 +24,11 @@ spec:
         - env:
             - name: NOTIFICATIONS_SERVICE_PORT
               value: "8081"
+            - name: SPRING_CONFIG_LOCATION
+              value: file:///app/config
+          volumeMounts:
+            - mountPath: /app/config
+              name: config-volume
           envFrom:
             - configMapRef:
                 name: env
@@ -33,3 +38,7 @@ spec:
             - containerPort: 8100
               protocol: TCP
       restartPolicy: Always
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "exchange-generation-service-appliaction.fullname" }}

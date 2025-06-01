@@ -24,12 +24,18 @@ spec:
         - env:
             - name: NOTIFICATIONS_SERVICE_PORT
               value: "8081"
-          envFrom:
-            - configMapRef:
-                name: env
+            - name: SPRING_CONFIG_LOCATION
+              value: file:///app/config
+          volumeMounts:
+            - mountPath: /app/config
+              name: config-volume
           image: accounts-service
           name: accounts-service
           ports:
             - containerPort: 8084
               protocol: TCP
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "accounts-service-appliaction.fullname" }}
       restartPolicy: Always

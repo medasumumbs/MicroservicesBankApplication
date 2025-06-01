@@ -24,12 +24,18 @@ spec:
         - env:
             - name: NOTIFICATIONS_SERVICE_PORT
               value: "8081"
-          envFrom:
-            - configMapRef:
-                name: env
+            - name: SPRING_CONFIG_LOCATION
+              value: file:///app/config
           image: cash-in-cash-out-service
           name: cash-in-cash-out-service
           ports:
             - containerPort: 8095
               protocol: TCP
+          volumeMounts:
+            - mountPath: /app/config
+              name: config-volume
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "cash-in-cash-out-service-appliaction.fullname" }}
       restartPolicy: Always
