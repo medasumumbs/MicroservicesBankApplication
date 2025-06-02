@@ -27,7 +27,8 @@ spec:
           volumeMounts:
             - mountPath: /app/config
               name: config-volume
-          image: gateway-service
+          image: "gateway-service:0.0.1-SNAPSHOT"
+          imagePullPolicy: IfNotPresent
           name: gateway-service
           ports:
             - containerPort: 8080
@@ -36,4 +37,4 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: {{ include "gateway-service-appliaction.fullname" }}
+            name: {{ include "gateway-service.fullname" . }}

@@ -29,7 +29,8 @@ spec:
           volumeMounts:
             - mountPath: /app/config
               name: config-volume
-          image: antifraud-service
+          imagePullPolicy: IfNotPresent
+          image: "antifraud-service:0.0.1-SNAPSHOT"
           name: antifraud-service
           ports:
             - containerPort: 8096
@@ -37,5 +38,5 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: {{ include "antifraud-service-appliaction.fullname" }}
+            name: {{ include "antifraud-service.fullname" . }}
       restartPolicy: Always

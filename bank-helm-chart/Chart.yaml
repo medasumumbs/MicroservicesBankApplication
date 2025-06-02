@@ -27,14 +27,14 @@ dependencies:
     version: "0.1.0"
     repository: "file://./charts/gateway-service"
   - name: keycloak
-    version: 0.2.0
-    repository: "file://./charts/keycloak"
+    version: 24.7.3
+    repository: https://raw.githubusercontent.com/bitnami/charts/refs/heads/archive-full-index/bitnami/
   - name: transfer-service
     version: 0.1.0
     repository: "file://./charts/transfer-service"
   # Dependency for Customer DB (e.g., PostgreSQL)
   - name: postgresql
-    version: 0.0.3 # Using a specific known stable version from Bitnami history
+    version: 12.1.0 # Using a specific known stable version from Bitnami history
     repository: https://raw.githubusercontent.com/bitnami/charts/refs/heads/archive-full-index/bitnami/
     alias: notifications-db # Alias to distinguish this instance
     condition: notifications-db.enabled # Allow disabling if needed

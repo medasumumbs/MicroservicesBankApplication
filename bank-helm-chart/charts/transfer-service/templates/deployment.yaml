@@ -29,10 +29,11 @@ spec:
           volumeMounts:
             - mountPath: /app/config
               name: config-volume
-          envFrom:
-            - configMapRef:
-                name: env
-          image: transfer-service
+          #envFrom:
+          #  - configMapRef:
+          #      name: env
+          image: "transfer-service:0.0.1-SNAPSHOT"
+          imagePullPolicy: IfNotPresent
           name: transfer-service
           ports:
             - containerPort: 8100
@@ -41,4 +42,4 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: {{ include "exchange-generation-service-appliaction.fullname" }}
+            name: {{ include "transfer-service.fullname" . }}

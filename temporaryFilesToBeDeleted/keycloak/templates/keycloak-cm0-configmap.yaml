@@ -1,0 +1,33 @@
+apiVersion: v1
+data:
+  realm-config.json: |-
+    {
+      "realm": "master",
+      "enabled": true,
+      "attributes": {
+        "frontendUrl": "http://keycloak:8080"
+      },
+      "clients": [
+        {
+          "clientId": "cashInCashOutService",
+          "secret": "F3PnrhRuMtxh30N67vgxAkOJqY3KYpwW",
+          "redirectUris": ["*"],
+          "webOrigins": [],
+          "directAccessGrantsEnabled": true,
+          "standardFlowEnabled": true,
+          "implicitFlowEnabled": true,
+          "serviceAccountsEnabled": true,
+          "publicClient": false,
+          "authorizationServicesEnabled": true,
+          "defaultClientScopes": ["openid", "profile"],
+          "optionalClientScopes": []
+        }
+      ]
+    }
+kind: ConfigMap
+metadata:
+  annotations:
+    use-subpath: "true"
+  labels:
+    io.kompose.service: keycloak
+  name: keycloak-cm0

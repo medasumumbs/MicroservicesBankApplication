@@ -29,13 +29,14 @@ spec:
           volumeMounts:
             - mountPath: /app/config
               name: config-volume
-          image: accounts-service
+          image: "accounts-service:0.0.1-SNAPSHOT"
           name: accounts-service
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8084
               protocol: TCP
       volumes:
         - name: config-volume
           configMap:
-            name: {{ include "accounts-service-appliaction.fullname" }}
+            name: {{ include "accounts-service.fullname" . }}
       restartPolicy: Always

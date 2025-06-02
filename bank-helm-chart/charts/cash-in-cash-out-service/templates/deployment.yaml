@@ -26,7 +26,8 @@ spec:
               value: "8081"
             - name: SPRING_CONFIG_LOCATION
               value: file:///app/config
-          image: cash-in-cash-out-service
+          image: "cash-in-cash-out-service:0.0.1-SNAPSHOT"
+          imagePullPolicy: IfNotPresent
           name: cash-in-cash-out-service
           ports:
             - containerPort: 8095
@@ -37,5 +38,5 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: {{ include "cash-in-cash-out-service-appliaction.fullname" }}
+            name: {{ include "cash-in-cash-out-service.fullname" . }}
       restartPolicy: Always

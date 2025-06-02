@@ -29,7 +29,8 @@ spec:
           volumeMounts:
             - mountPath: /app/config
               name: config-volume
-          image: exchange-generation-service
+          image: "exchange-generator-service:0.0.1-SNAPSHOT"
+          imagePullPolicy: IfNotPresent
           name: exchange-generation-service
           ports:
             - containerPort: 8092
@@ -37,5 +38,5 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: {{ include "exchange-generation-service-appliaction.fullname" }}
+            name: {{ include "exchange-generation-service.fullname" . }}
       restartPolicy: Always

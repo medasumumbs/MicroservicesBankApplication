@@ -29,10 +29,11 @@ spec:
           volumeMounts:
             - mountPath: /app/config
               name: config-volume
-          envFrom:
-            - configMapRef:
-                name: env
-          image: notifications-service
+          #envFrom:
+          #  - configMapRef:
+          #      name: env
+          image: "notifications-service:0.0.1-SNAPSHOT"
+          imagePullPolicy: IfNotPresent
           name: notifications-service
           ports:
             - containerPort: 8081
@@ -41,4 +42,4 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: {{ include "exchange-generation-service-appliaction.fullname" }}
+            name: {{ include "notifications-service.fullname" . }}

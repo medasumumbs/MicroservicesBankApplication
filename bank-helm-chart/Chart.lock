@@ -1,0 +1,33 @@
+dependencies:
+- name: notifications-service
+  repository: file://./charts/notifications-service
+  version: 0.1.0
+- name: ui-service
+  repository: file://./charts/ui-service
+  version: 0.1.0
+- name: accounts-service
+  repository: file://./charts/accounts-service
+  version: 0.1.0
+- name: antifraud-service
+  repository: file://./charts/antifraud-service
+  version: 0.1.0
+- name: cash-in-cash-out-service
+  repository: file://./charts/cash-in-cash-out-service
+  version: 0.1.0
+- name: exchange-generation-service
+  repository: file://./charts/exchange-generation-service
+  version: 0.1.0
+- name: gateway-service
+  repository: file://./charts/gateway-service
+  version: 0.1.0
+- name: keycloak
+  repository: https://raw.githubusercontent.com/bitnami/charts/refs/heads/archive-full-index/bitnami/
+  version: 24.7.3
+- name: transfer-service
+  repository: file://./charts/transfer-service
+  version: 0.1.0
+- name: postgresql
+  repository: https://raw.githubusercontent.com/bitnami/charts/refs/heads/archive-full-index/bitnami/
+  version: 12.1.0
+digest: sha256:55c6bbbc36f0b6ebcbe8ca0605b74ec42cc11c3cc1ca8567e0a25d7f7df96f4a
+generated: "2025-06-02T11:21:42.8056857+03:00"

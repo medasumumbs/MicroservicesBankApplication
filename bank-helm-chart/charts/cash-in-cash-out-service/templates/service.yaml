@@ -6,7 +6,7 @@ metadata:
     kompose.version: 1.36.0 (ae2a39403)
   labels:
     io.kompose.service: cash-in-cash-out-service
-  name: cash_in_cash_out-service
+  name: cash-in-cash-out-service
 spec:
   ports:
     - name: "8095"
