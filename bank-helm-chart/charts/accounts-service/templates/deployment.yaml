@@ -25,7 +25,7 @@ spec:
             - name: NOTIFICATIONS_SERVICE_PORT
               value: "8081"
             - name: SPRING_CONFIG_LOCATION
-              value: file:///app/config
+              value: file:///app/config/application.yml
           volumeMounts:
             - mountPath: /app/config
               name: config-volume
@@ -35,6 +35,13 @@ spec:
           ports:
             - containerPort: 8084
               protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8084
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            failureThreshold: 3
       volumes:
         - name: config-volume
           configMap:

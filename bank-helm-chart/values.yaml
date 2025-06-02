@@ -211,7 +211,7 @@ notifications-db:
   enabled: true
   # Override values from the official postgresql chart
   auth:
-    database: notifications-db
+    database: notifications
     username: myuser
     # Use existingSecret or provide password (less secure for production)
     # existingSecret: "{{ .Release.Name }}-customer-db-postgresql" # Name of the secret to use/create
@@ -249,3 +249,14 @@ keycloak:
           }
         ]
       }
+# values.yaml
+
+#postgresql:
+#  enabled: true
+  #global:
+  #  storageClass: standard
+  #auth:
+    #postgresPassword: "postgres"
+    #username: "myuser"
+    #password: "mysecret"
+    #database: "notifications"
