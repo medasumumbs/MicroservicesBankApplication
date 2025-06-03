@@ -7,11 +7,11 @@ metadata:
 data:
   application.yml: |
     spring:
+      cloud:
+        config:
+          enabled: false
       application:
         name: transferService
-      config:
-        import: configserver:http://config-server:8888
-
     server:
       port: 8100
 

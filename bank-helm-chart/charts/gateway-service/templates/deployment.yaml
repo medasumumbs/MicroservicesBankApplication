@@ -23,12 +23,17 @@ spec:
       containers:
         - env:
             - name: SPRING_CONFIG_LOCATION
-              value: file:///app/config
+              value: file:///app/config/application.yml
           volumeMounts:
             - mountPath: /app/config
               name: config-volume
           image: "gateway-service:0.0.1-SNAPSHOT"
           imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "1Gi"
+            requests:
+              memory: "512Mi"
           name: gateway-service
           ports:
             - containerPort: 8080

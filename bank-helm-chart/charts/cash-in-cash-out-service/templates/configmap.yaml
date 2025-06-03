@@ -7,11 +7,11 @@ metadata:
 data:
   application.yml: |
     spring:
+      cloud:
+        config:
+          enabled: false
       application:
         name: cashInCashOutService
-      config:
-        import: configserver:http://config-server:8888
-
     server:
       port: 8095
       rabbitmq:
@@ -41,6 +41,7 @@ data:
         hostname: localhost
         prefer-ip-address: true
       client:
+        enabled: false
         serviceUrl:
           defaultZone: http://eureka-service-discovery:8761/eureka/
 

@@ -222,6 +222,14 @@ notifications-db:
       size: 1Gi # Small size for example
 keycloak:
   enabled: true
+  externalDatabase:
+    host: myapp-notifications-db
+    port: 5432
+    user: myuser
+    password: mysecret
+    database: notifications
+  postgresql:
+    enabled: false
 
   # Настройка initScripts
   initScripts:

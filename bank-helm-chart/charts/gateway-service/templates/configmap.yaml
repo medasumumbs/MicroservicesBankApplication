@@ -12,15 +12,15 @@ data:
       secret: F3PnrhRuMtxh30N67vgxAkOJqY3KYpwW
       scope: profile
       registrationId: cashInCashOutService
-      tokenUri: http://keycloak:8080/realms/master/protocol/openid-connect/token
+      tokenUri: http://{{ .Release.Name }}-keycloak.{{ .Release.Namespace }}.svc.cluster.local/realms/master/protocol/openid-connect/token
     server:
       port: 8080
     spring:
       application:
         name: gateway
-      config:
-        import: configserver:http://config-server:8888
       cloud:
+        config:
+          enabled: false
         gateway:
           routes:
             - id: all
@@ -41,5 +41,6 @@ data:
         hostname: localhost
         prefer-ip-address: true
       client:
+        enabled: false
         serviceUrl:
           defaultZone: http://eureka-service-discovery:8761/eureka/

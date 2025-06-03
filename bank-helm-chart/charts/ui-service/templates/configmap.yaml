@@ -14,12 +14,13 @@ data:
       registrationId: cashInCashOutService
       tokenUri: http://keycloakContainer:7980/realms/master/protocol/openid-connect/token
     server:
-      port: ${SERVER_PORT:8087}
+      port: 8087
     spring:
+      cloud:
+        config:
+          enabled: false
       application:
         name: uiService
-      config:
-        import: configserver:http://config-server:8888
       rabbitmq:
         host: rabbitmq
         port: 5672

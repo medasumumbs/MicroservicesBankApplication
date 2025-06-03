@@ -9,10 +9,11 @@ data:
     server:
       port: 8092
     spring:
+      cloud:
+        config:
+          enabled: false
       application:
         name: exchangeGeneratorService
-      config:
-        import: configserver:http://config-server:8888
       rabbitmq:
         host: rabbitmq
         port: 5672
@@ -31,5 +32,6 @@ data:
         hostname: localhost
         prefer-ip-address: true
       client:
+        enabled: false
         serviceUrl:
           defaultZone: http://eureka-service-discovery:8761/eureka/

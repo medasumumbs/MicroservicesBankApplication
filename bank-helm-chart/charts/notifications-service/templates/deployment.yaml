@@ -25,7 +25,7 @@ spec:
             - name: NOTIFICATIONS_SERVICE_PORT
               value: "8081"
             - name: SPRING_CONFIG_LOCATION
-              value: file:///app/config
+              value: file:///app/config/application.yml
           volumeMounts:
             - mountPath: /app/config
               name: config-volume
@@ -35,6 +35,11 @@ spec:
           image: "notifications-service:0.0.1-SNAPSHOT"
           imagePullPolicy: IfNotPresent
           name: notifications-service
+          resources:
+            limits:
+              memory: "1Gi"
+            requests:
+              memory: "512Mi"
           ports:
             - containerPort: 8081
               protocol: TCP

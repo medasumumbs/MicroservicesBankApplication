@@ -32,6 +32,11 @@ spec:
           image: "accounts-service:0.0.1-SNAPSHOT"
           name: accounts-service
           imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "1Gi"
+            requests:
+              memory: "512Mi"
           ports:
             - containerPort: 8084
               protocol: TCP

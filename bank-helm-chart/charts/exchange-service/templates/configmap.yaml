@@ -10,10 +10,11 @@ data:
       port: 8093
     text-to-print: "Текст до изменений" # Property в микросервисе, которое мы будем изменять прямо на лету
     spring:
+      cloud:
+        config:
+          enabled: false
       application:
         name: currencyExchangeService
-      config:
-        import: configserver:http://config-server:8888
       rabbitmq:
         host: rabbitmq
         port: 5672
@@ -54,5 +55,6 @@ data:
         hostname: localhost
         prefer-ip-address: true
       client:
+        enabled: false
         serviceUrl:
           defaultZone: http://eureka-service-discovery:8761/eureka/

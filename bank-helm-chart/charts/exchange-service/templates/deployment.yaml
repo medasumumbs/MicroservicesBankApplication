@@ -29,12 +29,17 @@ spec:
             - name: NOTIFICATIONS_SERVICE_PORT
               value: "8081"
             - name: SPRING_CONFIG_LOCATION
-              value: file:///app/config
+              value: file:///app/config/application.yml
           volumeMounts:
             - mountPath: /app/config
               name: config-volume
           image: "currency-exchange-service:0.0.1-SNAPSHOT"
           imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "1Gi"
+            requests:
+              memory: "512Mi"
           name: exchange-service
           ports:
             - containerPort: 8093

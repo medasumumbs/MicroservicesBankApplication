@@ -25,13 +25,18 @@ spec:
             - name: NOTIFICATIONS_SERVICE_PORT
               value: "8081"
             - name: SPRING_CONFIG_LOCATION
-              value: file:///app/config
+              value: file:///app/config/application.yml
           volumeMounts:
             - mountPath: /app/config
               name: config-volume
           imagePullPolicy: IfNotPresent
           image: "antifraud-service:0.0.1-SNAPSHOT"
           name: antifraud-service
+          resources:
+            limits:
+              memory: "1Gi"
+            requests:
+              memory: "512Mi"
           ports:
             - containerPort: 8096
               protocol: TCP

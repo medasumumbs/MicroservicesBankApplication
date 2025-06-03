@@ -8,6 +8,9 @@ data:
   application.yml: |
     text-to-print: "Текст до изменений" # Property в микросервисе, которое мы будем изменять прямо на лету
     spring:
+      cloud:
+        config:
+          enabled: false
       rabbitmq:
         host: rabbitmq
         port: 5672
@@ -23,16 +26,15 @@ data:
         hostname: localhost
         prefer-ip-address: true
       client:
+        enabled: false
         serviceUrl:
           defaultZone: http://eureka-service-discovery:8761/eureka/
       application:
         name: notificationsService
-      config:
-        import: configserver:http://config-server:8888
       datasource:
-        url: ${SPRING_DATASOURCE_URL}
-        username: ${SPRING_DATASOURCE_USERNAME}
-        password: ${SPRING_DATASOURCE_PASSWORD}
+        url: {{ tpl .Values.config.database_url . | quote }}
+        username: {{ .Values.config.database_username | quote }}
+        password: mysecret
       jpa:
         hibernate:
           ddl-auto: update
@@ -40,14 +42,14 @@ data:
         database-platform:
           org.hibernate.dialect.PostgreSQLDialect
       liquibase:
-        url: ${SPRING_DATASOURCE_URL}
+        url: {{ tpl .Values.config.database_url . | quote }}
         change-log: classpath:liquibase/db.changelog-master.xml
         parameters:
           app.schema-name: notifications
           file-opener-class: org.springframework.boot.loader.jar.JarFileOpener
         clear-checksums: false
         enabled: true
-        user: myuser
+        user: {{ .Values.config.database_username | quote }}
         password: secret
     server:
       port: 8081
