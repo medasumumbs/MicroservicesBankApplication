@@ -8,22 +8,20 @@ data:
   application.yml: |
     spring:
       cloud:
+        stream:
+          rabbit:
+            enabled: false
         config:
           enabled: false
       application:
         name: antifraudService
       server:
         port: 8096
-      rabbitmq:
-        host: rabbitmq
-        port: 5672
-        username: guest
-        password: guest
       security:
         oauth2:
           resourceserver:
             jwt:
-              issuer-uri: http://keycloak:8080/realms/master
+              issuer-uri: http://{{ .Release.Name }}-keycloak.{{ .Release.Namespace }}.svc.cluster.local/realms/master
     management:
       endpoints:
         web:

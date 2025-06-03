@@ -35,6 +35,13 @@ spec:
           volumeMounts:
             - mountPath: /app/config
               name: config-volume
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8095
+            initialDelaySeconds: 120
+            periodSeconds: 30
+            failureThreshold: 3
           resources:
             limits:
               memory: "1Gi"

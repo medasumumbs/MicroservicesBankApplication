@@ -21,14 +21,14 @@ data:
         username: guest
         password: guest
       datasource:
-        url: jdbc:postgresql://localhost:5433/notifications
-        username: myuser
-        password: secret
+        url: {{ tpl .Values.config.database_url . | quote }}
+        username: {{ tpl .Values.config.database_username . | quote }}
+        password: mysecret
       security:
         oauth2:
           resourceserver:
             jwt:
-              issuer-uri: http://keycloak:8080/realms/master
+              issuer-uri: http://{{ .Release.Name }}-keycloak.{{ .Release.Namespace }}.svc.cluster.local/realms/master
       jpa:
         hibernate:
           ddl-auto: update
@@ -36,15 +36,15 @@ data:
         database-platform:
           org.hibernate.dialect.PostgreSQLDialect
       liquibase:
-        url: jdbc:postgresql://localhost:5433/notifications
+        url: {{ tpl .Values.config.database_url . | quote }}
         change-log: classpath:liquibase/db.changelog-master.xml
         parameters:
           app.schema-name: currencyExchange
           file-opener-class: org.springframework.boot.loader.jar.JarFileOpener
         clear-checksums: false
         enabled: true
-        user: myuser
-        password: secret
+        user: {{ tpl .Values.config.database_username . | quote }}
+        password: mysecret
     management:
       endpoints:
         web:

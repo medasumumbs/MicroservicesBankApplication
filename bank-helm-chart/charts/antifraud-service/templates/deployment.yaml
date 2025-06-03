@@ -32,6 +32,13 @@ spec:
           imagePullPolicy: IfNotPresent
           image: "antifraud-service:0.0.1-SNAPSHOT"
           name: antifraud-service
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8096
+            initialDelaySeconds: 120
+            periodSeconds: 30
+            failureThreshold: 3
           resources:
             limits:
               memory: "1Gi"

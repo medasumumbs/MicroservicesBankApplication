@@ -42,10 +42,10 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /health
+              path: /actuator/health
               port: 8084
-            initialDelaySeconds: 15
-            periodSeconds: 10
+            initialDelaySeconds: 120
+            periodSeconds: 30
             failureThreshold: 3
       volumes:
         - name: config-volume

@@ -7,16 +7,28 @@ metadata:
 data:
   application.yml: |
     spring:
+      autoconfigure:
+        exclude:
+          - org.springframework.cloud.stream.config.BinderAutoConfiguration
+          - org.springframework.cloud.stream.messaging.SourceBindingServiceConfiguration
+      stream:
+        bindings:
+          input:
+            destination: unused
+            binder: none
+          output:
+            destination: unused
+            binder: none
+        rabbit:
+          enabled: false
       cloud:
+        stream:
+          rabbit:
+            enabled: false
         config:
           enabled: false
       application:
         name: accountsService
-      rabbitmq:
-        host: rabbitmq
-        port: 5672
-        username: guest
-        password: guest
       security:
         oauth2:
           resourceserver:

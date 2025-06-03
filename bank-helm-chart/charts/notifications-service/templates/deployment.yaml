@@ -35,6 +35,13 @@ spec:
           image: "notifications-service:0.0.1-SNAPSHOT"
           imagePullPolicy: IfNotPresent
           name: notifications-service
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8081
+            initialDelaySeconds: 120
+            periodSeconds: 30
+            failureThreshold: 3
           resources:
             limits:
               memory: "1Gi"
