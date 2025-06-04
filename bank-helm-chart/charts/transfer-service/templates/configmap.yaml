@@ -6,20 +6,14 @@ metadata:
     {{- include "transfer-service.labels" . | nindent 4 }}
 data:
   application.yml: |
+    server:
+      port: 8100
     spring:
       cloud:
         config:
           enabled: false
       application:
         name: transferService
-    server:
-      port: 8100
-
-      rabbitmq:
-        host: rabbitmq
-        port: 5672
-        username: guest
-        password: guest
       security:
         oauth2:
           resourceserver:

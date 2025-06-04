@@ -6,29 +6,7 @@ metadata:
     {{- include "notifications-service.labels" . | nindent 4 }}
 data:
   application.yml: |
-    text-to-print: "Текст до изменений" # Property в микросервисе, которое мы будем изменять прямо на лету
     spring:
-      cloud:
-        config:
-          enabled: false
-      rabbitmq:
-        host: rabbitmq
-        port: 5672
-        username: guest
-        password: guest
-      security:
-        oauth2:
-          resourceserver:
-            jwt:
-              issuer-uri: http://{{ .Release.Name }}-keycloak.{{ .Release.Namespace }}.svc.cluster.local/realms/master
-    eureka:
-      instance:
-        hostname: localhost
-        prefer-ip-address: true
-      client:
-        enabled: false
-        serviceUrl:
-          defaultZone: http://eureka-service-discovery:8761/eureka/
       application:
         name: notificationsService
       datasource:
@@ -51,6 +29,22 @@ data:
         enabled: true
         user: {{ .Values.config.database_username | quote }}
         password: secret
+      cloud:
+        config:
+          enabled: false
+      security:
+        oauth2:
+          resourceserver:
+            jwt:
+              issuer-uri: http://{{ .Release.Name }}-keycloak.{{ .Release.Namespace }}.svc.cluster.local/realms/master
+    eureka:
+      instance:
+        hostname: localhost
+        prefer-ip-address: true
+      client:
+        enabled: false
+        serviceUrl:
+          defaultZone: http://eureka-service-discovery:8761/eureka/
     server:
       port: 8081
 

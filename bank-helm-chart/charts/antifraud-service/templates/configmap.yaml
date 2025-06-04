@@ -6,6 +6,8 @@ metadata:
     {{- include "antifraud-service.labels" . | nindent 4 }}
 data:
   application.yml: |
+    server:
+      port: 8096
     spring:
       cloud:
         stream:
@@ -15,8 +17,6 @@ data:
           enabled: false
       application:
         name: antifraudService
-      server:
-        port: 8096
       security:
         oauth2:
           resourceserver:
