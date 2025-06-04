@@ -20,6 +20,16 @@ spec:
       labels:
         io.kompose.service: transfer-service
     spec:
+      initContainers:
+        - name: delay
+          image: curlimages/curl:latest
+          command:
+            - sh
+            - -c
+            - |
+              echo "Delay 70 sec"
+              sleep 70
+              echo "Delay finished, starting deployment"
       containers:
         - env:
             - name: NOTIFICATIONS_SERVICE_PORT

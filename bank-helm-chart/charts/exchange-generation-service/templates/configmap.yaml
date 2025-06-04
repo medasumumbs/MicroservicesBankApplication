@@ -6,6 +6,7 @@ metadata:
     {{- include "exchange-generation-service.labels" . | nindent 4 }}
 data:
   application.yml: |
+    gatewayHost: gateway-service.{{.Release.Namespace}}.svc.cluster.local
     server:
       port: 8092
     ribbon:

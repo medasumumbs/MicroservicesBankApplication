@@ -10,7 +10,7 @@ metadata:
 spec:
   ports:
     - name: "8084"
-      port: 8084
+      port: 80
       targetPort: 8084
   selector:
     io.kompose.service: accounts-service

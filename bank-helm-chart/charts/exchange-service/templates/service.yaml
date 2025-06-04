@@ -10,7 +10,7 @@ metadata:
 spec:
   ports:
     - name: "8093"
-      port: 8093
+      port: 80
       targetPort: 8093
   selector:
     io.kompose.service: exchange-service

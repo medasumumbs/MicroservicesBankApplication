@@ -1,6 +1,7 @@
 # Global values (if any)
 global:
   domain: myapp.local # Example domain for ingress
+  #keycloakIssuerUri: "http://{{ .Release.Name }}-keycloak.{{ .Release.Namespace }}.svc.cluster.local:8080/realms/master"
 
 # Configuration for the ui-service subchart
 # NOTE: For local development (Minikube/Kind/Docker Desktop), build the image locally
@@ -221,6 +222,18 @@ notifications-db:
       enabled: true
       size: 1Gi # Small size for example
 keycloak:
+  httpRelativePath: "/"
+  hostname: localhost
+  production: false
+  tls:
+    enabled: false
+  auth:
+    adminPassword: 123
+    adminUser: admin
+  service:
+    type: ClusterIP
+    ports:
+      http: 8080
   enabled: true
   externalDatabase:
     host: myapp-notifications-db
@@ -230,41 +243,16 @@ keycloak:
     database: notifications
   postgresql:
     enabled: false
+  extraArgs:
+    - --import-realm
+  extraVolumes:
+    - name: realm-config
+      configMap:
+        name: keycloak-realm-config
+  extraVolumeMounts:
+    - name: realm-config
+      mountPath: /opt/bitnami/keycloak/data/import
+  extraEnvVars:
+    - name: KEYCLOAK_EXTRA_ARGS
+      value: --import-realm
 
-  # Настройка initScripts
-  initScripts:
-    realm-export.json: |
-      {
-        "realm": "master",
-        "enabled": true,
-        "attributes": {
-          "frontendUrl": "http://keycloak:8080"
-        },
-        "clients": [
-          {
-            "clientId": "cashInCashOutService",
-            "secret": "F3PnrhRuMtxh30N67vgxAkOJqY3KYpwW",
-            "redirectUris": ["*"],
-            "webOrigins": [],
-            "directAccessGrantsEnabled": true,
-            "standardFlowEnabled": true,
-            "implicitFlowEnabled": true,
-            "serviceAccountsEnabled": true,
-            "publicClient": false,
-            "authorizationServicesEnabled": true,
-            "defaultClientScopes": ["openid", "profile"],
-            "optionalClientScopes": []
-          }
-        ]
-      }
-# values.yaml
-
-#postgresql:
-#  enabled: true
-  #global:
-  #  storageClass: standard
-  #auth:
-    #postgresPassword: "postgres"
-    #username: "myuser"
-    #password: "mysecret"
-    #database: "notifications"
