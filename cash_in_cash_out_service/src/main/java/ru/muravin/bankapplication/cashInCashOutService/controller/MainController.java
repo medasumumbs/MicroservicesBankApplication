@@ -1,5 +1,6 @@
 package ru.muravin.bankapplication.cashInCashOutService.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -14,6 +15,9 @@ public class MainController {
     private final RestTemplate restTemplate;
     private final NotificationsServiceClient notificationsServiceClient;
 
+    @Value("${gatewayHost:gateway}")
+    private String gatewayHost;
+
     public MainController(RestTemplate restTemplate, NotificationsServiceClient notificationsServiceClient) {
         this.restTemplate = restTemplate;
         this.notificationsServiceClient = notificationsServiceClient;
@@ -24,13 +28,13 @@ public class MainController {
         var action = cashInCashOutDto.getAction();
 
         var antifraudResponse = restTemplate.postForObject(
-                "http://gateway/antifraudService/checkOperations",cashInCashOutDto,HttpResponseDto.class
+                "http://"+gatewayHost+"/antifraudService/checkOperations",cashInCashOutDto,HttpResponseDto.class
         );
         if (!antifraudResponse.getStatusCode().equals("OK")) {
             return ResponseEntity.ok(antifraudResponse);
         }
         var accountsServiceResponse = restTemplate.postForObject(
-                "http://gateway/accountsService/cashInOrCashOut",cashInCashOutDto,String.class
+                "http://"+gatewayHost+"/accountsService/cashInOrCashOut",cashInCashOutDto,String.class
         );
         if (!accountsServiceResponse.equals("OK")) {
             return ResponseEntity.ok(new HttpResponseDto("ERROR", accountsServiceResponse));

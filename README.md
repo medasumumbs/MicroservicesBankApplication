@@ -11,6 +11,7 @@
 * Закрытие и открытие счетов в разных валютах
 * Приложение защищено авторизацией и аутентификацией
 * Поддерживается безопасность, проверка переводов антимошенническим сервисом Antifraud
+* Приложение поддерживает запуск в различных средах - с помощью Heml + Kubernetes (ниже приведена инструкция по развертыванию) и отладочный с помощью docker.compose
 
 ## Используемые технологии и реализуемые паттерны
 * Код приложения написан на Java 21
@@ -29,6 +30,10 @@
 * MapStruct использован для преобразования DTO в сущности приложения
 * Mockito, JUnit, MockMVC - технологии для тестирования
 * Тестовые конфигурации отделены от производственных (Production)
+* Реализован Helm chart для быстрого и удобного развертывания приложения с помощью Kubernetes
+* Паттерн Externalized Distributed Config реализован как с помощью Spring Cloud Server (при запуске через Docker Compose), так и через механизм ConfigMaps Kubernetes
+* Service Discovery при запуске через Kubernetes реализован с помощью механизма Ingress с реализацией Nginx
+
 
 ##  Функциональные микросервисы
 
@@ -44,10 +49,10 @@
 ## Инфраструктурные микросервисы
 
 1. **Gateway** — Spring Cloud Gateway - шлюз, через который все сервисы обращаются друг к другу. Авторизуется с помощью KeyCloak.
-2. **Eureka Service Discovery** — Сервис обнаружения и учета других сервисов
-3. **Config Server** — Сервис хранения конфигураций для всех микросервисов приложения
+2. **Eureka Service Discovery** — Сервис обнаружения и учета других сервисов - не используется при запуске через Kubernetes
+3. **Config Server** — Сервис хранения конфигураций для всех микросервисов приложения - не используется при запуске через Kubernetes
 
-## Развертывание и запуск
+## Развертывание и запуск через Docker Compose
 1. Необходимо клонировать репозиторий:
 ```bash
    git clone https://github.com/medasumumbs/MicroservicesBankApplication.git
@@ -71,4 +76,53 @@
 6. По этому адресу будет доступен личный кабинет пользователя после аутентификации: 
 ```
 http://localhost:8087/
+```
+
+## Развертывание и запуск через Kubernetes + Helm
+1. Необходимо клонировать репозиторий:
+```bash
+   git clone https://github.com/medasumumbs/MicroservicesBankApplication.git
+```
+2. В корне директории запустить команду для сборки
+```bash
+   gradlew.bat build
+```
+3. Запуск кластера Minikube
+```bash
+   minikube start
+   minikube addons enable ingress
+   minikube config set memory 16384
+   minikube stop
+   minikube start
+```
+4. Minikube необходимо привязать к текущему окружению Docker (PowerShell):
+```bash
+   $dockerEnv = minikube docker-env --shell powershell
+   Invoke-Expression ($dockerEnv -join "; ")
+```
+5. Cборка отдельных Docker-образов:
+```bash
+    docker build -t accounts-service:0.0.1-SNAPSHOT ./accounts_service
+    docker build -t antifraud-service:0.0.1-SNAPSHOT ./antifraud_service
+    docker build -t cash-in-cash-out-service:0.0.1-SNAPSHOT ./cash_in_cash_out_service
+    docker build -t currency-exchange-service:0.0.1-SNAPSHOT ./currency_exchange_service
+    docker build -t exchange-generator-service:0.0.1-SNAPSHOT ./exchange_generator_service
+    docker build -t gateway-service:0.0.1-SNAPSHOT ./gateway   
+    docker build -t notifications-service:0.0.1-SNAPSHOT ./notifications_service
+    docker build -t transfer-service:0.0.1-SNAPSHOT ./transfer_service
+    docker build -t ui-service:0.0.1-SNAPSHOT ./ui_service
+```
+6. Обновление зависимостей для Helm-чарта:
+```bash
+   cd ./bank-helm-chart
+   helm dependency update .
+```
+7. Запуск приложения и открытие порта:
+```bash
+   helm install myapp ./
+   kubectl port-forward svc/ui-service 8080:80 -n default
+```
+8. По этому адресу будет доступен личный кабинет пользователя после аутентификации:
+```
+http://localhost:8080/
 ```

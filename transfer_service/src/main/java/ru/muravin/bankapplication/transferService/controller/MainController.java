@@ -1,5 +1,6 @@
 package ru.muravin.bankapplication.transferService.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -18,6 +19,9 @@ public class MainController {
     private final RestTemplate restTemplate;
     private final NotificationsServiceClient notificationsServiceClient;
 
+    @Value("${gatewayHost:gateway}")
+    private String gatewayHost;
+
     public MainController(RestTemplate restTemplate, NotificationsServiceClient notificationsServiceClient) {
         this.restTemplate = restTemplate;
         this.notificationsServiceClient = notificationsServiceClient;
@@ -32,7 +36,7 @@ public class MainController {
             ));
         }
         var fromAccountInfo = restTemplate.getForObject(
-                "http://gateway/accountsService/getAccountInfo?username="
+                "http://"+gatewayHost+"/accountsService/getAccountInfo?username="
                         +transfer.getFromAccount()+"&currency="+transfer.getFromCurrency(),
                 AccountInfoDto.class
         );
@@ -46,7 +50,7 @@ public class MainController {
         }
 
         var toAccountInfo = restTemplate.getForObject(
-                "http://gateway/accountsService/getAccountInfo?username="
+                "http://"+gatewayHost+"/accountsService/getAccountInfo?username="
                         +transfer.getToAccount()+"&currency="+transfer.getToCurrency(),
                 AccountInfoDto.class
         );
@@ -60,7 +64,7 @@ public class MainController {
         }
 
         var antifraudResponse = restTemplate.postForObject(
-            "http://gateway/antifraudService/checkOperations",transfer,HttpResponseDto.class
+            "http://"+gatewayHost+"/antifraudService/checkOperations",transfer,HttpResponseDto.class
         );
         if (!antifraudResponse.getStatusCode().equals("OK")) {
             return ResponseEntity.ok(antifraudResponse);
@@ -73,7 +77,7 @@ public class MainController {
 
         } else {
             List<LinkedHashMap> currencyRates = restTemplate.getForObject(
-                    "http://gateway/currencyExchangeService/rates",List.class);
+                    "http://"+gatewayHost+"/currencyExchangeService/rates",List.class);
             Map<String, LinkedHashMap> currencyRatesMap = new HashMap<>();
             currencyRates.forEach(currencyRateDto -> {
                 currencyRatesMap.put((String) currencyRateDto.get("currencyCode"), currencyRateDto);
@@ -106,7 +110,7 @@ public class MainController {
         finalRequestDto.setToAccountNumber(toAccountNumber);
 
         var accountsServiceResponse = restTemplate.postForObject(
-                "http://gateway/accountsService/transfer",finalRequestDto,String.class
+                "http://"+gatewayHost+"/accountsService/transfer",finalRequestDto,String.class
         );
         if (accountsServiceResponse == null) {
             return ResponseEntity.ok(

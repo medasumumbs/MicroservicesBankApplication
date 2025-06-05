@@ -34,6 +34,7 @@ public class ServiceTests {
 
         when(webClientBuilder.build()).thenReturn(mockWebClient);
         ratesGenerationService = new RatesGenerationService(webClientBuilder);
+        ratesGenerationService.setGatewayHost("gateway");
     }
 
     @Test

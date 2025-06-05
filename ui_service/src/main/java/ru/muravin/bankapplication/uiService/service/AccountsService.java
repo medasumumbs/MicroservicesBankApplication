@@ -1,6 +1,7 @@
 package ru.muravin.bankapplication.uiService.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -17,6 +18,9 @@ public class AccountsService {
 
     private final WebClient.Builder webClientBuilder;
 
+    @Value("${gatewayHost:gateway}")
+    private String gatewayHost;
+
     @Autowired
     public AccountsService(WebClient.Builder webClientBuilder) {
         this.webClientBuilder = webClientBuilder;
@@ -26,7 +30,7 @@ public class AccountsService {
         var dto = new NewAccountDto(currency, login);
         return webClientBuilder.build()
             .post()
-            .uri("http://gateway/accountsService/addAccount")
+            .uri("http://"+gatewayHost+"/accountsService/addAccount")
             .bodyValue(dto).retrieve()
             .bodyToMono(String.class)
             .onErrorResume(
@@ -42,7 +46,7 @@ public class AccountsService {
             .onErrorResume(Exception.class, ex -> Mono.just("Возникла неизвестная ошибка: " + ex.getMessage()));
     }
     public Mono<List<AccountDto>> findAllAccountsByUser(String login) {
-        return webClientBuilder.build().get().uri("http://gateway/accountsService/findAccountsByUsername?username="+login)
+        return webClientBuilder.build().get().uri("http://"+gatewayHost+"/accountsService/findAccountsByUsername?username="+login)
                 .retrieve().bodyToFlux(AccountDto.class).collectList().switchIfEmpty(Mono.empty());
     }
     public Mono<HttpResponseDto> withdrawCash(String login, String currency, String amount, String action) {
@@ -54,7 +58,7 @@ public class AccountsService {
         return webClientBuilder
             .build()
             .post()
-            .uri("http://gateway/cashInCashOutService/withdrawCash")
+            .uri("http://"+gatewayHost+"/cashInCashOutService/withdrawCash")
                 .bodyValue(dto)
             .retrieve().bodyToMono(HttpResponseDto.class)
             .onErrorResume(
@@ -80,7 +84,7 @@ public class AccountsService {
         return webClientBuilder
             .build()
             .post()
-            .uri("http://gateway/transferService/transfer")
+            .uri("http://"+gatewayHost+"/transferService/transfer")
             .bodyValue(dto)
             .retrieve().bodyToMono(HttpResponseDto.class)
             .onErrorResume(
@@ -100,7 +104,7 @@ public class AccountsService {
         return webClientBuilder
             .build()
             .get()
-            .uri("http://gateway/accountsService/users")
+            .uri("http://"+gatewayHost+"/accountsService/users")
             .retrieve().bodyToFlux(UserDto.class)
             .onErrorResume(
                     WebClientResponseException.class,

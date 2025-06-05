@@ -1,5 +1,6 @@
 package ru.muravin.bankapplication.uiService.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -18,17 +19,20 @@ import java.util.List;
 public class CurrenciesService {
     private final WebClient.Builder webClientBuilder;
 
+    @Value("${gatewayHost:gateway}")
+    private String gatewayHost;
+
     public CurrenciesService(WebClient.Builder webClientBuilder) {
         this.webClientBuilder = webClientBuilder;
     }
 
     public Mono<ResponseEntity<byte[]>> getRates() {
-       return webClientBuilder.build().get().uri("http://gateway/currencyExchangeService/rates").retrieve()
+       return webClientBuilder.build().get().uri("http://"+gatewayHost+"/currencyExchangeService/rates").retrieve()
                 .bodyToMono(String.class).map(String::getBytes).map(ResponseEntity::ok);
     }
 
     public Mono<UserDetails> findByUsername(String username) {
-        var url = "http://gateway/accountsService/findByUsername";
+        var url = "http://"+gatewayHost+"/accountsService/findByUsername";
         return webClientBuilder.build()
                 .get().uri(UriComponentsBuilder.fromHttpUrl(url).queryParam("username", username).build().toUri())
                 .retrieve().bodyToMono(UserDto.class).map(userDto -> (UserDetails) userDto).onErrorResume(
@@ -46,7 +50,7 @@ public class CurrenciesService {
         titlesByCodesMap.put("RUB", "Российский рубль");
         titlesByCodesMap.put("EUR", "Евро");
         return webClientBuilder
-                .build().get().uri("http://gateway/currencyExchangeService/rates").retrieve()
+                .build().get().uri("http://"+gatewayHost+"/currencyExchangeService/rates").retrieve()
                 .bodyToFlux(CurrencyRateDto.class).switchIfEmpty(Flux.empty()).map(currencyRateDto -> {
                     return CurrencyDto.builder()
                             .currencyCode(currencyRateDto.getCurrencyCode())

@@ -1,5 +1,6 @@
 package ru.muravin.bankapplication.uiService.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
@@ -21,6 +22,9 @@ public class ReactiveUserDetailsServiceImpl implements ReactiveUserDetailsServic
     private final WebClient.Builder webClientBuilder;
     private final PasswordEncoder passwordEncoder;
 
+    @Value("${gatewayHost:gateway}")
+    private String gatewayHost;
+
     public ReactiveUserDetailsServiceImpl(WebClient.Builder webClientBuilder, PasswordEncoder passwordEncoder) {
         this.webClientBuilder = webClientBuilder;
         this.passwordEncoder = passwordEncoder;
@@ -28,7 +32,7 @@ public class ReactiveUserDetailsServiceImpl implements ReactiveUserDetailsServic
 
     public Mono<String> updatePassword(String login, String password) {
         return webClientBuilder.build()
-            .post().uri("http://gateway/accountsService/changePassword")
+            .post().uri("http://"+gatewayHost+"/accountsService/changePassword")
             .bodyValue(ChangePasswordDto.builder().newPassword(passwordEncoder.encode(password)).login(login).build())
                 .retrieve().bodyToMono(String.class)
             .onErrorResume(
@@ -47,7 +51,7 @@ public class ReactiveUserDetailsServiceImpl implements ReactiveUserDetailsServic
     public Mono<String> registerUser(UserDto userDto) {
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         return webClientBuilder.build()
-        .post().uri("http://gateway/accountsService/register")
+        .post().uri("http://"+gatewayHost+"/accountsService/register")
         .bodyValue(userDto).retrieve().bodyToMono(String.class).onErrorResume(
             WebClientResponseException.class,
             ex -> {
@@ -63,7 +67,7 @@ public class ReactiveUserDetailsServiceImpl implements ReactiveUserDetailsServic
 
     @Override
     public Mono<UserDetails> findByUsername(String username) {
-        var url = "http://gateway/accountsService/findByUsername";
+        var url = "http://"+gatewayHost+"/accountsService/findByUsername";
         return webClientBuilder.build()
             .get().uri(UriComponentsBuilder.fromHttpUrl(url).queryParam("username", username).build().toUri())
             .retrieve().bodyToMono(UserDto.class).map(userDto -> (UserDetails) userDto).onErrorResume(
@@ -94,7 +98,7 @@ public class ReactiveUserDetailsServiceImpl implements ReactiveUserDetailsServic
         userDto.setLastName(name.split(" ")[0]);
         if (name.split(" ").length > 2) userDto.setPatronymic(name.split(" ")[2]);
         return webClientBuilder.build()
-                .post().uri("http://gateway/accountsService/updateUserInfo")
+                .post().uri("http://"+gatewayHost+"/accountsService/updateUserInfo")
                 .bodyValue(userDto).retrieve().bodyToMono(String.class).onErrorResume(
                         WebClientResponseException.class,
                         ex -> {

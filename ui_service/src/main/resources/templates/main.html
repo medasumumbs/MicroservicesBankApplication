@@ -8,7 +8,7 @@
         setInterval(() => {
             var td = document.getElementById('exchange_rates');
             fetch(
-                'http://localhost:8087/currencyExchangeService/rates',
+                '/currencyExchangeService/rates',
                 {
                     method: 'GET', mode: 'cors', credentials: 'include',
                     headers: {
