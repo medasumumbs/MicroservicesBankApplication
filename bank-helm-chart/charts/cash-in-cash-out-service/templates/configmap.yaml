@@ -26,7 +26,7 @@ data:
         oauth2:
           resourceserver:
             jwt:
-              issuer-uri: http://{{ .Release.Name }}-keycloak.{{ .Release.Namespace }}.svc.cluster.local/realms/master
+              issuer-uri:  http://{{ .Release.Name }}-keycloak.{{ .Release.Namespace }}.svc.cluster.local:8080/realms/master
     management:
       endpoints:
         web:
