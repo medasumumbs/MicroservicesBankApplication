@@ -20,13 +20,16 @@ ui-service:
     port: 8087
   ingress:
     enabled: true
-    className: "nginx" # Specify your ingress controller class
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
+      nginx.ingress.kubernetes.io/use-regex: "true"
     hosts:
-      - host: customer.myapp.local # Use global domain or specific
+      - host: ingress-gateway.myapp.local
         paths:
-          - path: /
+          - path: /uiService(/|$)(.*)
             pathType: ImplementationSpecific
-
+    tls: [ ]
 
 antifraud-service:
   replicaCount: 1
@@ -42,11 +45,15 @@ antifraud-service:
   ingress:
     enabled: true
     className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
+      nginx.ingress.kubernetes.io/use-regex: "true"
     hosts:
-      - host: order.myapp.local
+      - host: ingress-gateway.myapp.local
         paths:
-          - path: /
+          - path: /antifraudService(/|$)(.*)
             pathType: ImplementationSpecific
+    tls: [ ]
 
 
 cash-in-cash-out-service:
@@ -63,11 +70,15 @@ cash-in-cash-out-service:
   ingress:
     enabled: true
     className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
+      nginx.ingress.kubernetes.io/use-regex: "true"
     hosts:
-      - host: order.myapp.local
+      - host: ingress-gateway.myapp.local
         paths:
-          - path: /
+          - path: /cashInCashOutService(/|$)(.*)
             pathType: ImplementationSpecific
+    tls: [ ]
 
 exchange-service:
   replicaCount: 1
@@ -83,11 +94,15 @@ exchange-service:
   ingress:
     enabled: true
     className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
+      nginx.ingress.kubernetes.io/use-regex: "true"
     hosts:
-      - host: order.myapp.local
+      - host: ingress-gateway.myapp.local
         paths:
-          - path: /
+          - path: /currencyExchangeService(/|$)(.*)
             pathType: ImplementationSpecific
+    tls: [ ]
   config:
     # --- CORRECTED DB URL --- Using '<ReleaseName>-<Alias>' service name convention
     database_url: "jdbc:postgresql://{{ .Release.Name }}-notifications-db:5432/notifications"
@@ -107,11 +122,15 @@ exchange-generation-service:
   ingress:
     enabled: true
     className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
+      nginx.ingress.kubernetes.io/use-regex: "true"
     hosts:
-      - host: order.myapp.local
+      - host: ingress-gateway.myapp.local
         paths:
-          - path: /
+          - path: /exchangeGenerationService(/|$)(.*)
             pathType: ImplementationSpecific
+    tls: [ ]
 
 gateway-service:
   replicaCount: 1
@@ -124,14 +143,7 @@ gateway-service:
   service:
     type: ClusterIP
     port: 8080
-  ingress:
-    enabled: true
-    className: "nginx"
-    hosts:
-      - host: order.myapp.local
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
+  gatewayUrl: "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local"
 
 notifications-service:
   replicaCount: 1
@@ -147,13 +159,16 @@ notifications-service:
   ingress:
     enabled: true
     className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
+      nginx.ingress.kubernetes.io/use-regex: "true"
     hosts:
-      - host: order.myapp.local
+      - host: ingress-gateway.myapp.local
         paths:
-          - path: /
+          - path: /notificationsService(/|$)(.*)
             pathType: ImplementationSpecific
+    tls: [ ]
   config:
-    # --- CORRECTED DB URL --- Using '<ReleaseName>-<Alias>' service name convention
     database_url: "jdbc:postgresql://{{ .Release.Name }}-notifications-db:5432/notifications"
     database_username: "myuser"
 
@@ -172,11 +187,15 @@ transfer-service:
   ingress:
     enabled: true
     className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
+      nginx.ingress.kubernetes.io/use-regex: "true"
     hosts:
-      - host: order.myapp.local
+      - host: ingress-gateway.myapp.local
         paths:
-          - path: /
+          - path: /transferService(/|$)(.*)
             pathType: ImplementationSpecific
+    tls: [ ]
 
 
 # Configuration for the accounts-service subchart
@@ -195,13 +214,16 @@ accounts-service:
   ingress:
     enabled: true
     className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
+      nginx.ingress.kubernetes.io/use-regex: "true"
     hosts:
-      - host: order.myapp.local
+      - host: ingress-gateway.myapp.local
         paths:
-          - path: /
+          - path: /accountsService(/|$)(.*)
             pathType: ImplementationSpecific
+    tls: [ ]
   config:
-    # --- CORRECTED DB URL --- Using '<ReleaseName>-<Alias>' service name convention
     database_url: "jdbc:postgresql://{{ .Release.Name }}-notifications-db:5432/notifications"
     database_username: "myuser"
 
@@ -256,3 +278,64 @@ keycloak:
     - name: KEYCLOAK_EXTRA_ARGS
       value: --import-realm
 
+gatewayIngress:
+  enabled: true
+  host: "ingress-gateway.myapp.local"
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: "/$2"
+  services:
+    - name: accounts-service
+      path: /accountsService(/|$)(.*)
+      backend:
+        service: accounts-service
+        port: 8087
+
+    - name: antifraud-service
+      path: /antifraudService(/|$)(.*)
+      backend:
+        service: antifraud-service
+        port: 8096
+
+    - name: cash-in-cash-out-service
+      path: /cashInCashOutService(/|$)(.*)
+      backend:
+        service: cash-in-cash-out-service
+        port: 8095
+
+    - name: exchange-service
+      path: /currencyExchangeService(/|$)(.*)
+      backend:
+        service: exchange-service
+        port: 8093
+
+    - name: exchange-generation-service
+      path: /exchangeGenerationService(/|$)(.*)
+      backend:
+        service: exchange-generation-service
+        port: 8092
+
+    - name: notifications-service
+      path: /notificationsService(/|$)(.*)
+      backend:
+        service: notifications-service
+        port: 8081
+
+    - name: transfer-service
+      path: /transferService(/|$)(.*)
+      backend:
+        service: transfer-service
+        port: 8100
+
+    - name: ui-service
+      path: /uiService(/|$)(.*)
+      backend:
+        service: ui-service
+        port: 8087
+
+    - name: gateway-service
+      path: /gatewayService(/|$)(.*)
+      backend:
+        service: gateway-service
+        port: 8080

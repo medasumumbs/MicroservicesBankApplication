@@ -6,13 +6,15 @@ metadata:
     {{- include "gateway-service.labels" . | nindent 4 }}
 data:
   application.yml: |
+    usingIngress: true
+    ingressUrl: {{.Values.gatewayUrl}}
     cashInCashOutService:
       fullUrl: http://172.21.48.1:8095
       client: cashInCashOutService
       secret: F3PnrhRuMtxh30N67vgxAkOJqY3KYpwW
       scope: profile
       registrationId: cashInCashOutService
-      tokenUri: http://{{ .Release.Name }}-keycloak.{{ .Release.Namespace }}.svc.cluster.local/realms/master/protocol/openid-connect/token
+      tokenUri: http://{{ .Release.Name }}-keycloak.{{ .Release.Namespace }}.svc.cluster.local:8080/realms/master/protocol/openid-connect/token
     server:
       port: 8080
     spring:
