@@ -1,13 +1,19 @@
 package ru.muravin.bankapplication.gateway.controllers;
 
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.gateway.webflux.ProxyExchange;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 import ru.muravin.bankapplication.gateway.services.SecurityTokenService;
@@ -17,12 +23,27 @@ import java.util.List;
 @RestController
 public class GatewayController {
 
+    Logger log = LoggerFactory.getLogger(GatewayController.class);
     @Autowired
     private DiscoveryClient discoveryClient;
     @Autowired
     private SecurityTokenService securityTokenService;
 
+    @Value("${usingIngress:false}")
+    private String usingIngress;
+
+    @Value("${ingressUrl:unknown}")
+    private String ingressUrl;
+
     public String getServiceUrl(String serviceId) {
+        System.out.println("\n GetServiceUrl: " + serviceId);
+        System.out.println("Using Ingress: " + usingIngress);
+        System.out.println("Using Ingress Url: " + ingressUrl);
+        if (usingIngress.equals("true")) {
+            log.info("Using Ingress, url Detected: {}", ingressUrl + "/" + serviceId);
+            return ingressUrl+"/"+serviceId;
+        }
+        log.info("Not Using Ingress");
         List<ServiceInstance> instances = discoveryClient.getInstances(serviceId);
         if (instances != null && !instances.isEmpty()) {
             return instances.getFirst().getUri().toString();
