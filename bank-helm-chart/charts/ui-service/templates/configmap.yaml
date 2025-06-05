@@ -6,6 +6,7 @@ metadata:
     {{- include "ui-service.labels" . | nindent 4 }}
 data:
   application.yml: |
+    gatewayHost: gateway-service.{{.Release.Namespace}}.svc.cluster.local
     cashInCashOutService:
       fullUrl: http://172.21.48.1:8095
       client: cashInCashOutService
@@ -13,10 +14,16 @@ data:
       scope: profile
       registrationId: cashInCashOutService
       tokenUri: http://keycloakContainer:7980/realms/master/protocol/openid-connect/token
+    ribbon:
+      enabled: false
     server:
       port: 8087
     spring:
       cloud:
+        loadbalancer:
+          enabled: false
+          ribbon:
+            enabled: false
         config:
           enabled: false
       application:
@@ -42,5 +49,6 @@ data:
         hostname: eureka-service-discovery
         prefer-ip-address: true
       client:
+        enabled: false
         serviceUrl:
           defaultZone: http://eureka-service-discovery:8761/eureka/   # URL Eureka сервера

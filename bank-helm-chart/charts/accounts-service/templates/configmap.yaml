@@ -6,6 +6,7 @@ metadata:
     {{- include "accounts-service.labels" . | nindent 4 }}
 data:
   application.yml: |
+    gatewayHost: gateway-service.{{.Release.Namespace}}.svc.cluster.local
     spring:
       autoconfigure:
         exclude:

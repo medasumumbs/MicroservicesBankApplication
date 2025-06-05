@@ -290,7 +290,7 @@ gatewayIngress:
       path: /accountsService(/|$)(.*)
       backend:
         service: accounts-service
-        port: 8087
+        port: 8084
 
     - name: antifraud-service
       path: /antifraudService(/|$)(.*)
