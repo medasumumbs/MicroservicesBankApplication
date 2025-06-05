@@ -7,6 +7,8 @@ metadata:
 data:
   application.yml: |
     gatewayHost: gateway-service.{{.Release.Namespace}}.svc.cluster.local
+    ribbon:
+      enabled: false
     spring:
       autoconfigure:
         exclude:
@@ -23,6 +25,10 @@ data:
         rabbit:
           enabled: false
       cloud:
+        loadbalancer:
+          enabled: false
+          ribbon:
+            enabled: false
         stream:
           rabbit:
             enabled: false

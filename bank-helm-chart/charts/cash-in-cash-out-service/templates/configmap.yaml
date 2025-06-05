@@ -7,10 +7,16 @@ metadata:
 data:
   application.yml: |
     gatewayHost: gateway-service.{{.Release.Namespace}}.svc.cluster.local
+    ribbon:
+      enabled: false
     server:
       port: 8095
     spring:
       cloud:
+        loadbalancer:
+          enabled: false
+          ribbon:
+            enabled: false
         config:
           enabled: false
       application:
