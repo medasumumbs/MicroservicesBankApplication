@@ -1,0 +1,109 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_REGISTRY = credentials('DOCKER_REGISTRY')
+        DB_PASSWORD     = credentials('DB_PASSWORD')
+        GITHUB_USERNAME = credentials('GITHUB_USERNAME')
+        DB_NAME         = 'myapp'
+        DB_USER         = 'myapp'
+        IMAGE_TAG       = "${env.BUILD_NUMBER}"
+    }
+
+    stages {
+        stage('Build And Execute Unit Tests') {
+            parallel {
+                def microservices = [
+                    'accounts_service',
+                    'antifraud_service',
+                    'cash_in_cash_out_service',
+                    'currency_exchange_service',
+                    'exchange_generator_service',
+                    'gateway',
+                    'notifications_service',
+                    'transfer_service',
+                    'ui_service'
+                ]
+
+                microservices.each { service ->
+                    stage("${service}") {
+                        steps {
+                            dir("${service}") {
+                                sh './gradlew clean test'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Build Docker Images') {
+            steps {
+                sh """
+                docker build -t ${DOCKER_REGISTRY}/accounts-service:${IMAGE_TAG} ./accounts_service
+                docker build -t ${DOCKER_REGISTRY}/antifraud-service:${IMAGE_TAG} ./antifraud_service
+                docker build -t ${DOCKER_REGISTRY}/cash-in-cash-out-service:${IMAGE_TAG} ./cash_in_cash_out_service
+                docker build -t ${DOCKER_REGISTRY}/currency-exchange-service:${IMAGE_TAG} ./currency_exchange_service
+                docker build -t ${DOCKER_REGISTRY}/exchange-generator-service:${IMAGE_TAG} ./exchange_generator_service
+                docker build -t ${DOCKER_REGISTRY}/gateway-service:${IMAGE_TAG} ./gateway
+                docker build -t ${DOCKER_REGISTRY}/notifications-service:${IMAGE_TAG} ./notifications_service
+                docker build -t ${DOCKER_REGISTRY}/transfer-service:${IMAGE_TAG} ./transfer_service
+                docker build -t ${DOCKER_REGISTRY}/ui-service:${IMAGE_TAG} ./ui_service
+                """
+            }
+        }
+
+        stage('Push Docker Images') {
+            steps {
+                withCredentials([string(credentialsId: 'GHCR_TOKEN', variable: 'GHCR_TOKEN')]) {
+                    sh """
+                    echo \$GHCR_TOKEN | docker login ghcr.io -u ${GITHUB_USERNAME} --password-stdin
+
+                    docker push ${DOCKER_REGISTRY}/accounts-service:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/antifraud-service:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/cash-in-cash-out-service:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/currency-exchange-service:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/exchange-generator-service:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/gateway-service:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/notifications-service:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/transfer-service:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/ui-service:${IMAGE_TAG}
+                    """
+                }
+            }
+        }
+
+        stage('Deploy to TEST with Helm') {
+            steps {
+                sh """
+                helm dependency update .
+                helm upgrade --install myapp ./ \\
+                  --namespace test --create-namespace \\
+                  --set db.auth.username=${DB_USER} \\
+                  --set db.auth.password=${DB_PASSWORD} \\
+                  --set db.auth.database=${DB_NAME} \\
+                """
+            }
+        }
+
+        stage('Manual Approval for PROD') {
+            steps {
+                input message: 'Deploy to PROD environment?', ok: 'Yes, deploy'
+            }
+        }
+
+        stage('Deploy to PROD using Helm') {
+            steps {
+                sh """
+                helm dependency update .
+                helm upgrade --install myapp ./ \\
+                  --namespace prod --create-namespace \\
+                  --set db.auth.username=${DB_USER} \\
+                  --set db.auth.password=${DB_PASSWORD} \\
+                  --set db.auth.database=${DB_NAME} \\
+                """
+            }
+        }
+
+    }
+}

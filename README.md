@@ -130,3 +130,32 @@ http://localhost:8080/
 ```bash
    helm test myapp
 ```
+
+* Приложение поддерживает CI CD Pipeline в среде Jenkins:
+
+Для запуска Jenkins необходимо предварительно создать файл .env в директории Jenkins'а:
+```dotenv
+KUBECONFIG_PATH=<....>\.kube\config.yaml
+GITHUB_USERNAME=<Ваш Login на github>
+GITHUB_TOKEN=ghp_{токен для авторизации github}
+GHCR_TOKEN=ghp_{токен для авторизации в Github container registry}
+
+# Docker registry (Github container registry)
+DOCKER_REGISTRY=ghcr.io/<Имя пользователя>
+GITHUB_REPOSITORY=medasumumbs/MicroservicesBankApplication
+
+DB_PASSWORD=<пароль к БД>
+```
+Затем необходимо запустить Jenkins:
+```bash
+cd jenkins
+docker compose up -d --build
+```
+Jenkins будет доступен на локальной машине на порту 8080.
+
+Управление пайплайном может быть осуществлено в нативном интерфейсе Jenkins.
+
+Для очистки созданных во время пайплайна ресурсов и приложений может быть использована команда
+```bash
+./nuke-all.sh
+```
