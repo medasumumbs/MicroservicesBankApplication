@@ -1,0 +1,14 @@
+{{- $fullName := include "cash-in-cash-out-service.fullname" . -}}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ $fullName }}-test"
+  annotations:
+    helm.sh/hook: test
+spec:
+  restartPolicy: Never
+  containers:
+    - name: test
+      image: busybox
+      command: [ 'wget' ]
+      args: ['http://cash-in-cash-out-service.{{.Release.Namespace}}.svc.cluster.local/actuator/health']
