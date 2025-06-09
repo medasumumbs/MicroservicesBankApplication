@@ -2,68 +2,43 @@ package ru.muravin.bankapplication.exchangeGeneratorService.service;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import ru.muravin.bankapplication.exchangeGeneratorService.dto.CurrencyRateDto;
-import ru.muravin.bankapplication.exchangeGeneratorService.dto.HttpResponseDto;
+import ru.muravin.bankapplication.exchangeGeneratorService.kafka.RatesProducer;
 
 import java.util.ArrayList;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @Slf4j
 public class RatesGenerationService {
 
-    private final WebClient.Builder webClientBuilder;
-
+    private final RatesProducer ratesProducer;
     @Setter
     @Value("${gatewayHost:gateway}")
     private String gatewayHost;
 
-    public RatesGenerationService(WebClient.Builder webClientBuilder) {
-        this.webClientBuilder = webClientBuilder;
+    public RatesGenerationService(RatesProducer ratesProducer) {
+        this.ratesProducer = ratesProducer;
     }
 
-    public static Mono<Float> createRandomFloat() {
+    public static Float createRandomFloat() {
         var currentTimeMillisLast5Digits = System.currentTimeMillis() % 100000;
-        return Mono.just((float) (currentTimeMillisLast5Digits / 100.0));
+        return (float) (currentTimeMillisLast5Digits / 100.0);
     }
 
-    @Scheduled(fixedRate = 1000)
+    @Scheduled(fixedRate = 5000)
     public void generateAndSendRates() {
-        createRandomFloat().flatMap(
-            randomFloat -> {
-                log.info("Sending random rate to ExchangeGeneratorService");
-                var rates = getCurrencyRateDtos(randomFloat);
-                return webClientBuilder.build()
-                    .post().uri("http://"+gatewayHost+"/currencyExchangeService/rates")
-                    .bodyValue(rates).retrieve().bodyToMono(HttpResponseDto.class).onErrorResume(
-                            WebClientResponseException.class,
-                            ex -> {
-                                log.error(ex.getResponseBodyAsString());
-                                if (ex.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR) {
-                                    return Mono.just(new HttpResponseDto("500", "Internal Server Error"));
-                                } else {
-                                    return Mono.error(ex);
-                                }
-                            }
-                    )
-                    .onErrorResume(Exception.class, ex -> {
-                        log.error(ex.getMessage());
-                                return Mono.just(
-                                        new HttpResponseDto("500", "Возникла неизвестная ошибка: " + ex.getMessage()));
-                            }
-                    );
-            }
-        ).block();
+        log.info("Sending random rate to ExchangeGeneratorService");
+        var rates = getCurrencyRateDtos(createRandomFloat());
+        var result = ratesProducer.sendCurrencyRates(rates);
+        if (!result.equals("OK")) {
+            log.error("Failed to send rates to ExchangeGeneratorService: " + result);
+        } else {
+            log.info("Successfully sent rate to ExchangeGeneratorService");
+        }
     }
 
     private static ArrayList<CurrencyRateDto> getCurrencyRateDtos(Float randomFloat) {

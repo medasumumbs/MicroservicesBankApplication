@@ -4,6 +4,17 @@ spring:
     port: 5672
     username: guest
     password: guest
+  kafka:
+    producer:
+      bootstrap-servers: ${BOOTSTRAP_SERVERS_KAFKA:localhost:9092}
+      properties:
+        acks: all
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    admin:
+      client-id: myapp
+    properties:
+      security.protocol: PLAINTEXT
 management:
   endpoints:
     web:
@@ -17,5 +28,6 @@ eureka:
     hostname: localhost
     prefer-ip-address: true
   client:
+    enabled:  false
     serviceUrl:
       defaultZone: http://eureka-service-discovery:8761/eureka/
