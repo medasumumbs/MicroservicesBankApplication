@@ -33,7 +33,12 @@ public class RatesGenerationService {
     public void generateAndSendRates() {
         log.info("Sending random rate to ExchangeGeneratorService");
         var rates = getCurrencyRateDtos(createRandomFloat());
-        var result = ratesProducer.sendCurrencyRates(rates);
+        String result;
+        try {
+            result = ratesProducer.sendCurrencyRates(rates);
+        } catch (Exception e) {
+            result = e.getMessage();
+        }
         if (!result.equals("OK")) {
             log.error("Failed to send rates to ExchangeGeneratorService: " + result);
         } else {
@@ -41,7 +46,7 @@ public class RatesGenerationService {
         }
     }
 
-    private static ArrayList<CurrencyRateDto> getCurrencyRateDtos(Float randomFloat) {
+    public static ArrayList<CurrencyRateDto> getCurrencyRateDtos(Float randomFloat) {
         var rates = new ArrayList<CurrencyRateDto>();
         CurrencyRateDto currencyRateDto = new CurrencyRateDto();
         currencyRateDto.setBuyRate(randomFloat);
