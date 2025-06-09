@@ -272,6 +272,20 @@ services:
         condition: service_healthy
     networks:
       - general_network
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    restart: unless-stopped
+    ports:
+      - "8072:8080"
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: myapp.kafka.ru:9092
+      KAFKA_CLUSTERS_0_PROPERTIES_SECURITY_PROTOCOL: PLAINTEXT
+    networks:
+      - kafkaNet
   antifraud-service:
     env_file:
       .env
@@ -295,5 +309,27 @@ services:
         condition: service_healthy
     networks:
       - general_network
+  kafka:
+    image: bitnami/kafka
+    container_name: kafka
+    hostname: myapp.kafka.ru
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    expose:
+      - "9093"
+    env_file:
+      - ./configForKafka/kafka.env
+    volumes:
+      - ./configForKafka/server.properties:/opt/bitnami/kafka/config/server.properties
+      - ./configForKafka/producer.properties:/opt/bitnami/kafka/config/producer.properties
+      - ./configForKafka/consumer.properties:/opt/bitnami/kafka/config/consumer.properties
+    networks:
+      - kafkaNet
+
 networks:
+  kafkaNet:
+    driver: bridge
+    name: kafkaNet
+    external: true
   general_network:
