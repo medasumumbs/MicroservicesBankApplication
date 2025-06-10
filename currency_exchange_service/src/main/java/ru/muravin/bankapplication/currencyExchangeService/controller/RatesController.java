@@ -19,14 +19,6 @@ public class RatesController {
         this.currencyRatesService = currencyRatesService;
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public HttpResponseDto receiveRates(
-            @RequestBody List<CurrencyRateDto> ratesList) {
-        currencyRatesService.saveRates(ratesList);
-        return new HttpResponseDto("OK","Rates received");
-    }
-
     @GetMapping
     public List<CurrencyRateDto> getRates() {
         return currencyRatesService.findAll();

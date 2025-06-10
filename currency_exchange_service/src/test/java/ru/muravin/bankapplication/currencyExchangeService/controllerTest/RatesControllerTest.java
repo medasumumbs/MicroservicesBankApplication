@@ -43,21 +43,6 @@ public class RatesControllerTest {
         ratesList = Arrays.asList(rate1, rate2);
     }
 
-    @Test
-    void receiveRates_ShouldReturnOkAndSuccessMessage() throws Exception {
-        // Given
-        HttpResponseDto expectedResponse = new HttpResponseDto("OK", "Rates received");
-
-        // When & Then
-        mockMvc.perform(post("/rates")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(ratesList)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.statusCode").value(expectedResponse.getStatusCode()))
-                .andExpect(jsonPath("$.statusMessage").value(expectedResponse.getStatusMessage()));
-
-        verify(currencyRatesService, times(1)).saveRates(eq(ratesList));
-    }
 
     @Test
     void getRates_ShouldReturnListOfRates() throws Exception {
@@ -72,21 +57,5 @@ public class RatesControllerTest {
                 .andExpect(jsonPath("$[0].buyRate").value(1.0f))
                 .andExpect(jsonPath("$[1].currencyCode").value("EUR"))
                 .andExpect(jsonPath("$[1].sellRate").value(0.85f));
-    }
-
-    @Test
-    void receiveRates_WhenServiceThrowsException_ShouldReturnError() throws Exception {
-        // Given
-        doThrow(new RuntimeException("Database error")).when(currencyRatesService).saveRates(anyList());
-
-        // When & Then
-        mockMvc.perform(post("/rates")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(ratesList)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.statusCode").value("ERROR"))
-                .andExpect(jsonPath("$.statusMessage").value("Database error"));
-
-        verify(currencyRatesService, times(1)).saveRates(anyList());
     }
 }

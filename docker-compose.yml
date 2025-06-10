@@ -8,7 +8,7 @@ services:
       - 5672:5672
       - 15672:15672
     networks:
-      - general_network
+      - kafkaNet
 
   notifications-db:
     env_file:
@@ -27,7 +27,7 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - general_network
+      - kafkaNet
 
   keycloak:
     image: quay.io/keycloak/keycloak:latest
@@ -41,7 +41,7 @@ services:
       KC_HEALTH_ENABLED: "true"
       KC_METRICS_ENABLED: "true"
     networks:
-      - general_network
+      - kafkaNet
     volumes:
       - ./realm-config.json:/opt/keycloak/data/import/realm-config.json
     command: start-dev --import-realm
@@ -60,7 +60,7 @@ services:
     environment:
       CONFIG_SERVER_PORT: ${CONFIG_PORT}
     networks:
-      - general_network
+      - kafkaNet
     healthcheck:
       test: [ "CMD", "wget", "--spider", "-q", "http://localhost:${CONFIG_PORT}/actuator/health" ]
       interval: 10s
@@ -84,7 +84,7 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - general_network
+      - kafkaNet
 
 
   notifications-service:
@@ -109,7 +109,7 @@ services:
       eureka-service-discovery:
         condition: service_healthy
     networks:
-      - general_network
+      - kafkaNet
 
   accounts-service:
     env_file:
@@ -133,7 +133,7 @@ services:
       eureka-service-discovery:
         condition: service_healthy
     networks:
-      - general_network
+      - kafkaNet
 
   transfer-service:
     env_file:
@@ -157,7 +157,7 @@ services:
       eureka-service-discovery:
         condition: service_healthy
     networks:
-      - general_network
+      - kafkaNet
 
   cash_in_cash_out-service:
     env_file:
@@ -181,7 +181,7 @@ services:
       eureka-service-discovery:
         condition: service_healthy
     networks:
-      - general_network
+      - kafkaNet
 
   ui-service:
     env_file:
@@ -205,7 +205,7 @@ services:
       eureka-service-discovery:
         condition: service_healthy
     networks:
-      - general_network
+      - kafkaNet
 
 
   exchange-generation-service:
@@ -218,6 +218,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://notifications-db:5432/${NOTIFICATIONS_SERVICE_DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${NOTIFICATIONS_SERVICE_DB_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${NOTIFICATIONS_SERVICE_DB_PASSWORD}
+      BOOTSTRAP_SERVERS_KAFKA: ${BOOTSTRAP_SERVERS_KAFKA}
       NOTIFICATIONS_SERVICE_PORT: 8081
       EUREKA_PORT: ${EUREKA_PORT}
     ports:
@@ -230,7 +231,7 @@ services:
       eureka-service-discovery:
         condition: service_healthy
     networks:
-      - general_network
+      - kafkaNet
 
 
   exchange-service:
@@ -255,7 +256,7 @@ services:
       eureka-service-discovery:
         condition: service_healthy
     networks:
-      - general_network
+      - kafkaNet
 
   gateway-service:
     env_file:
@@ -271,7 +272,7 @@ services:
       eureka-service-discovery:
         condition: service_healthy
     networks:
-      - general_network
+      - kafkaNet
   kafka-ui:
     container_name: kafka-ui
     image: provectuslabs/kafka-ui:latest
@@ -308,7 +309,7 @@ services:
       eureka-service-discovery:
         condition: service_healthy
     networks:
-      - general_network
+      - kafkaNet
   kafka:
     image: bitnami/kafka
     container_name: kafka
@@ -332,4 +333,3 @@ networks:
     driver: bridge
     name: kafkaNet
     external: true
-  general_network:

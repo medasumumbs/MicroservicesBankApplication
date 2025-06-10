@@ -5,6 +5,19 @@ spring:
     port: 5672
     username: guest
     password: guest
+  kafka:
+    bootstrap-servers: ${BOOTSTRAP_SERVERS_KAFKA:localhost:9092}
+    consumer:
+      group-id: currency-rates-grp
+      auto-offset-reset: earliest
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        acks: all
+        spring.json.value.default.type: ru.muravin.bankapplication.currencyExchangeService.dto.CurrencyRateDto
+        spring.json.trusted.packages: ru.muravin.bankapplication
+    listener:
+      ack-mode: MANUAL_IMMEDIATE
   datasource:
     url: jdbc:postgresql://localhost:5433/notifications
     username: myuser
