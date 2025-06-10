@@ -20,7 +20,13 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(classes = ExchangeGeneratorServiceApplication.class,properties = "spring.kafka.producer.bootstrap-servers=localhost:9092")
+@SpringBootTest(classes = ExchangeGeneratorServiceApplication.class,
+        properties = {
+                "spring.kafka.producer.bootstrap-servers=localhost:9092",
+                "spring.kafka.consumer.key-deserializer=org.apache.kafka.common.serialization.StringDeserializer",
+                "spring.kafka.consumer.value-deserializer=org.springframework.kafka.support.serializer.JsonDeserializer",
+                "spring.kafka.consumer.properties.spring.json.trusted.packages=*"
+        })
 @EmbeddedKafka(
         topics = {"currency-rates"},
         partitions = 1,
