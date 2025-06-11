@@ -56,6 +56,8 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.6.0")
     testImplementation("org.springframework.cloud:spring-cloud-starter-contract-verifier:4.2.1")
     testImplementation("org.springframework.kafka:spring-kafka-test")
+    testImplementation("org.apache.kafka:kafka-clients")
+    testImplementation("org.apache.kafka:kafka_2.13")
 }
 
 tasks.withType<Test> {
