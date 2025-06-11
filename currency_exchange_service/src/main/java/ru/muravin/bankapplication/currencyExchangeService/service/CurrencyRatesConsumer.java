@@ -9,6 +9,7 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Service;
 import ru.muravin.bankapplication.currencyExchangeService.dto.CurrencyRateDto;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Slf4j
@@ -22,7 +23,14 @@ public class CurrencyRatesConsumer {
 
     @RetryableTopic(backoff = @Backoff(500), timeout = "4000")
     @KafkaListener(topics = "currency-rates", groupId = "currency-rates-grp")
-    public void consume(List<CurrencyRateDto> currencyRateDtoList, Acknowledgment ack) {
+    public void consume(List<LinkedHashMap> currencyRateDtoLinkedHashMap, Acknowledgment ack) {
+        var currencyRateDtoList = currencyRateDtoLinkedHashMap.stream().map(linkedHashMap -> {
+            CurrencyRateDto currencyRateDto = new CurrencyRateDto();
+            currencyRateDto.setBuyRate(Float.parseFloat(((Double) linkedHashMap.get("buyRate")).toString()));
+            currencyRateDto.setSellRate(Float.parseFloat(((Double) linkedHashMap.get("sellRate")).toString()));
+            currencyRateDto.setCurrencyCode((String) linkedHashMap.get("currencyCode"));
+            return currencyRateDto;
+        }).toList();
         log.info("CurrencyRatesConsumer called: {}", currencyRateDtoList);
         ack.acknowledge();
         log.info("CurrencyRatesConsumer acknowledged");

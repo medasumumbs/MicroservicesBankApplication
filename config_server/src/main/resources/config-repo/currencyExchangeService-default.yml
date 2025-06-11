@@ -14,8 +14,6 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       properties:
         acks: all
-        spring.json.value.default.type: ru.muravin.bankapplication.currencyExchangeService.dto.CurrencyRateDto
-        spring.json.trusted.packages: ru.muravin.bankapplication
     listener:
       ack-mode: MANUAL_IMMEDIATE
   datasource:
