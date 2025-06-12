@@ -1,5 +1,6 @@
 package ru.muravin.bankapplication.accountsService.service;
 
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +25,7 @@ import java.util.concurrent.TimeoutException;
 public class NotificationsServiceClient {
     private final ApplicationContext applicationContext;
 
+    @Setter
     private KafkaTemplate<String, NotificationDto> kafkaTemplate;
 
     @Value("${kafkaTopic:notifications}")

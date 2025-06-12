@@ -22,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = ExchangeGeneratorServiceApplication.class,
         properties = {
+                "spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer",
+                "spring.kafka.producer.value-serializer=org.apache.kafka.common.serialization.StringSerializer",
                 "spring.kafka.producer.bootstrap-servers=localhost:9092",
                 "spring.kafka.consumer.key-deserializer=org.apache.kafka.common.serialization.StringDeserializer",
                 "spring.kafka.consumer.value-deserializer=org.springframework.kafka.support.serializer.JsonDeserializer",
