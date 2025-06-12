@@ -16,7 +16,6 @@ import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -53,6 +52,7 @@ import ru.muravin.bankapplication.notificationsService.service.NotificationsServ
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
@@ -134,7 +134,7 @@ class NotificationsConsumerTest {
     @Test
     void testConsume_ShouldCallSaveRates_WhenMessageReceived() {
         // GIVEN
-        KafkaTemplate<String, NotificationDto> kafkaTemplate = new KafkaTemplate<>(
+        KafkaTemplate<String, LinkedHashMap> kafkaTemplate = new KafkaTemplate<>(
                 new DefaultKafkaProducerFactory<>(kafkaTemplateProps())
         );
         notificationsConsumer.setNotificationsService(notificationsService);
@@ -144,13 +144,13 @@ class NotificationsConsumerTest {
             throw new RuntimeException(e);
         }
         // WHEN
-        NotificationDto payload = new NotificationDto();
-        payload.setMessage("message123");
-        payload.setSender("sender123");
-        payload.setTimestamp(LocalDateTime.now());
+        LinkedHashMap<String, Object> payloadMap = new LinkedHashMap<>();
+        payloadMap.put("timestamp", new Timestamp(System.currentTimeMillis()).toString());
+        payloadMap.put("sender", "sender123");
+        payloadMap.put("message", "message123");
         try {
-            kafkaTemplate.send("notifications", payload).get();
-            System.out.println("Sent message: " + payload);
+            kafkaTemplate.send("notifications", payloadMap).get();
+            System.out.println("Sent message: " + payloadMap);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } catch (ExecutionException e) {

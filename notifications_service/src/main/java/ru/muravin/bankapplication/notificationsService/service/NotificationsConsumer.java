@@ -27,7 +27,11 @@ public class NotificationsConsumer {
 
     @RetryableTopic(backoff = @Backoff(500), timeout = "4000")
     @KafkaListener(topics = "notifications", groupId = "notifications-grp")
-    public void consume(NotificationDto notificationDto, Acknowledgment ack) {
+    public void consume(LinkedHashMap<String, String> linkedHashMap, Acknowledgment ack) {
+        NotificationDto notificationDto = new NotificationDto();
+        notificationDto.setTimestamp(linkedHashMap.get("timestamp"));
+        notificationDto.setMessage(linkedHashMap.get("message"));
+        notificationDto.setSender(linkedHashMap.get("sender"));
         log.info("NotificationsConsumer called: {}", notificationDto);
         ack.acknowledge();
         log.info("NotificationsConsumer acknowledged");

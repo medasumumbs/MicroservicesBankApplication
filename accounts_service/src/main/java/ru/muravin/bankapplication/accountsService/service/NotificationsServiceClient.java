@@ -10,11 +10,10 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import ru.muravin.bankapplication.accountsService.dto.NotificationDto;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -40,10 +39,10 @@ public class NotificationsServiceClient {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public String sendNotification(String notificationText) {
+    public void sendNotification(String notificationText) {
         NotificationDto notificationDto = new NotificationDto();
         notificationDto.setMessage(notificationText);
-        notificationDto.setTimestamp(LocalDateTime.now());
+        notificationDto.setTimestamp(new Timestamp(System.currentTimeMillis()).toString());
         notificationDto.setSender(applicationContext.getApplicationName());
         log.info("Sending notification: {}", notificationDto);
         var guid = UUID.randomUUID().toString();
@@ -57,10 +56,11 @@ public class NotificationsServiceClient {
             kafkaTemplate.send(message).get(kafkaSecondsTimeout, TimeUnit.SECONDS);
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
             log.error(e.getMessage() + ":" + e.getCause().getMessage());
-            return e.getMessage() + ":" + e.getCause().getMessage();
+            e.getMessage();
+            e.getCause().getMessage();
+            return;
         }
         log.info("Notification sent: {}", notificationDto);
-        return "OK";
     }
 
 }

@@ -28,6 +28,7 @@ import ru.muravin.bankapplication.notificationsService.model.Notification;
 import ru.muravin.bankapplication.notificationsService.repository.NotificationsRepository;
 import ru.muravin.bankapplication.notificationsService.service.NotificationsService;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -68,7 +69,7 @@ public class ServiceTests {
     void testSave() {
 
         LocalDateTime localDateTime = LocalDateTime.now();
-        NotificationDto notificationDto = new NotificationDto("abcde","a",localDateTime);
+        NotificationDto notificationDto = new NotificationDto("abcde","a",new Timestamp(System.currentTimeMillis()).toString());
         // Создаём ожидаемую сущность
         Notification expectedEntity = new Notification();
         expectedEntity.setMessage("abcde");
