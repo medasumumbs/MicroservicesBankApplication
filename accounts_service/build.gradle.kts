@@ -35,9 +35,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
     implementation("org.springframework.cloud:spring-cloud-starter-config:4.2.2")  // Для взаимодействия с Config Server
-    //implementation("org.springframework.cloud:spring-cloud-starter-bus-amqp:4.2.1")// Для работы Spring Cloud Bus c RabbitM
-// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-eureka-client
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.2.1")
+    implementation("org.springframework.kafka:spring-kafka")
     compileOnly("org.projectlombok:lombok")
 
     runtimeOnly("org.postgresql:postgresql")
@@ -54,6 +53,7 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.6.0")
     testImplementation("com.h2database:h2")
     testImplementation("org.springframework.cloud:spring-cloud-starter-contract-verifier:4.2.1")
+    testImplementation("org.springframework.kafka:spring-kafka-test")
 }
 
 tasks.withType<Test> {

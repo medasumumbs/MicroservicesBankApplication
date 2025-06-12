@@ -9,6 +9,18 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://keycloak:8080/realms/master
+  kafka:
+    bootstrap-servers: ${BOOTSTRAP_SERVERS_KAFKA:localhost:9092}
+    producer:
+      bootstrap-servers: ${BOOTSTRAP_SERVERS_KAFKA:localhost:9092}
+      properties:
+        acks: all
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    admin:
+      client-id: myapp
+    properties:
+      security.protocol: PLAINTEXT
   datasource:
     url: jdbc:postgresql://localhost:5433/notifications
     username: myuser
