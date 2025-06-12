@@ -1,5 +1,6 @@
 package ru.muravin.bankapplication.notificationsService.service;
 
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -15,7 +16,8 @@ import java.util.List;
 @Slf4j
 @Service
 public class NotificationsConsumer {
-    private final NotificationsService notificationsService;
+    @Setter
+    private NotificationsService notificationsService;
 
     @Autowired
     public NotificationsConsumer(NotificationsService notificationsService) {
