@@ -5,6 +5,17 @@ spring:
     port: 5672
     username: guest
     password: guest
+  kafka:
+    bootstrap-servers: ${BOOTSTRAP_SERVERS_KAFKA:localhost:9092}
+    consumer:
+      group-id: notifications-grp
+      auto-offset-reset: earliest
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        acks: 1
+    listener:
+      ack-mode: MANUAL_IMMEDIATE
   security:
     oauth2:
       resourceserver:

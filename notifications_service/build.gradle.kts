@@ -1,10 +1,9 @@
-import org.springframework.cloud.contract.verifier.config.TestFramework
+
 
 plugins {
     java
     id("org.springframework.boot") version "3.4.4"
     id("io.spring.dependency-management") version "1.1.7"
-    id("org.springframework.cloud.contract") version "4.2.1"
 }
 
 group = "ru.practicum"
@@ -38,6 +37,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-eureka-client
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.2.1")
+    implementation("org.springframework.kafka:spring-kafka")
+    implementation("com.fasterxml.jackson.core:jackson-databind")
     compileOnly("org.projectlombok:lombok")
 
     runtimeOnly("org.postgresql:postgresql")
@@ -46,6 +47,9 @@ dependencies {
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
 
     testAnnotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+    testImplementation("org.springframework.kafka:spring-kafka-test")
+    testImplementation("org.apache.kafka:kafka-clients")
+    testImplementation("org.apache.kafka:kafka_2.13")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("com.h2database:h2")
@@ -56,7 +60,6 @@ dependencies {
     testImplementation("com.redis:testcontainers-redis:2.2.2")
     // https://mvnrepository.com/artifact/org.mockito/mockito-core
     testImplementation("org.mockito:mockito-core:5.6.0")
-    testImplementation("org.springframework.cloud:spring-cloud-starter-contract-verifier:4.2.1")
 }
 
 tasks.withType<Test> {
@@ -71,9 +74,4 @@ tasks.withType<Test> {
     environment( "SPRING_DATASOURCE_PASSWORD","secret");
     environment( "SERVER_PORT","8081");
     useJUnitPlatform()
-}
-contracts {
-    baseClassForTests.set("ru.muravin.bankapplication.notificationsService.BaseContractTest"); // Указание базового класса для тестов
-    contractsDslDir.set(file("src/test/resources/contracts"));
-    testFramework.set(TestFramework.JUNIT5)
 }
