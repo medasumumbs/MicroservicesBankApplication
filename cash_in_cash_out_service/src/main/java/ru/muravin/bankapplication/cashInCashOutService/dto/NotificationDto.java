@@ -12,5 +12,5 @@ import java.time.LocalDateTime;
 public class NotificationDto {
     private String message;
     private String sender;
-    private LocalDateTime timestamp;
+    private String timestamp;
 }

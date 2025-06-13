@@ -55,12 +55,9 @@ public class NotificationsServiceClient {
         try {
             kafkaTemplate.send(message).get(kafkaSecondsTimeout, TimeUnit.SECONDS);
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
-            log.error(e.getMessage() + ":" + e.getCause().getMessage());
-            e.getMessage();
-            e.getCause().getMessage();
+            log.error("{}:{}", e.getMessage(), e.getCause().getMessage());
             return;
         }
         log.info("Notification sent: {}", notificationDto);
     }
-
 }

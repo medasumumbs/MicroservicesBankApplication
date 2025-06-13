@@ -1,5 +1,5 @@
 package ru.muravin.bankapplication.notificationsService.service;
-
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.muravin.bankapplication.notificationsService.dto.NotificationDto;
@@ -26,7 +26,7 @@ public class NotificationsService {
         notification.setSender(notificationDto.getSender());
         notification.setMessage(notificationDto.getMessage());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-        LocalDateTime localDateTime = LocalDateTime.from(formatter.parse(notificationDto.getTimestamp()));
+        LocalDateTime localDateTime = LocalDateTime.from(formatter.parse(StringUtils.rightPad(notificationDto.getTimestamp(),23, "0")));
         notification.setCreatedAt(localDateTime);
         Notification saved = notificationsRepository.save(notification);
     }

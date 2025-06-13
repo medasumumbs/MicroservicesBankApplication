@@ -37,6 +37,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-eureka-client
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.2.1")
+    implementation("org.springframework.kafka:spring-kafka")
     compileOnly("org.projectlombok:lombok")
 
 
@@ -49,7 +50,7 @@ dependencies {
     testImplementation("org.mapstruct:mapstruct:1.5.5.Final")
     testImplementation("org.mockito:mockito-core:5.6.0")
     testImplementation("org.springframework.cloud:spring-cloud-starter-contract-verifier:4.2.1")
-
+    testImplementation("org.springframework.kafka:spring-kafka-test")
 }
 
 tasks.withType<Test> {

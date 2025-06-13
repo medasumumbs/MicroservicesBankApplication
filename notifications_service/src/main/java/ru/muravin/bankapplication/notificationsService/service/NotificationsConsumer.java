@@ -36,6 +36,6 @@ public class NotificationsConsumer {
         ack.acknowledge();
         log.info("NotificationsConsumer acknowledged");
         notificationsService.sendNotification(notificationDto);
-        log.info("NotificationsConsumer saved rates");
+        log.info("NotificationsConsumer saved notification");
     }
 }

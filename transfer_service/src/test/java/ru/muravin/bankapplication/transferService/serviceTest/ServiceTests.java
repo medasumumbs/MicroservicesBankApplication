@@ -1,5 +1,6 @@
 package ru.muravin.bankapplication.transferService.serviceTest;
 
+import kafka.Kafka;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
+import org.springframework.messaging.Message;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -18,7 +22,9 @@ import ru.muravin.bankapplication.transferService.dto.NotificationDto;
 import ru.muravin.bankapplication.transferService.service.NotificationsServiceClient;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
+import static org.assertj.core.api.Assertions.assertThatException;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 @SpringBootTest(properties = {
@@ -39,7 +45,7 @@ public class ServiceTests {
     private ApplicationContext applicationContext;
 
     @MockitoBean
-    private RestTemplate restTemplate;
+    private KafkaTemplate<String, NotificationDto> kafkaTemplate;
 
     @Autowired
     private NotificationsServiceClient notificationsServiceClient;
@@ -52,45 +58,30 @@ public class ServiceTests {
     }
 
     @Test
-    void sendNotification_ShouldCallRestTemplateWithCorrectDto() {
+    void sendNotification_ShouldCallKafkaTemplateWithMessage() {
         // Given
         when(applicationContext.getApplicationName()).thenReturn("accounts-service");
 
-        when(restTemplate.postForObject(any(), any(), any())).thenReturn("OK");
+        when(kafkaTemplate.send(any(Message.class))).thenReturn(CompletableFuture.completedFuture(new SendResult<>(null, null)));
 
         // When
         notificationsServiceClient.sendNotification(notificationText);
 
         // Then
-        verify(restTemplate, times(1)).postForObject(
-                eq("http://gateway/notificationsService/notifications"),
-                argThat(dto -> {
-                    var dtoObj = (NotificationDto) dto;
-                    return dtoObj.getMessage().equals(notificationText) &&
-                            dtoObj.getTimestamp() != null;}),
-                eq(String.class)
-        );
+        verify(kafkaTemplate, times(1)).send(any(Message.class));
     }
 
     @Test
     void sendNotification_WhenRestTemplateThrowsException_ShouldNotFail() {
         // Given
         doThrow(new RuntimeException("Connection refused"))
-                .when(restTemplate).postForObject(
-                        any(),
-                        any(),
-                        any()
-                );
+                .when(kafkaTemplate).send(any(Message.class));
 
         // When & Then
-        assertThatNoException()
+        assertThatException()
                 .isThrownBy(() -> notificationsServiceClient.sendNotification(notificationText));
 
         // Проверяем, что RestTemplate был вызван
-        verify(restTemplate, times(1)).postForObject(
-                eq("http://gateway/notificationsService/notifications"),
-                any(NotificationDto.class),
-                eq(String.class)
-        );
+        verify(kafkaTemplate, times(1)).send(any(Message.class));
     }
 }
