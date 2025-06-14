@@ -12,6 +12,18 @@ data:
     ribbon:
       enabled: false
     spring:
+      kafka:
+        bootstrap-servers: "http://{{.Release.Name}}-kafka-broker-0.{{.Release.Name}}-kafka-broker-headless.{{.Release.Namespace}}.svc.cluster.local:9092"
+        producer:
+          bootstrap-servers: "http://{{.Release.Name}}-kafka-broker-0.{{.Release.Name}}-kafka-broker-headless.{{.Release.Namespace}}.svc.cluster.local:9092"
+          properties:
+            acks: all
+          key-serializer: org.apache.kafka.common.serialization.StringSerializer
+          value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+        admin:
+          client-id: myapp
+        properties:
+          security.protocol: PLAINTEXT
       cloud:
         loadbalancer:
           enabled: false

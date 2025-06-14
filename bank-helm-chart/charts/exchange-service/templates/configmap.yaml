@@ -10,6 +10,17 @@ data:
       port: 8093
     text-to-print: "Текст до изменений" # Property в микросервисе, которое мы будем изменять прямо на лету
     spring:
+      kafka:
+        bootstrap-servers: "http://{{.Release.Name}}-kafka-broker-0.{{.Release.Name}}-kafka-broker-headless.{{.Release.Namespace}}.svc.cluster.local:9092"
+        consumer:
+          group-id: currency-rates-grp
+          auto-offset-reset: earliest
+          value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+          key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+          properties:
+            acks: all
+        listener:
+          ack-mode: MANUAL_IMMEDIATE
       cloud:
         config:
           enabled: false

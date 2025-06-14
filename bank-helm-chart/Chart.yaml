@@ -38,3 +38,6 @@ dependencies:
     repository: https://raw.githubusercontent.com/bitnami/charts/refs/heads/archive-full-index/bitnami/
     alias: notifications-db # Alias to distinguish this instance
     condition: notifications-db.enabled # Allow disabling if needed
+  - name: kafka
+    version: 32.2.15
+    repository: https://raw.githubusercontent.com/bitnami/charts/refs/heads/archive-full-index/bitnami/

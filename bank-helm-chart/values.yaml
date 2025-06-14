@@ -339,3 +339,24 @@ gatewayIngress:
       backend:
         service: gateway-service
         port: 8080
+
+kafka:
+  service:
+    enabled: true
+    type: ClusterIP
+    port: 9092
+    name: myapp-kafka-broker
+  enabled: true
+  broker:
+    replicaCount: 1
+    persistence:
+      size: 1Gi
+  kraft:
+    enabled: true
+  listeners:
+    client:
+      protocol: PLAINTEXT
+    controller:
+      protocol: PLAINTEXT
+    interbroker:
+      protocol: PLAINTEXT

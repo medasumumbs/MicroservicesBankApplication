@@ -7,6 +7,24 @@ metadata:
 data:
   application.yml: |
     spring:
+      kafka:
+        bootstrap-servers: "http://{{.Release.Name}}-kafka-broker-0.{{.Release.Name}}-kafka-broker-headless.{{.Release.Namespace}}.svc.cluster.local:9092"
+        consumer:
+          group-id: notifications-grp
+          auto-offset-reset: earliest
+          value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+          key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+          properties:
+            spring:
+              json:
+                value:
+                  default:
+                    type: java.util.LinkedHashMap
+                trusted:
+                  packages: ru.muravin.*
+            acks: 1
+        listener:
+          ack-mode: MANUAL_IMMEDIATE
       application:
         name: notificationsService
       datasource:
