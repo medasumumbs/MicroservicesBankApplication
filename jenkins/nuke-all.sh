@@ -27,6 +27,7 @@ for ns in test prod; do
   helm uninstall ui-service -n "$ns" || true
   helm uninstall notifications-db -n "$ns" || true
   helm uninstall keycloak -n "$ns" || true
+  helm uninstall kafka -n "$ns" || true
 done
 
 echo "Deleting secrets..."
@@ -34,6 +35,7 @@ for ns in test prod; do
   kubectl delete secret myapp-notifications-db -n "$ns" --ignore-not-found
   kubectl delete secret myapp-keycloak -n "$ns" --ignore-not-found
   kubectl delete secret myapp-postgresql -n "$ns" --ignore-not-found
+  kubectl delete secret myapp-kafka -n "$ns" --ignore-not-found
 done
 
 echo "Deleting namespaces..."
