@@ -32,8 +32,13 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-config:4.2.2")  // Для взаимодействия с Config Server
     //implementation("org.springframework.cloud:spring-cloud-starter-bus-amqp:4.2.1")// Для работы Spring Cloud Bus c RabbitM
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
-// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-eureka-client
+// JSON сериализация
+    implementation("com.fasterxml.jackson.core:jackson-databind")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.2.1")
+    implementation("io.micrometer:micrometer-tracing-bridge-brave")  // мост между micrometer и brave
+    implementation("io.zipkin.reporter2:zipkin-reporter-brave") // библиотека для отправки спанов в zipkin
+    //implementation("org.apache.kafka:kafka-clients")
+    runtimeOnly("net.logstash.logback:logstash-logback-encoder:7.3")
     compileOnly("org.projectlombok:lombok")
 
 

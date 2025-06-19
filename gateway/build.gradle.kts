@@ -35,6 +35,8 @@ dependencies {
     //implementation("org.springframework.cloud:spring-cloud-starter-bus-amqp:4.2.1")// Для работы Spring Cloud Bus c RabbitM
 // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-eureka-client
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.2.1")
+    implementation("io.micrometer:micrometer-tracing-bridge-brave")  // мост между micrometer и brave
+    implementation("io.zipkin.reporter2:zipkin-reporter-brave") // библиотека для отправки спанов в zipkin
     compileOnly("org.projectlombok:lombok")
 // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-webflux
 

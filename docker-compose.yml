@@ -328,6 +328,18 @@ services:
     networks:
       - kafkaNet
 
+  zipkin:
+    image: openzipkin/zipkin:3.5
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    environment:
+      STORAGE_TYPE: mem
+      KAFKA_BOOTSTRAP_SERVERS: myapp.kafka.ru
+      KAFKA_TOPIC: zipkin
+    networks:
+      - kafkaNet
+
 networks:
   kafkaNet:
     driver: bridge

@@ -16,6 +16,8 @@ spring:
         acks: all
     listener:
       ack-mode: MANUAL_IMMEDIATE
+    properties:
+      interceptor.classes: brave.kafka.clients.TracingConsumerInterceptor
   datasource:
     url: jdbc:postgresql://localhost:5433/notifications
     username: myuser
@@ -42,6 +44,12 @@ spring:
     user: myuser
     password: secret
 management:
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans # Эндпойнт Zipkin для приема спанов
+  tracing:
+    sampling:
+      probability: 1 # Сэмплируем все запросы
   endpoints:
     web:
       exposure:

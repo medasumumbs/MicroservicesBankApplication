@@ -62,7 +62,8 @@ public class KafkaConfiguration {
                 // Config number of retries
                 ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, 5000,
                 ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, 200,
-                ProducerConfig.RETRY_BACKOFF_MS_CONFIG, 500
+                ProducerConfig.RETRY_BACKOFF_MS_CONFIG, 500,
+                ProducerConfig.INTERCEPTOR_CLASSES_CONFIG, "brave.kafka.clients.TracingProducerInterceptor"
         );
 
     }
