@@ -2,7 +2,6 @@ package ru.muravin.bankapplication.currencyExchangeService;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import brave.kafka.in
 @SpringBootApplication
 public class CurrencyExchangeServiceApplication {
 

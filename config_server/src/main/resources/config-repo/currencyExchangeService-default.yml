@@ -15,9 +15,10 @@ spring:
       properties:
         acks: all
     listener:
+      observation-enabled: true
       ack-mode: MANUAL_IMMEDIATE
-    properties:
-      interceptor.classes: brave.kafka.clients.TracingConsumerInterceptor
+    #properties:
+      #interceptor.classes: brave.kafka.clients.TracingConsumerInterceptor
   datasource:
     url: jdbc:postgresql://localhost:5433/notifications
     username: myuser

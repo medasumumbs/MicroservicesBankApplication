@@ -42,13 +42,15 @@ public class KafkaConfiguration {
 
     @Bean
     public KafkaTemplate<String, List<CurrencyRateDto>> kafkaTemplate() {
-        return new KafkaTemplate<>(
-            new DefaultKafkaProducerFactory<String, List<CurrencyRateDto>>(
-                kafkaProperties.buildProducerProperties(null),
-                new StringSerializer(),
-                new JsonSerializer<>(new TypeReference<List<CurrencyRateDto>>() {})
-            )
+        KafkaTemplate<String, List<CurrencyRateDto>> kafkaTemplate = new KafkaTemplate<>(
+                new DefaultKafkaProducerFactory<String, List<CurrencyRateDto>>(
+                        kafkaProperties.buildProducerProperties(null),
+                        new StringSerializer(),
+                        new JsonSerializer<>(new TypeReference<List<CurrencyRateDto>>() {})
+                )
         );
+        kafkaTemplate.setObservationEnabled(true);
+        return kafkaTemplate;
     }
 
     @Bean(name = "ProducerConfig")
