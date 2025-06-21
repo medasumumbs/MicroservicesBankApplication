@@ -1,5 +1,6 @@
 package ru.muravin.bankapplication.uiService.service;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -25,7 +26,7 @@ public class ReactiveUserDetailsServiceImpl implements ReactiveUserDetailsServic
     @Value("${gatewayHost:gateway}")
     private String gatewayHost;
 
-    public ReactiveUserDetailsServiceImpl(WebClient.Builder webClientBuilder, PasswordEncoder passwordEncoder) {
+    public ReactiveUserDetailsServiceImpl(@Qualifier("loadBalancedWebClientBuilder") WebClient.Builder webClientBuilder, PasswordEncoder passwordEncoder) {
         this.webClientBuilder = webClientBuilder;
         this.passwordEncoder = passwordEncoder;
     }

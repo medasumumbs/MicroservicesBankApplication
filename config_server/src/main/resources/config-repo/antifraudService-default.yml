@@ -10,6 +10,12 @@ spring:
         jwt:
           issuer-uri: http://keycloak:8080/realms/master
 management:
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans # Эндпойнт Zipkin для приема спанов
+  tracing:
+    sampling:
+      probability: 1 # Сэмплируем все запросы
   endpoints:
     web:
       exposure:

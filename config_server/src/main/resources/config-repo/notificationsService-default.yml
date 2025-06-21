@@ -22,6 +22,7 @@ spring:
               packages: ru.muravin.*
         acks: 1
     listener:
+      observation-enabled: true
       ack-mode: MANUAL_IMMEDIATE
   security:
     oauth2:

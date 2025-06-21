@@ -15,6 +15,14 @@ spring:
     session:
       timeout: 1800s # 30 минут
 management:
+  zipkin:
+    enabled: true
+    base-url: http://zipkin:9411
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans # Эндпойнт Zipkin для приема спанов
+  tracing:
+    sampling:
+      probability: 1 # Сэмплируем все запросы
   endpoints:
     web:
       exposure:

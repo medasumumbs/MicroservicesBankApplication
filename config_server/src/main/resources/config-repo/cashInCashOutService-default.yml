@@ -5,6 +5,8 @@ spring:
     username: guest
     password: guest
   kafka:
+    template:
+      observation-enabled: true
     bootstrap-servers: ${BOOTSTRAP_SERVERS_KAFKA:localhost:9092}
     producer:
       bootstrap-servers: ${BOOTSTRAP_SERVERS_KAFKA:localhost:9092}
@@ -29,8 +31,13 @@ spring:
       resourceserver:
         jwt:
           issuer-uri:  http://keycloak:8080/realms/master
-          #jwk-set-uri: http://localhost:7980/realms/demo/protocol/openid-connect/certs
 management:
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans # Эндпойнт Zipkin для приема спанов
+  tracing:
+    sampling:
+      probability: 1 # Сэмплируем все запросы
   endpoints:
     web:
       exposure:

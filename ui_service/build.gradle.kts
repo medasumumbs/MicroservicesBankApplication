@@ -35,6 +35,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-eureka-client
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.2.1")
+    implementation("io.micrometer:micrometer-tracing-bridge-brave")  // мост между micrometer и brave
+    implementation("io.zipkin.reporter2:zipkin-reporter-brave") // библиотека для отправки спанов в zipkin
+    implementation("io.zipkin.brave:brave-instrumentation-http:6.3.0")
+    runtimeOnly("net.logstash.logback:logstash-logback-encoder:7.3")
     compileOnly("org.projectlombok:lombok")
 
 

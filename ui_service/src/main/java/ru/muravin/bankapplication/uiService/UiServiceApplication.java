@@ -1,5 +1,7 @@
 package ru.muravin.bankapplication.uiService;
 
+import brave.Tracer;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
@@ -13,11 +15,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 @SpringBootApplication
 public class UiServiceApplication {
 
-    @Bean
-    @LoadBalanced
-    public WebClient.Builder webClientBuilder() {
-        return WebClient.builder();
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

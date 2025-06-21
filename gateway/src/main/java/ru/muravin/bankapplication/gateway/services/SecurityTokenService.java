@@ -1,5 +1,6 @@
 package ru.muravin.bankapplication.gateway.services;
 
+import brave.Tracer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
@@ -15,17 +16,22 @@ public class SecurityTokenService {
 
     @Value("${cashInCashOutService.registrationId}")
     private String registrationId;
+    @Autowired
+    private Tracer tracer;
 
     public Mono<String> getBearerToken() {
+        var span = tracer.nextSpan().name("getBearerToken").start();
         OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(
                 OAuth2AuthorizeRequest.withClientRegistrationId(registrationId)
                         .principal("system")
                         .build()
         );
         try {
+            span.finish();
             return Mono.just(authorizedClient.getAccessToken().getTokenValue());
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            span.error(e);
             return Mono.error(new RuntimeException("Ошибка запроса токена: "+e.getMessage()));
         }
     }

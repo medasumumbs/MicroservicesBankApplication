@@ -37,7 +37,6 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.2.1")
     implementation("io.micrometer:micrometer-tracing-bridge-brave")  // мост между micrometer и brave
     implementation("io.zipkin.reporter2:zipkin-reporter-brave") // библиотека для отправки спанов в zipkin
-    //implementation("org.apache.kafka:kafka-clients")
     runtimeOnly("net.logstash.logback:logstash-logback-encoder:7.3")
     compileOnly("org.projectlombok:lombok")
 
