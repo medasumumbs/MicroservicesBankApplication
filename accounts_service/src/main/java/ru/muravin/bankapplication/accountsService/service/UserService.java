@@ -1,5 +1,6 @@
 package ru.muravin.bankapplication.accountsService.service;
 
+import brave.Tracer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,31 +30,43 @@ public class UserService {
     private final AccountsRepository accountsRepository;
     private final AccountMapper accountMapper;
     private final NotificationsServiceClient notificationsServiceClient;
+    private final Tracer tracer;
 
     @Autowired
-    public UserService(UserMapper userMapper, UsersRepository usersRepository, PasswordEncoder passwordEncoder, AccountsRepository accountsRepository, AccountMapper accountMapper, NotificationsServiceClient notificationsServiceClient) {
+    public UserService(UserMapper userMapper, UsersRepository usersRepository, PasswordEncoder passwordEncoder, AccountsRepository accountsRepository, AccountMapper accountMapper, NotificationsServiceClient notificationsServiceClient, Tracer tracer) {
         this.userMapper = userMapper;
         this.usersRepository = usersRepository;
         this.passwordEncoder = passwordEncoder;
         this.accountsRepository = accountsRepository;
         this.accountMapper = accountMapper;
         this.notificationsServiceClient = notificationsServiceClient;
+        this.tracer = tracer;
     }
 
     public UserDto findByUsername(String username) {
-        return usersRepository.findUserByLogin(username).map(userMapper::toDto).orElse(null);
+        var span = tracer.nextSpan().name("db user find by username").start();
+        var result = usersRepository.findUserByLogin(username).map(userMapper::toDto).orElse(null);
+        span.finish();
+        return result;
     }
 
     public List<UserDto> findAll() {
-        return usersRepository.findAll().stream().map(userMapper::toDto).collect(Collectors.toList());
+        var span = tracer.nextSpan().name("db user findAll").start();
+        var result = usersRepository.findAll().stream().map(userMapper::toDto).collect(Collectors.toList());
+        span.finish();
+        return result;
     }
 
     public void updateUser(ChangePasswordDto changePasswordDto) {
+        var span = tracer.nextSpan().name("db findUserByLogin").start();
         var user = usersRepository.findUserByLogin(changePasswordDto.getLogin()).orElseThrow(
                 () -> new RuntimeException("Пользователь не существует")
         );
+        span.finish();
         user.setPassword(changePasswordDto.getNewPassword());
+        span = tracer.nextSpan().name("db Saving user").start();
         usersRepository.save(user);
+        span.finish();
         notificationsServiceClient.sendNotification("Password updated for user " + user.getLogin());
     }
 
@@ -64,11 +77,15 @@ public class UserService {
         }
         validateUserAndThrowIfError(userDto);
         user.setCreatedAt(LocalDateTime.now());
+        var span = tracer.nextSpan().name("db findUserByLogin").start();
         var foundUser = usersRepository.findUserByLogin(userDto.getLogin());
+        span.finish();
         if (foundUser.isPresent()) {
             throw new RuntimeException("Пользователь с логином " + userDto.getLogin() + " уже зарегистрирован");
         }
+        span = tracer.nextSpan().name("db Saving user").start();
         User savedUser = usersRepository.save(user);
+        span.finish();
         notificationsServiceClient.sendNotification("User registered " + userDto);
         return savedUser.getId();
     }
@@ -88,8 +105,9 @@ public class UserService {
         user.setPatronymic(userDto.getPatronymic());
         notificationsServiceClient.sendNotification("User information updated "
                 + user.toString() + " -> " + userDto.toString());
+        var span = tracer.nextSpan().name("db Saving user").start();
         usersRepository.save(user);
-
+        span.finish();
     }
 
     public void validateUserAndThrowIfError(UserDto userDto) {
