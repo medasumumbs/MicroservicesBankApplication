@@ -40,6 +40,11 @@ dependencies {
     implementation("org.springframework.kafka:spring-kafka")
     compileOnly("org.projectlombok:lombok")
 
+    // Трассирование в ZIPKIN
+    implementation("io.micrometer:micrometer-tracing-bridge-brave")  // мост между micrometer и brave
+    implementation("io.zipkin.reporter2:zipkin-reporter-brave") // библиотека для отправки спанов в zipkin
+    runtimeOnly("net.logstash.logback:logstash-logback-encoder:7.3")
+
 
     annotationProcessor("org.projectlombok:lombok")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
