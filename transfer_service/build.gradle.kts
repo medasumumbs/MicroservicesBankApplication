@@ -40,6 +40,7 @@ dependencies {
     implementation("org.springframework.kafka:spring-kafka")
     /// Метрики для prometheus
     implementation("io.micrometer:micrometer-registry-prometheus")
+    implementation("io.micrometer:micrometer-core")
     compileOnly("org.projectlombok:lombok")
 
     // Трассирование в ZIPKIN

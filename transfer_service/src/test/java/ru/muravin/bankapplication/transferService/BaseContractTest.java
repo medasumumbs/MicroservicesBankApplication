@@ -2,15 +2,20 @@ package ru.muravin.bankapplication.transferService;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.verifier.messaging.boot.AutoConfigureMessageVerifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -30,6 +35,7 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -40,7 +46,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                         "org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration," +
                         "org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration," +
                         "org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration",
-                "spring.security.enable-method-security=false"
+                "spring.security.enable-method-security=false",
+                "management.metrics.enabled=false",
+                "spring.boot.actuate.metrics.enabled=false",
+                "metricsEnabled=false"
         }
 )
 @AutoConfigureMessageVerifier
@@ -59,6 +68,8 @@ public class BaseContractTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private MeterRegistry meterRegistry;
 
     @MockitoBean
     protected RestTemplate restTemplate;

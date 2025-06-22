@@ -10,4 +10,5 @@ public class TransferDto {
     private String fromCurrency;
     private String toCurrency;
     private String action = "TRANSFER";
+    private String login;
 }

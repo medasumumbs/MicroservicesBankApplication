@@ -1,5 +1,7 @@
 package ru.muravin.bankapplication.transferService.controller;
 
+import io.micrometer.core.instrument.MeterRegistry;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,18 +20,29 @@ public class MainController {
 
     private final RestTemplate restTemplate;
     private final NotificationsServiceClient notificationsServiceClient;
+    private final MeterRegistry meterRegistry;
+
+    @Value("${metricsEnabled:true}")
+    private boolean metricsEnabled;
+
+    private OperationDto currentOperation;
 
     @Value("${gatewayHost:gateway}")
     private String gatewayHost;
 
-    public MainController(RestTemplate restTemplate, NotificationsServiceClient notificationsServiceClient) {
+    @Autowired
+    public MainController(RestTemplate restTemplate, NotificationsServiceClient notificationsServiceClient, MeterRegistry meterRegistry) {
         this.restTemplate = restTemplate;
         this.notificationsServiceClient = notificationsServiceClient;
+        this.meterRegistry = meterRegistry;
     }
 
     @PostMapping(value = "/transfer")
     public ResponseEntity<HttpResponseDto> transfer(@RequestBody OperationDto transfer) {
+        currentOperation = transfer;
+
         if (transfer.getToAccount().equals(transfer.getFromAccount()) && transfer.getFromCurrency().equals(transfer.getToCurrency())) {
+            saveUnsuccessfulMetric(transfer);
             return ResponseEntity.ok(new HttpResponseDto(
                 "ERROR",
                 "Счет получателя и счёт отправителя - один и тот же счёт. Перевод отклонён"
@@ -41,6 +54,7 @@ public class MainController {
                 AccountInfoDto.class
         );
         if (fromAccountInfo == null) {
+            saveUnsuccessfulMetric(transfer);
             return ResponseEntity.ok(
                 new HttpResponseDto(
                     "ERROR",
@@ -55,6 +69,7 @@ public class MainController {
                 AccountInfoDto.class
         );
         if (toAccountInfo == null) {
+            saveUnsuccessfulMetric(transfer);
             return ResponseEntity.ok(
                 new HttpResponseDto(
                     "ERROR",
@@ -67,6 +82,7 @@ public class MainController {
             "http://"+gatewayHost+"/antifraudService/checkOperations",transfer,HttpResponseDto.class
         );
         if (!antifraudResponse.getStatusCode().equals("OK")) {
+            saveUnsuccessfulMetric(transfer);
             return ResponseEntity.ok(antifraudResponse);
         }
 
@@ -74,7 +90,6 @@ public class MainController {
         Double finalAmountTo = 0d;
         if (transfer.getFromCurrency().equals(transfer.getToCurrency())) {
             finalAmountTo = finalAmountFrom;
-
         } else {
             List<LinkedHashMap> currencyRates = restTemplate.getForObject(
                     "http://"+gatewayHost+"/currencyExchangeService/rates",List.class);
@@ -91,6 +106,7 @@ public class MainController {
             currencies.put("RUB", "Российский рубль");
             currencies.put("EUR", "Евро");
             currencies.put("USD", "Доллар США");
+            saveUnsuccessfulMetric(transfer);
             return ResponseEntity.ok(
                 new HttpResponseDto(
                     "ERROR",
@@ -113,11 +129,13 @@ public class MainController {
                 "http://"+gatewayHost+"/accountsService/transfer",finalRequestDto,String.class
         );
         if (accountsServiceResponse == null) {
+            saveUnsuccessfulMetric(transfer);
             return ResponseEntity.ok(
                 new HttpResponseDto("ERROR","Не получен ответ от сервиса исполнения транзакций")
             );
         }
         if (!accountsServiceResponse.equals("OK")) {
+            saveUnsuccessfulMetric(transfer);
             return ResponseEntity.ok(
                 new HttpResponseDto("ERROR", accountsServiceResponse)
             );
@@ -125,11 +143,31 @@ public class MainController {
 
         notificationsServiceClient.sendNotification("Transfer Successful " + transfer);
 
+        saveSuccessfulMetric(transfer);
         return ResponseEntity.ok(new HttpResponseDto("OK","Перевод успешен"));
     }
     @ExceptionHandler
     public HttpResponseDto handleException(Exception ex) {
+        if (currentOperation != null) {
+            saveUnsuccessfulMetric(currentOperation);
+        }
         ex.printStackTrace();
         return new HttpResponseDto("ERROR",ex.getLocalizedMessage());
+    }
+
+    private void saveSuccessfulMetric(OperationDto operationDto) {
+        saveMetric(operationDto, "success");
+    }
+    private void saveUnsuccessfulMetric(OperationDto operationDto) {
+        saveMetric(operationDto, "failure");
+    }
+    private void saveMetric(OperationDto operationDto, String status) {
+        if (!metricsEnabled) return;
+        meterRegistry.counter(
+                "transfer",
+                "login", operationDto.getLogin(),
+                "recipientAccount", operationDto.getToAccount(),
+                "senderAccount", operationDto.getFromAccount(),
+                "status", status).increment();
     }
 }

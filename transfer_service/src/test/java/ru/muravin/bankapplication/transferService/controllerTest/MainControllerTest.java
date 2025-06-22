@@ -1,8 +1,11 @@
 package ru.muravin.bankapplication.transferService.controllerTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
@@ -31,6 +34,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(MainController.class)
 public class MainControllerTest {
 
+    @MockitoBean
+    private MeterRegistry meterRegistry;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -49,6 +55,7 @@ public class MainControllerTest {
 
     @BeforeEach
     void setUp() {
+        Mockito.when(meterRegistry.counter(any(), any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(mock(Counter.class));
         transferDto = new OperationDto();
         transferDto.setFromAccount("user1");
         transferDto.setToAccount("user2");
