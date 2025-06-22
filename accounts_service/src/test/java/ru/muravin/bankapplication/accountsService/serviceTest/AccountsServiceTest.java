@@ -111,7 +111,7 @@ public class AccountsServiceTest {
         Account savedAccount = accountCaptor.getValue();
         assertEquals("USD", savedAccount.getCurrency());
         assertEquals("1", savedAccount.getUserId());
-        verify(notificationsServiceClient).sendNotification("Registered user john_doe");
+        verify(notificationsServiceClient).sendNotification(eq("Registered user john_doe"), any());
     }
 
     // === cashIn ===
@@ -148,7 +148,7 @@ public class AccountsServiceTest {
         assertEquals("OK", result);
         verify(accountsRepository).save(accountCaptor.capture());
         assertEquals(100f, accountCaptor.getValue().getBalance());
-        verify(notificationsServiceClient).sendNotification("Cash In john_doe sum = 100");
+        verify(notificationsServiceClient).sendNotification(eq("Cash In john_doe sum = 100"), any());
     }
 
     // === cashOut ===
@@ -237,6 +237,6 @@ public class AccountsServiceTest {
         verify(accountsRepository, times(2)).save(any(Account.class));
         assertEquals(100f, fromAccount.getBalance());
         assertEquals(150f, toAccount.getBalance());
-        verify(notificationsServiceClient).sendNotification("Transfer: " + dto);
+        verify(notificationsServiceClient).sendNotification(eq("Transfer: " + dto), any());
     }
 }

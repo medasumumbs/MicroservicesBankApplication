@@ -141,7 +141,7 @@ public class MainController {
             );
         }
 
-        notificationsServiceClient.sendNotification("Transfer Successful " + transfer);
+        notificationsServiceClient.sendNotification("Transfer Successful " + transfer, transfer.getLogin());
 
         saveSuccessfulMetric(transfer);
         return ResponseEntity.ok(new HttpResponseDto("OK","Перевод успешен"));

@@ -45,7 +45,7 @@ public class MainController {
         if (action.equals("PUT")) {
             return ResponseEntity.ok(new HttpResponseDto("OK","Деньги успешно зачислены"));
         }
-        notificationsServiceClient.sendNotification("CashInOrCashOut " + cashInCashOutDto);
+        notificationsServiceClient.sendNotification("CashInOrCashOut " + cashInCashOutDto, cashInCashOutDto.getLogin());
         return ResponseEntity.notFound().build();
     }
     @ExceptionHandler

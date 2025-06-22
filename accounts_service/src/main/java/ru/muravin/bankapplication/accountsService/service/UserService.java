@@ -67,7 +67,7 @@ public class UserService {
         span = tracer.nextSpan().name("db Saving user").start();
         usersRepository.save(user);
         span.finish();
-        notificationsServiceClient.sendNotification("Password updated for user " + user.getLogin());
+        notificationsServiceClient.sendNotification("Password updated for user " + user.getLogin(), user.getLogin());
     }
 
     public Long saveUser(UserDto userDto) {
@@ -86,7 +86,7 @@ public class UserService {
         span = tracer.nextSpan().name("db Saving user").start();
         User savedUser = usersRepository.save(user);
         span.finish();
-        notificationsServiceClient.sendNotification("User registered " + userDto);
+        notificationsServiceClient.sendNotification("User registered " + userDto, user.getLogin());
         return savedUser.getId();
     }
 
@@ -104,7 +104,7 @@ public class UserService {
         user.setLastName(userDto.getLastName());
         user.setPatronymic(userDto.getPatronymic());
         notificationsServiceClient.sendNotification("User information updated "
-                + user.toString() + " -> " + userDto.toString());
+                + user.toString() + " -> " + userDto.toString(), user.getLogin());
         var span = tracer.nextSpan().name("db Saving user").start();
         usersRepository.save(user);
         span.finish();

@@ -65,7 +65,7 @@ public class ServiceTests {
         when(kafkaTemplate.send(any(Message.class))).thenReturn(CompletableFuture.completedFuture(new SendResult<>(null, null)));
 
         // When
-        notificationsServiceClient.sendNotification(notificationText);
+        notificationsServiceClient.sendNotification(notificationText, "123");
 
         // Then
         verify(kafkaTemplate, times(1)).send(any(Message.class));
@@ -79,7 +79,7 @@ public class ServiceTests {
 
         // When & Then
         assertThatException()
-                .isThrownBy(() -> notificationsServiceClient.sendNotification(notificationText));
+                .isThrownBy(() -> notificationsServiceClient.sendNotification(notificationText, "123"));
 
         // Проверяем, что RestTemplate был вызван
         verify(kafkaTemplate, times(1)).send(any(Message.class));

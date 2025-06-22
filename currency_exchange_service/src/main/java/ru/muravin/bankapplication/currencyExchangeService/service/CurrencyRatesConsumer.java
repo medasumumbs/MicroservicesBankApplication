@@ -1,5 +1,6 @@
 package ru.muravin.bankapplication.currencyExchangeService.service;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -16,9 +17,14 @@ import java.util.List;
 @Service
 public class CurrencyRatesConsumer {
     private final CurrencyRatesService currencyRatesService;
+    private final MeterRegistry meterRegistry;
 
-    public CurrencyRatesConsumer(CurrencyRatesService currencyRatesService) {
+    @Value("${metricsEnabled:true}")
+    private boolean metricsEnabled;
+
+    public CurrencyRatesConsumer(CurrencyRatesService currencyRatesService, MeterRegistry meterRegistry) {
         this.currencyRatesService = currencyRatesService;
+        this.meterRegistry = meterRegistry;
     }
 
     @RetryableTopic(backoff = @Backoff(500), timeout = "4000")
@@ -36,5 +42,6 @@ public class CurrencyRatesConsumer {
         log.info("CurrencyRatesConsumer acknowledged");
         currencyRatesService.saveRates(currencyRateDtoList);
         log.info("CurrencyRatesConsumer saved rates");
+        if (metricsEnabled) meterRegistry.counter("currency_rates_updated").increment();
     }
 }

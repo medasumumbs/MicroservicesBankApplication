@@ -88,7 +88,7 @@ public class KafkaIntegrationTest {
         }
         try {
             // Запуск генерации и отправки сообщения
-            notificationsServiceClient.sendNotification("123");
+            notificationsServiceClient.sendNotification("123", "123");
 
             boolean messageReceived = latch.await(15, TimeUnit.SECONDS);
             assertTrue(messageReceived);

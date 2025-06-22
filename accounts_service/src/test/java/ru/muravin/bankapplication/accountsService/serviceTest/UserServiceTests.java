@@ -133,7 +133,7 @@ public class UserServiceTests {
 
         verify(usersRepository).save(userCaptor.capture());
         assertEquals(newPassword, userCaptor.getValue().getPassword());
-        verify(notificationsServiceClient).sendNotification("Password updated for user " + login);
+        verify(notificationsServiceClient).sendNotification("Password updated for user " + login, login);
     }
 
     @Test
@@ -170,7 +170,7 @@ public class UserServiceTests {
 
         assertNotNull(userId);
         verify(usersRepository).save(userCaptor.capture());
-        verify(notificationsServiceClient).sendNotification("User registered " + dto);
+        verify(notificationsServiceClient).sendNotification("User registered " + dto, dto.getLogin());
     }
 
     @Test
@@ -226,7 +226,7 @@ public class UserServiceTests {
         assertEquals("Smith", savedUser.getPatronymic());
         LocalDate expectedDate = LocalDate.of(1990, 1, 1);
         assertEquals(expectedDate, savedUser.getDateOfBirth());
-        verify(notificationsServiceClient).sendNotification("User information updated " + user + " -> " + dto);
+        verify(notificationsServiceClient).sendNotification("User information updated " + user + " -> " + dto, dto.getLogin());
     }
 
     @Test

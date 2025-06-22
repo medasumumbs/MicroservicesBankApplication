@@ -1,5 +1,6 @@
 package ru.muravin.bankapplication.transferService.service;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import java.util.concurrent.TimeoutException;
 @Slf4j
 public class NotificationsServiceClient {
     private final ApplicationContext applicationContext;
+    private final MeterRegistry meterRegistry;
 
     @Setter
     private KafkaTemplate<String, NotificationDto> kafkaTemplate;
@@ -35,12 +37,13 @@ public class NotificationsServiceClient {
     private Integer kafkaSecondsTimeout;
 
     @Autowired
-    public NotificationsServiceClient(ApplicationContext applicationContext, KafkaTemplate<String, NotificationDto> kafkaTemplate) {
+    public NotificationsServiceClient(ApplicationContext applicationContext, KafkaTemplate<String, NotificationDto> kafkaTemplate, MeterRegistry meterRegistry) {
         this.applicationContext = applicationContext;
         this.kafkaTemplate = kafkaTemplate;
+        this.meterRegistry = meterRegistry;
     }
 
-    public void sendNotification(String notificationText) {
+    public void sendNotification(String notificationText, String login) {
         NotificationDto notificationDto = new NotificationDto();
         notificationDto.setMessage(notificationText);
         notificationDto.setTimestamp(new Timestamp(System.currentTimeMillis()).toString());
@@ -56,6 +59,7 @@ public class NotificationsServiceClient {
         try {
             kafkaTemplate.send(message).get(kafkaSecondsTimeout, TimeUnit.SECONDS);
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
+            meterRegistry.counter("failedToSendNotification", "login", login).increment();
             log.error("{}:{}", e.getMessage(), e.getCause().getMessage());
             return;
         }

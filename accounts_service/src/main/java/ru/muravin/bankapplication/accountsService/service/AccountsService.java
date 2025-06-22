@@ -59,7 +59,7 @@ public class AccountsService {
         span = tracer.nextSpan().name("db Saving account").start();
         accountsRepository.save(account);
         span.finish();
-        notificationsServiceClient.sendNotification("Registered user " + newAccountDto.getLogin());
+        notificationsServiceClient.sendNotification("Registered user " + newAccountDto.getLogin(), newAccountDto.getLogin());
         return "OK";
     }
 
@@ -105,7 +105,7 @@ public class AccountsService {
         accountsRepository.save(account);
         span.finish();
         notificationsServiceClient.sendNotification(
-            "Cash In " + operationDto.getLogin() + " sum = " + operationDto.getAmount()
+            "Cash In " + operationDto.getLogin() + " sum = " + operationDto.getAmount(), operationDto.getLogin()
         );
         return "OK";
     }
@@ -134,7 +134,7 @@ public class AccountsService {
         accountsRepository.save(account);
         span.finish();
         notificationsServiceClient.sendNotification(
-                "Cash Out " + operationDto.getLogin() + " sum = " + operationDto.getAmount()
+                "Cash Out " + operationDto.getLogin() + " sum = " + operationDto.getAmount(), operationDto.getLogin()
         );
         return "OK";
     }
@@ -173,7 +173,7 @@ public class AccountsService {
         span = tracer.nextSpan().name("db Saving acc to").start();
         accountsRepository.save(accountTo);
         span.finish();
-        notificationsServiceClient.sendNotification("Transfer: " + transferDto);
+        notificationsServiceClient.sendNotification("Transfer: " + transferDto, "ACCOUNTS_SERVICE");
         return "OK";
     }
 }
