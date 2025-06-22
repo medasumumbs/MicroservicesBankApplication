@@ -39,6 +39,8 @@ dependencies {
     implementation("io.zipkin.reporter2:zipkin-reporter-brave") // библиотека для отправки спанов в zipkin
     runtimeOnly("net.logstash.logback:logstash-logback-encoder:7.3")
     compileOnly("org.projectlombok:lombok")
+    /// Метрики для prometheus
+    implementation("io.micrometer:micrometer-registry-prometheus")
 
 
     annotationProcessor("org.projectlombok:lombok")

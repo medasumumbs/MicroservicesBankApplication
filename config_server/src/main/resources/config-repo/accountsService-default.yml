@@ -58,7 +58,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: refresh,busrefresh,busshutdown,health,info
+        include: refresh,busrefresh,busshutdown,health,info,metrics,prometheus,prometheus
   endpoint:
     health:
       show-details: always

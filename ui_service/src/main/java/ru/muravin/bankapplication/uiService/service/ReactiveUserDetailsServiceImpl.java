@@ -1,5 +1,6 @@
 package ru.muravin.bankapplication.uiService.service;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -22,13 +23,15 @@ public class ReactiveUserDetailsServiceImpl implements ReactiveUserDetailsServic
 
     private final WebClient.Builder webClientBuilder;
     private final PasswordEncoder passwordEncoder;
+    private final MeterRegistry meterRegistry;
 
     @Value("${gatewayHost:gateway}")
     private String gatewayHost;
 
-    public ReactiveUserDetailsServiceImpl(@Qualifier("loadBalancedWebClientBuilder") WebClient.Builder webClientBuilder, PasswordEncoder passwordEncoder) {
+    public ReactiveUserDetailsServiceImpl(@Qualifier("loadBalancedWebClientBuilder") WebClient.Builder webClientBuilder, PasswordEncoder passwordEncoder, MeterRegistry meterRegistry) {
         this.webClientBuilder = webClientBuilder;
         this.passwordEncoder = passwordEncoder;
+        this.meterRegistry = meterRegistry;
     }
 
     public Mono<String> updatePassword(String login, String password) {
@@ -71,13 +74,21 @@ public class ReactiveUserDetailsServiceImpl implements ReactiveUserDetailsServic
         var url = "http://"+gatewayHost+"/accountsService/findByUsername";
         return webClientBuilder.build()
             .get().uri(UriComponentsBuilder.fromHttpUrl(url).queryParam("username", username).build().toUri())
-            .retrieve().bodyToMono(UserDto.class).map(userDto -> (UserDetails) userDto).onErrorResume(
+            .retrieve().bodyToMono(UserDto.class).map(userDto -> {
+                if (userDto != null) {
+                    meterRegistry.counter("login", "login", username, "status", "success").increment();
+                }
+                return (UserDetails) userDto;
+                }).onErrorResume(
                 ex -> {
                     System.out.println(ex.getMessage());
                     return Mono.error(ex);
                 }
             ).onErrorResume(
-                    e -> Mono.empty()
+                e -> {
+                    meterRegistry.counter("login", "login", username, "status", "failure").increment();
+                    return Mono.empty();
+                }
             );
     }
 

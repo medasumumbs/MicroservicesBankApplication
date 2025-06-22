@@ -27,7 +27,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: refresh,busrefresh,busshutdown,health,info
+        include: refresh,busrefresh,busshutdown,health,info,metrics,prometheus
 eureka:
   instance:
     hostname: localhost

@@ -38,6 +38,8 @@ dependencies {
 // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-eureka-client
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.2.1")
     implementation("org.springframework.kafka:spring-kafka")
+    /// Метрики для prometheus
+    implementation("io.micrometer:micrometer-registry-prometheus")
     compileOnly("org.projectlombok:lombok")
 
     // Трассирование в ZIPKIN

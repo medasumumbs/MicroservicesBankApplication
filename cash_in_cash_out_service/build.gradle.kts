@@ -42,6 +42,8 @@ dependencies {
     implementation("io.micrometer:micrometer-tracing-bridge-brave")  // мост между micrometer и brave
     implementation("io.zipkin.reporter2:zipkin-reporter-brave") // библиотека для отправки спанов в zipkin
     runtimeOnly("net.logstash.logback:logstash-logback-encoder:7.3")
+    /// Метрики для prometheus
+    implementation("io.micrometer:micrometer-registry-prometheus")
 
 
     annotationProcessor("org.projectlombok:lombok")

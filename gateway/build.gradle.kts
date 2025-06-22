@@ -38,7 +38,9 @@ dependencies {
     implementation("io.micrometer:micrometer-tracing-bridge-brave")  // мост между micrometer и brave
     implementation("io.zipkin.reporter2:zipkin-reporter-brave") // библиотека для отправки спанов в zipkin
     compileOnly("org.projectlombok:lombok")
-// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-webflux
+
+    /// Метрики для prometheus
+    implementation("io.micrometer:micrometer-registry-prometheus")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")

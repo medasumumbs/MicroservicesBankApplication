@@ -74,6 +74,7 @@ public class SecurityConfiguration {
                 )
                 .authorizeExchange(exchange->{
                     exchange.pathMatchers("/signup").permitAll()
+                            .pathMatchers("/actuator/**").permitAll()
                             .pathMatchers("/logout", "/login").permitAll()
                             .anyExchange().authenticated();
                 })
@@ -82,21 +83,4 @@ public class SecurityConfiguration {
                 .securityContextRepository(new WebSessionServerSecurityContextRepository())
                 .build();
     }
-
-    /*@Bean
-    public CsrfWebFilter csrfWebFilter() {
-        return new CsrfWebFilter();
-    }
-    @Bean
-    public WebSessionIdResolver webSessionIdResolver() {
-        CookieWebSessionIdResolver resolver = new CookieWebSessionIdResolver();
-        resolver.setCookieName("SESSION"); // можно переименовать, если нужно
-        resolver.addCookieInitializer((builder) -> {
-            builder.path("/"); // путь
-            builder.httpOnly(true);
-            builder.secure(false); // true, если HTTPS
-            builder.sameSite("None"); // или "None" для кросс-доменных запросов
-        });
-        return resolver;
-    }*/
 }

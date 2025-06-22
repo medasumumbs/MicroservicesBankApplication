@@ -50,6 +50,8 @@ dependencies {
     // https://mvnrepository.com/artifact/io.zipkin.brave/brave-instrumentation-kafka-clients
     implementation("io.zipkin.brave:brave-instrumentation-kafka-clients:5.17.1")
     runtimeOnly("org.postgresql:postgresql")
+    /// Метрики для prometheus
+    implementation("io.micrometer:micrometer-registry-prometheus")
 
     annotationProcessor("org.projectlombok:lombok")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
