@@ -19,9 +19,9 @@ scrape_configs:
     metrics_path: '/actuator/prometheus'
     scrape_interval: 5s
     static_configs:
-      - targets: [ 'service:8084' ]
+      - targets: [ 'accounts-service:8084' ]
         labels:
-          application: 'service'
+          application: 'accounts-service'
 
   - job_name: 'transfer-service'
     metrics_path: '/actuator/prometheus'
@@ -34,14 +34,14 @@ scrape_configs:
     metrics_path: '/actuator/prometheus'
     scrape_interval: 5s
     static_configs:
-      - targets: [ 'cash_in_cash_out-service:8092' ]
+      - targets: [ 'cash_in_cash_out-service:8095' ]
         labels:
           application: 'cash_in_cash_out-service'
   - job_name: 'exchange-generation-service'
     metrics_path: '/actuator/prometheus'
     scrape_interval: 5s
     static_configs:
-      - targets: [ 'exchange-generation-service:8095' ]
+      - targets: [ 'exchange-generation-service:8092' ]
         labels:
           application: 'exchange-generation-service'
   - job_name: 'exchange-service'
