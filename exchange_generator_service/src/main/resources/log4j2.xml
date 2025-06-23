@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <!-- Консольный вывод для тестов -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %X{traceId}:%X{spanId} [${env:SERVICE_NAME:-exchange-generator-service}] %msg%n"/>
+        </Console>
+
+        <!-- Kafka Appender -->
+        <Kafka name="Kafka" topic="log-test">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %X{traceId}:%X{spanId} [${env:SERVICE_NAME:-exchange-generator-service}] %msg%n"/>
+            <Property name="bootstrap.servers">${env:BOOTSTRAP_SERVERS:-localhost:9092}</Property>
+            <Property name="acks">all</Property>
+        </Kafka>
+    </Appenders>
+
+    <Loggers>
+        <!-- Корневой логгер -->
+        <Root level="INFO">
+            <AppenderRef ref="Kafka"/>
+            <AppenderRef ref="Console"/>
+        </Root>
+
+        <!-- Логи самого Kafka (в консоль) -->
+        <Logger name="org.apache.kafka" level="INFO" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+    </Loggers>
+</Configuration>

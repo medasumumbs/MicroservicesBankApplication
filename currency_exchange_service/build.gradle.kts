@@ -45,7 +45,7 @@ dependencies {
     implementation("io.zipkin.reporter2:zipkin-sender-urlconnection")
     implementation("org.apache.kafka:kafka-clients")
     implementation("io.opentelemetry:opentelemetry-exporter-zipkin")
-    runtimeOnly("net.logstash.logback:logstash-logback-encoder:7.3")
+    //runtimeOnly("net.logstash.logback:logstash-logback-encoder:7.3")
     compileOnly("org.projectlombok:lombok")
     // https://mvnrepository.com/artifact/io.zipkin.brave/brave-instrumentation-kafka-clients
     implementation("io.zipkin.brave:brave-instrumentation-kafka-clients:5.17.1")
