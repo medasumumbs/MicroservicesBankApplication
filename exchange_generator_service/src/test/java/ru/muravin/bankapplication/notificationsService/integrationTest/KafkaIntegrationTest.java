@@ -1,6 +1,6 @@
 package ru.muravin.bankapplication.notificationsService.integrationTest;
-
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.config.KafkaListenerContainerFactory;
@@ -9,6 +9,7 @@ import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.KafkaMessageListenerContainer;
 import org.springframework.kafka.listener.MessageListener;
 import org.springframework.kafka.test.context.EmbeddedKafka;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import ru.muravin.bankapplication.exchangeGeneratorService.ExchangeGeneratorServiceApplication;
 import ru.muravin.bankapplication.exchangeGeneratorService.dto.CurrencyRateDto;
 import ru.muravin.bankapplication.exchangeGeneratorService.service.RatesGenerationService;
@@ -35,7 +36,6 @@ import static org.junit.jupiter.api.Assertions.*;
         brokerProperties = { "listeners=PLAINTEXT://:9092", "port=9092" }
 )
 public class KafkaIntegrationTest {
-
     @Autowired
     private RatesGenerationService ratesGenerationService;
 

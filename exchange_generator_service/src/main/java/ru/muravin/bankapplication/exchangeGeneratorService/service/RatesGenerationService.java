@@ -1,7 +1,12 @@
 package ru.muravin.bankapplication.exchangeGeneratorService.service;
 
+import io.micrometer.tracing.Tracer;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -16,12 +21,15 @@ import java.util.ArrayList;
 public class RatesGenerationService {
 
     private final RatesProducer ratesProducer;
+    //private final Tracer tracer;
     @Setter
     @Value("${gatewayHost:gateway}")
     private String gatewayHost;
 
-    public RatesGenerationService(RatesProducer ratesProducer) {
+    @Autowired
+    public RatesGenerationService(RatesProducer ratesProducer/*, Tracer tracer*/) {
         this.ratesProducer = ratesProducer;
+        //this.tracer = tracer;
     }
 
     public static Float createRandomFloat() {
@@ -31,6 +39,11 @@ public class RatesGenerationService {
 
     @Scheduled(fixedRate = 5000)
     public void generateAndSendRates() {
+        log.info("MDC: "+MDC.get("traceId"));
+//        try {
+//            log.info("TRACEID: " + tracer.currentSpan().context().traceId());
+//        } catch (Exception e) {}
+        log.info(log.getClass() + " " + log.getName());
         log.info("Sending random rate to ExchangeGeneratorService");
         var rates = getCurrencyRateDtos(createRandomFloat());
         String result;

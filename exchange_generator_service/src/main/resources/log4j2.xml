@@ -9,7 +9,7 @@
         <!-- Kafka Appender -->
         <Kafka name="Kafka" topic="log-test">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %X{traceId}:%X{spanId} [${env:SERVICE_NAME:-exchange-generator-service}] %msg%n"/>
-            <Property name="bootstrap.servers">${env:BOOTSTRAP_SERVERS:-localhost:9092}</Property>
+            <Property name="bootstrap.servers">${env:BOOTSTRAP_SERVERS_KAFKA:-localhost:9092}</Property>
             <Property name="acks">all</Property>
         </Kafka>
     </Appenders>
@@ -17,7 +17,7 @@
     <Loggers>
         <!-- Корневой логгер -->
         <Root level="INFO">
-            <AppenderRef ref="Kafka"/>
+           <!-- <AppenderRef ref="Kafka"/>-->
             <AppenderRef ref="Console"/>
         </Root>
 
