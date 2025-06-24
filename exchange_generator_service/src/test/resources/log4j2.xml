@@ -5,20 +5,11 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %X{traceId}:%X{spanId} [${env:SERVICE_NAME:-exchange-generator-service}] %msg%n"/>
         </Console>
-
-        <!-- Kafka Appender -->
-        <Kafka syncSend="false" name="Kafka" topic="logs-topic">
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %X{traceId}:%X{spanId} [${env:SERVICE_NAME:-exchange-generator-service}] %msg%n"/>
-            <Property name="bootstrap.servers">${env:BOOTSTRAP_SERVERS_KAFKA:-localhost:9092}</Property>
-            <Property name="acks">all</Property>
-            <Property name="linger.ms">1000</Property>
-        </Kafka>
     </Appenders>
 
     <Loggers>
-        <!-- Корневой логгер -->
+        <!-- Корневой логгер — только в консоль -->
         <Root level="INFO">
-            <AppenderRef ref="Kafka"/>
             <AppenderRef ref="Console"/>
         </Root>
 

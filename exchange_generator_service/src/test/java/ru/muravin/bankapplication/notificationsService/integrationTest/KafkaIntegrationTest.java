@@ -36,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
         brokerProperties = { "listeners=PLAINTEXT://:9092", "port=9092" }
 )
 public class KafkaIntegrationTest {
+
     @Autowired
     private RatesGenerationService ratesGenerationService;
 
