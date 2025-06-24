@@ -30,6 +30,7 @@ public class CurrencyRatesConsumer {
     @RetryableTopic(backoff = @Backoff(500), timeout = "4000")
     @KafkaListener(topics = "currency-rates", groupId = "currency-rates-grp")
     public void consume(List<LinkedHashMap> currencyRateDtoLinkedHashMap, Acknowledgment ack) {
+        log.info("Consuming currency rates: {}", currencyRateDtoLinkedHashMap);
         var currencyRateDtoList = currencyRateDtoLinkedHashMap.stream().map(linkedHashMap -> {
             CurrencyRateDto currencyRateDto = new CurrencyRateDto();
             currencyRateDto.setBuyRate(Float.parseFloat(((Double) linkedHashMap.get("buyRate")).toString()));

@@ -26,6 +26,12 @@ repositories {
     mavenCentral()
 }
 
+// Для переключения LogBack->Log4j2
+configurations.configureEach {
+    exclude(module = "spring-boot-starter-logging")
+    exclude(group = "ch.qos.logback")
+}
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -52,6 +58,14 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
     /// Метрики для prometheus
     implementation("io.micrometer:micrometer-registry-prometheus")
+
+    /// Логирование
+    implementation("org.slf4j:slf4j-api:2.0.16")
+    implementation("org.apache.logging.log4j:log4j-slf4j2-impl:2.24.3")
+    implementation("org.apache.logging.log4j:log4j-core:2.24.3")
+    implementation("org.apache.logging.log4j:log4j-api:2.24.3")
+    implementation("org.springframework.boot:spring-boot-starter-log4j2")
+    /// EndOf: Логирование
 
     annotationProcessor("org.projectlombok:lombok")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")

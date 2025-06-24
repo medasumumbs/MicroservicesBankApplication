@@ -1,6 +1,7 @@
 package ru.muravin.bankapplication.currencyExchangeService.service;
 
 import brave.Tracer;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.muravin.bankapplication.currencyExchangeService.dto.CurrencyRateDto;
@@ -10,6 +11,7 @@ import ru.muravin.bankapplication.currencyExchangeService.repository.CurrencyRat
 import java.util.List;
 
 @Service
+@Slf4j
 public class CurrencyRatesService {
     private final CurrencyRateMapper currencyRateMapper;
     private final CurrencyRatesRepository notificationsRepository;
@@ -24,12 +26,14 @@ public class CurrencyRatesService {
     }
 
     public void saveRates(List<CurrencyRateDto> ratesList) {
+        log.info("Saving rate list");
         var span = tracer.nextSpan().name("db Saving rate list").start();
         notificationsRepository.saveAll(ratesList.stream().map(currencyRateMapper::toEntity).toList());
         span.finish();
     }
 
     public List<CurrencyRateDto> findAll() {
+        log.info("Finding rate list");
         var span = tracer.nextSpan().name("db Finding rate list").start();
         var result = notificationsRepository.findAll().stream().map(currencyRateMapper::toDto).toList();
         span.finish();

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <!-- Консольный вывод для тестов -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %X{traceId}:%X{spanId} [${env:SERVICE_NAME:-currency-exchange-service}] %msg%n"/>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <!-- Корневой логгер — только в консоль -->
+        <Root level="INFO">
+            <AppenderRef ref="Console"/>
+        </Root>
+
+        <!-- Логи самого Kafka (в консоль) -->
+        <Logger name="org.apache.kafka" level="INFO" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+    </Loggers>
+</Configuration>
