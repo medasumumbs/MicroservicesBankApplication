@@ -373,7 +373,45 @@ services:
       TZ: "Europe/Moscow"
     networks:
       - kafkaNet
+  elasticsearch:
+    image: docker.io/elastic/elasticsearch:8.13.3
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - kafkaNet
+    volumes:
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 
+  logstash:
+    image: docker.io/elastic/logstash:8.13.3
+    container_name: logstash
+    ports:
+      - "5044:5044"
+      - "9600:9600"
+    volumes:
+      - ./logstash/config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    depends_on:
+      - kafka
+      - elasticsearch
+    networks:
+      - kafkaNet
+
+  kibana:
+    image: docker.io/elastic/kibana:8.13.3
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    networks:
+      - kafkaNet
 networks:
   kafkaNet:
     driver: bridge
