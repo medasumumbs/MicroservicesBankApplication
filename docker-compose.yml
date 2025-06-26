@@ -374,6 +374,8 @@ services:
     networks:
       - kafkaNet
   elasticsearch:
+    env_file:
+      .env
     image: docker.io/elastic/elasticsearch:8.13.3
     container_name: elasticsearch
     environment:
@@ -386,10 +388,29 @@ services:
       - kafkaNet
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+  elasticsearch-init:
+    image: appropriate/curl
+    command:
+      - sh
+      - -c
+      - |
+        until curl -s http://elasticsearch:9200; do echo "Waiting for Elasticsearch..."; sleep 5; done
+
+        curl -X PUT "http://elasticsearch:9200/_index_template/logs_template" \
+             -H "Content-Type: application/json" \
+             -d @/templates/logs-template.json
+    volumes:
+      - ./elasticsearch/config/logs-template.json:/templates/logs-template.json
+    networks:
+      - kafkaNet
 
   logstash:
+    env_file:
+      .env
     image: docker.io/elastic/logstash:8.13.3
     container_name: logstash
+    environment:
+      - LOGSTASH_OUTPUT_ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     ports:
       - "5044:5044"
       - "9600:9600"
@@ -398,6 +419,7 @@ services:
     depends_on:
       - kafka
       - elasticsearch
+      - elasticsearch-init
     networks:
       - kafkaNet
 
@@ -408,6 +430,7 @@ services:
       - "5601:5601"
     depends_on:
       - elasticsearch
+      - elasticsearch-init
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     networks:
