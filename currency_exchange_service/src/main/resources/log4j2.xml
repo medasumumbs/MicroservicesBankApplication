@@ -3,12 +3,20 @@
     <Appenders>
         <!-- Консольный вывод для тестов -->
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %X{traceId}:%X{spanId} [${env:SERVICE_NAME:-currency-exchange-service}] %msg%n"/>
+            <JSONLayout compact="true" eventEol="true">
+                <KeyValuePair key="traceId" value="${ctx:traceId}" />
+                <KeyValuePair key="spanId" value="${ctx:spanId}" />
+                <KeyValuePair key="service_name" value="${env:SERVICE_NAME:-currency-exchange-service}" />
+            </JSONLayout>
         </Console>
 
         <!-- Kafka Appender -->
         <Kafka syncSend="false" name="Kafka" topic="logs-topic">
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %X{traceId}:%X{spanId} [${env:SERVICE_NAME:-currency-exchange-service}] %msg%n"/>
+            <JSONLayout compact="true" eventEol="true">
+                <KeyValuePair key="traceId" value="${ctx:traceId}" />
+                <KeyValuePair key="spanId" value="${ctx:spanId}" />
+                <KeyValuePair key="service_name" value="${env:SERVICE_NAME:-currency-exchange-service}" />
+            </JSONLayout>
             <Property name="bootstrap.servers">${env:BOOTSTRAP_SERVERS_KAFKA:-localhost:9092}</Property>
             <Property name="acks">all</Property>
             <Property name="linger.ms">1000</Property>

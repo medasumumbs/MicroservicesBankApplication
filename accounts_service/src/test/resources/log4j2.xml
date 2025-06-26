@@ -3,7 +3,7 @@
     <Appenders>
         <!-- Консольный вывод для тестов -->
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %X{traceId}:%X{spanId} [${env:SERVICE_NAME:-accounts-service}] %msg%n"/>
+            <JSONLayout />
         </Console>
     </Appenders>
 
