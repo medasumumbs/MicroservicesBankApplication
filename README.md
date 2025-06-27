@@ -177,6 +177,8 @@ Jenkins будет доступен на локальной машине на п
 2) Метрики Java-машины (утилизация памяти, потоки и т.д.)
 3) Метрики HTTP-запросов (статусы, время обработки)
 
+Prometheus опрашивает необходимые микросервисы, выполняя запросы на Endpoint'ы актуатора (/metrics/prometheus), на которых приложения размещают собранные внутри себя метрики, затем сохраняет эти данные в свою базу.
+
 Prometheus доступен по адресу:
 http://localhost:9090/query
 
@@ -205,6 +207,27 @@ http://localhost:9090/query
 
 Как выглядят алерты в интерфейсе Prometheus (Один из них в ближайшее время активируется):
 ![Алерты](./prometheusScreenshots/alertsPendingScreen.png "Алерты")
+
+### Grafana - Метрики также могут быть просмотрены в виде графиков, которые позволяют быстро визуально анализировать состояние системы
+В Grafana после запуска через Docker-compose будут автоматически импортированы дашборды. Источник данных для Grafana - Prometheus.
+
+Dashboard - визуальный компонент Grafana, который может включать в себя множество визуализаций.
+
+Визулазиция - конкретное визуальное представление данных, например, график, гистограмма, круговая диаграмма и т.д.
+
+Grafana доступна по URL:
+
+http://localhost:3000
+
+* Список дашбордов:
+  ![Список дашбордов](./grafanaScreenshots/ListOfDashboards.png "Список дашбордов")
+* Дашборд JVM-метрик:
+  ![JVM](./grafanaScreenshots/JVMMetricsDashboard.png "JVM")
+* Дашборд бизнес-метрик (описаны выше):
+  ![Business](./grafanaScreenshots/BusinessMetricsChart.png "Business")
+* Дашборд HTTP-метрик:
+  ![HTTP](./grafanaScreenshots/HTTPDashboard.png "HTTP")
+
 
 ## Трассирование - возможность проследить путь запроса через все микросервисы, БД и Kafka, зная лишь TraceId конкретной сессии
 
@@ -243,6 +266,3 @@ http://localhost:5601
   ![Data view](./kibanaScreenshots/addingDataView.png "Data view")
 2) Непосредственно просматривать логи в разделе Discover:
   ![Discover](./kibanaScreenshots/readingLogsExample.png "Discover")
-
-
-/// TODO: расписать Kubernetes, Grafana в связке с prometheus, ОТКУДА ПРОМЕТЕУС БЕРЕТ ДАННЫЕ РАСПИСАТЬ!!!
