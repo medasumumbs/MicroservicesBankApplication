@@ -37,10 +37,18 @@ data:
         session:
           timeout: 1800s # 30 минут
     management:
+      zipkin:
+        enabled: true
+        base-url: http://ПоправитьНаКорректныйАдрес
+        tracing:
+          endpoint: http://ПоправитьНаКорректныйАдрес/api/v2/spans # Эндпойнт Zipkin для приема спанов
+      tracing:
+        sampling:
+          probability: 1 # Сэмплируем все запросы
       endpoints:
         web:
           exposure:
-            include: refresh,busrefresh,busshutdown,health,info
+            include: refresh,busrefresh,busshutdown,health,info,metrics,prometheus
       endpoint:
         health:
           show-details: always

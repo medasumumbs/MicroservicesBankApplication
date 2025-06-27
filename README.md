@@ -244,4 +244,4 @@ http://localhost:5601
   ![Discover](./kibanaScreenshots/readingLogsExample.png "Discover")
 
 
-/// TODO: расписать Kubernetes
+/// TODO: расписать Kubernetes, Grafana в связке с prometheus, ОТКУДА ПРОМЕТЕУС БЕРЕТ ДАННЫЕ РАСПИСАТЬ!!!

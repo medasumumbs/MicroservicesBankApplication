@@ -12,6 +12,8 @@ data:
     ribbon:
       enabled: false
     spring:
+      template:
+        observation-enabled: true
       kafka:
         bootstrap-servers: "http://{{.Release.Name}}-kafka-broker-0.{{.Release.Name}}-kafka-broker-headless.{{.Release.Namespace}}.svc.cluster.local:9092"
         producer:
@@ -34,10 +36,18 @@ data:
       application:
         name: exchangeGeneratorService
     management:
+      zipkin:
+        tracing:
+          endpoint: http://ПоправитьНаКорректныйАдрес:9411/api/v2/spans # Эндпойнт Zipkin для приема спанов
+      tracing:
+        propagation:
+          type: B3
+        sampling:
+          probability: 1 # Сэмплируем все запросы
       endpoints:
         web:
           exposure:
-            include: refresh,busrefresh,busshutdown,health,info
+            include: refresh,busrefresh,busshutdown,health,info,metrics,prometheus
       endpoint:
         health:
           show-details: always
@@ -49,3 +59,7 @@ data:
         enabled: false
         serviceUrl:
           defaultZone: http://eureka-service-discovery:8761/eureka/
+    logging:
+      level:
+        org.apache.kafka: DEBUG
+        org.springframework.kafka: DEBUG

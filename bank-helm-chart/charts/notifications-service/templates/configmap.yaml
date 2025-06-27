@@ -24,6 +24,7 @@ data:
                   packages: ru.muravin.*
             acks: 1
         listener:
+          observation-enabled: true
           ack-mode: MANUAL_IMMEDIATE
       application:
         name: notificationsService
@@ -67,10 +68,16 @@ data:
       port: 8081
 
     management:
+      zipkin:
+        tracing:
+          endpoint: http://ПоправитьНаКорректныйАдрес/api/v2/spans # Эндпойнт Zipkin для приема спанов
+      tracing:
+        sampling:
+          probability: 1 # Сэмплируем все запросы
       endpoints:
         web:
           exposure:
-            include: refresh,busrefresh,busshutdown,health,info
+            include: refresh,busrefresh,busshutdown,health,info,metrics,prometheus
       endpoint:
         health:
           show-details: always

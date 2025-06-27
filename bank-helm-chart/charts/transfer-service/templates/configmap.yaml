@@ -13,6 +13,8 @@ data:
       enabled: false
     spring:
       kafka:
+        template:
+          observation-enabled: true
         bootstrap-servers: "http://{{.Release.Name}}-kafka-broker-0.{{.Release.Name}}-kafka-broker-headless.{{.Release.Namespace}}.svc.cluster.local:9092"
         producer:
           bootstrap-servers: "http://{{.Release.Name}}-kafka-broker-0.{{.Release.Name}}-kafka-broker-headless.{{.Release.Namespace}}.svc.cluster.local:9092"
@@ -44,10 +46,16 @@ data:
             jwt:
               issuer-uri:  http://{{ .Release.Name }}-keycloak.{{ .Release.Namespace }}.svc.cluster.local:8080/realms/master
     management:
+      zipkin:
+        tracing:
+          endpoint: http://ПоправитьНаКорректныйАдрес/api/v2/spans # Эндпойнт Zipkin для приема спанов
+      tracing:
+        sampling:
+          probability: 1 # Сэмплируем все запросы
       endpoints:
         web:
           exposure:
-            include: refresh,busrefresh,busshutdown,health,info
+            include: refresh,busrefresh,busshutdown,health,info,metrics,prometheus
       endpoint:
         health:
           show-details: always
