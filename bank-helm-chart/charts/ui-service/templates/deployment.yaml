@@ -32,6 +32,8 @@ spec:
               echo "Delay finished, starting deployment"
       containers:
         - env:
+            - name: BOOTSTRAP_SERVERS_KAFKA
+              value: "http://{{.Release.Name}}-kafka-broker-0.{{.Release.Name}}-kafka-broker-headless.{{.Release.Namespace}}.svc.cluster.local:9092"
             - name: NOTIFICATIONS_SERVICE_PORT
               value: "8081"
             - name: SPRING_CONFIG_LOCATION

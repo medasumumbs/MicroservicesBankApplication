@@ -12,9 +12,9 @@ data:
     ribbon:
       enabled: false
     spring:
-      template:
-        observation-enabled: true
       kafka:
+        template:
+          observation-enabled: true
         bootstrap-servers: "http://{{.Release.Name}}-kafka-broker-0.{{.Release.Name}}-kafka-broker-headless.{{.Release.Namespace}}.svc.cluster.local:9092"
         producer:
           bootstrap-servers: "http://{{.Release.Name}}-kafka-broker-0.{{.Release.Name}}-kafka-broker-headless.{{.Release.Namespace}}.svc.cluster.local:9092"
@@ -38,7 +38,7 @@ data:
     management:
       zipkin:
         tracing:
-          endpoint: http://ПоправитьНаКорректныйАдрес:9411/api/v2/spans # Эндпойнт Zipkin для приема спанов
+          endpoint:  "http://{{ .Release.Name }}-zipkin:9411/api/v2/spans" # Эндпойнт Zipkin для приема спанов
       tracing:
         propagation:
           type: B3

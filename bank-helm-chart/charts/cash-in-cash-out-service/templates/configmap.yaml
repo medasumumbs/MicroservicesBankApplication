@@ -52,7 +52,7 @@ data:
     management:
       zipkin:
         tracing:
-          endpoint: http://ПоправитьНаКорректныйАдрес/api/v2/spans # Эндпойнт Zipkin для приема спанов
+          endpoint:  "http://{{ .Release.Name }}-zipkin:9411/api/v2/spans" # Эндпойнт Zipkin для приема спанов
       tracing:
         sampling:
           probability: 1 # Сэмплируем все запросы

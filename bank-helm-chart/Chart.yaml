@@ -41,3 +41,6 @@ dependencies:
   - name: kafka
     version: 32.2.15
     repository: https://raw.githubusercontent.com/bitnami/charts/refs/heads/archive-full-index/bitnami/
+  - name: zipkin
+    version: 1.3.5
+    repository: https://raw.githubusercontent.com/bitnami/charts/refs/heads/archive-full-index/bitnami/

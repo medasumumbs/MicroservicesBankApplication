@@ -360,3 +360,8 @@ kafka:
       protocol: PLAINTEXT
     interbroker:
       protocol: PLAINTEXT
+zipkin:
+  enabled: true
+  storageType: mem
+  cassandra:
+    enabled: false
