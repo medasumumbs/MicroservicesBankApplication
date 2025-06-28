@@ -228,6 +228,14 @@ Grafana доступна по URL:
 
 http://localhost:3000
 
+В Kubernetes предварительно необходимо выполнить команду:
+
+kubectl port-forward svc/myapp-grafana 3000:80
+
+Также дашборды необходимо при запуске в Kubernetes импортировать вручную - необходимо выбрать нужный DataSource Prometheus в UI Grafana, добавить визуализацию и импортировать JSON-файлы из папки (корень проекта):
+
+/grafanaDashBoardsForKubernetes 
+
 * Список дашбордов:
   ![Список дашбордов](./grafanaScreenshots/ListOfDashboards.png "Список дашбордов")
 * Дашборд JVM-метрик (взят из открытого источника - библиотеки Grafana: https://grafana.com/grafana/dashboards/):
