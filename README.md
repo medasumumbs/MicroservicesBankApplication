@@ -275,6 +275,17 @@ http://localhost:9411/zipkin/
 Доступ к Kibana (docker-compose):
 http://localhost:5601
 
+Чтобы получить доступ к логам Kibana, необходимо сначала выполнить две команды:
+
+kubectl get pods
+
+Затем необходимо выбрать имя пода, связанного с Kibana. И выполнить port-forward:
+
+kubectl port-forward <myapp-kibana-5bdbb46cbb-hxtq2 (ваше имя пода)>  5601
+
+После этого kibana доступна по ссылке http://localhost:5601
+
+
 Инструкция по использованию:
 1) Добавить Data View:
 * Перейти в Stack Management
