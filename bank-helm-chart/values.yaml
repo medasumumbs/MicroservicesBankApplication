@@ -367,6 +367,63 @@ zipkin:
     enabled: false
 
 kube-prometheus-stack:
+  additionalPrometheusRulesMap:
+    custom-alerts:
+      groups:
+        - name: user-login-alerts
+          rules:
+            - alert: HighFailedLogins
+              expr: sum(login_total{status="failure"}) by (login) > 5
+              for: 1m
+              labels:
+                severity: warning
+              annotations:
+                summary: "Слишком большое количество попыток входа для пользователя {{ $labels.login }}"
+                description: "Пользователь {{ $labels.login }} неудачно пытался войти более 5 раз за последнюю минуту"
+
+        - name: transfer-failure-alerts
+          rules:
+            - alert: HighTransferFailures
+              expr: sum(transfer_total{status="failure", recipientAccount!="NONE", senderAccount!="NONE"}) by (login, recipientAccount, senderAccount) > 3
+              for: 5m
+              labels:
+                severity: warning
+              annotations:
+                summary: "Множество неудачных переводов {{ $labels.login }}"
+                description: "Более 3 неудачных попыток перевести деньги {{ $labels.login }} на счет {{ $labels.recipientAccount }} со счета {{ $labels.senderAccount }} за последние 5 минут"
+
+        - name: antifraud-alerts
+          rules:
+            - alert: SuspiciousBlockedOperations
+              expr: sum(operationBlocked_total{recipientAccount!="NONE", senderAccount!="NONE"}) by (login, recipientAccount, senderAccount) > 2
+              for: 5m
+              labels:
+                severity: critical
+              annotations:
+                summary: "Вероятность мошенничества {{ $labels.login }}"
+                description: "Более 2 заблокированных операций от {{ $labels.login }}, счет получателя: {{ $labels.recipientAccount }}, счет отправителя: {{ $labels.senderAccount }} за последние 5 минут"
+
+        - name: notification-errors
+          rules:
+            - alert: FailedNotifications
+              expr: sum(failedToSendNotification_total) > 0
+              for: 1m
+              labels:
+                severity: warning
+              annotations:
+                summary: "Ошибка отправки уведомления"
+                description: "Недоступность Kafka"
+
+        - name: currency-rates-check
+          rules:
+            - alert: CurrencyRatesNotUpdated
+              expr: increase(currency_rates_updated_total[1m]) < 1
+              for: 1m
+              labels:
+                severity: critical
+              annotations:
+                summary: "Курс валют не менялся минуту"
+                description: "Курс валют не обновлялся более минуты — проблема с источником данных"
   prometheus:
     enableEndpointSlice: true
     prometheusSpec:
