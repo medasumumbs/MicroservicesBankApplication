@@ -365,3 +365,18 @@ zipkin:
   storageType: mem
   cassandra:
     enabled: false
+
+kube-prometheus-stack:
+  prometheus:
+    enableEndpointSlice: true
+    prometheusSpec:
+      serviceMonitorSelector: {}
+      podMonitorSelector: {}
+  grafana:
+    enabled: true
+    adminPassword: "admin"
+    service:
+      type: ClusterIP
+  prometheus-node-exporter:
+    hostRootFsMount:
+      enabled: false

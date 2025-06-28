@@ -127,11 +127,11 @@ http://localhost:8072/
 7. Запуск приложения и открытие порта:
 ```bash
    helm install myapp ./
-   kubectl port-forward svc/ui-service 8080:80 -n default
+   kubectl port-forward svc/ui-service 8087:8087 -n default
 ```
 8. По этому адресу будет доступен личный кабинет пользователя после аутентификации:
 ```
-http://localhost:8080/
+http://localhost:8087/
 ```
 9. Приблизительно через пять минут, когда стартовали все сервисы, появляется возможность запустить Helm-тестирование:
 ```bash
@@ -180,7 +180,16 @@ Jenkins будет доступен на локальной машине на п
 Prometheus опрашивает необходимые микросервисы, выполняя запросы на Endpoint'ы актуатора (/metrics/prometheus), на которых приложения размещают собранные внутри себя метрики, затем сохраняет эти данные в свою базу.
 
 Prometheus доступен по адресу:
+
 http://localhost:9090/query
+
+При запуске в Kubernetes Prometheus доступен по тому же адресу после запуска команды:
+
+
+kubectl port-forward svc/myapp-kube-prometheus-stac-prometheus  9090
+
+
+
 
 Во вкладке Query можно просматривать непосредственно метрики, выполняя запросы к базе метрик:
 
@@ -221,11 +230,11 @@ http://localhost:3000
 
 * Список дашбордов:
   ![Список дашбордов](./grafanaScreenshots/ListOfDashboards.png "Список дашбордов")
-* Дашборд JVM-метрик:
+* Дашборд JVM-метрик (взят из открытого источника - библиотеки Grafana: https://grafana.com/grafana/dashboards/):
   ![JVM](./grafanaScreenshots/JVMMetricsDashboard.png "JVM")
 * Дашборд бизнес-метрик (описаны выше):
   ![Business](./grafanaScreenshots/BusinessMetricsChart.png "Business")
-* Дашборд HTTP-метрик:
+* Дашборд HTTP-метрик (взят из открытого источника - библиотеки Grafana: https://grafana.com/grafana/dashboards/):
   ![HTTP](./grafanaScreenshots/HTTPDashboard.png "HTTP")
 
 

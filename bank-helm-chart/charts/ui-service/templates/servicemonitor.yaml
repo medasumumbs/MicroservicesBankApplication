@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ui-service-monitor
+  namespace: default
+  labels:
+    release: myapp
+
+spec:
+  jobLabel: ui-service
+  endpoints:
+    - port: "http"                 # порт из Service
+      path: /actuator/prometheus       # путь до метрик
+      interval: 15s                  # интервал сбора
+      #scrapeTimeout: 10s            # таймаут
+  selector:
+    matchLabels:
+      app: ui-service
+  namespaceSelector:
+    any: true

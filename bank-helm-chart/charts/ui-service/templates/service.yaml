@@ -5,12 +5,15 @@ metadata:
     kompose.cmd: kompose convert -c
     kompose.version: 1.36.0 (ae2a39403)
   labels:
+    app: ui-service
     io.kompose.service: ui-service
   name: ui-service
 spec:
+  type: {{.Values.service.type }}
   ports:
-    - name: "8087"
-      port: 80
+    - name: "http"
+      port: 8087
+      protocol: TCP
       targetPort: 8087
   selector:
-    io.kompose.service: ui-service
+    app: ui-service
