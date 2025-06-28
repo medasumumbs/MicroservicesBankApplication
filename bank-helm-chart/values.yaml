@@ -437,3 +437,86 @@ kube-prometheus-stack:
   prometheus-node-exporter:
     hostRootFsMount:
       enabled: false
+
+kibana:
+  elasticsearchHosts: "http://elasticsearch:9200"
+  elasticsearch:
+    ssl:
+      enabled: false
+  automountToken: false
+  service:
+    type: NodePort
+    nodePort: 32000
+  replicaCount: 1
+
+
+logstash:
+  imageTag: 7.17.3
+  esJavaOpts: "-Xmx1g -Xms1g"
+  logstashPipeline:
+    monitoring.conf: |
+      input {
+        kafka {
+          bootstrap_servers => "http://myapp-kafka-broker-0.myapp-kafka-broker-headless.default.svc.cluster.local:9092"
+          topics => ["logs-topic"]
+          group_id => "logstash-group"
+          codec => json
+        }
+      }
+        
+      filter {
+        mutate {
+          rename => {
+            "traceId" => "trace_id"
+            "spanId" => "span_id"
+            "serviceName" => "service.name"
+          }
+        }
+        
+        if [timestamp] {
+          date {
+            match => [ "timestamp", "yyyy-MM-dd HH:mm:ss.SSS" ]
+            target => "@timestamp"
+          }
+        }
+      }
+        
+      output {
+        elasticsearch {
+          retry_on_conflict => 3
+          action => "create"
+          ssl => false
+          ssl_certificate_verification => false
+          hosts => ["http://elasticsearch:9200"]
+          index => "logs-%{+YYYY.MM.dd}"
+        }      
+        stdout {
+          codec => rubydebug
+        }
+      }
+
+elasticsearch:
+  protocol: http
+  createCert: false
+  esJavaOpts: "-Xmx1g -Xms1g"
+  clusterHealthCheckParams: ""
+  tls:
+    enabled: false
+  masterService: "elasticsearch"
+  imageTag: 7.17.3
+  sysctlInitContainer:
+    enabled: true
+
+  replicas: 1
+  rbac:
+    create: false
+  esConfig:
+    elasticsearch.yml: |
+      xpack.security.enabled: false
+      xpack.security.http.ssl.enabled: false
+      cluster.initial_master_nodes: ["elasticsearch-master-0"]
+      xpack.security.authc:
+        anonymous:
+          username: anonymous_user 
+          roles: superuser
+          authz_exception: true

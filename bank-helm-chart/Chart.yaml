@@ -47,3 +47,12 @@ dependencies:
   - name: kube-prometheus-stack
     version: 57.1.1
     repository: https://prometheus-community.github.io/helm-charts
+  - name: logstash
+    version: 7.17.3
+    repository: https://helm.elastic.co
+  - name: elasticsearch
+    version: 7.17.3
+    repository: https://helm.elastic.co
+  - name: kibana
+    version: 7.17.3
+    repository: https://helm.elastic.co
