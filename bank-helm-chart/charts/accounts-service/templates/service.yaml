@@ -5,12 +5,15 @@ metadata:
     kompose.cmd: kompose convert -c
     kompose.version: 1.36.0 (ae2a39403)
   labels:
+    app: accounts-service
     io.kompose.service: accounts-service
   name: accounts-service
 spec:
+  type: {{.Values.service.type }}
   ports:
-    - name: "8084"
-      port: 80
-      targetPort: 8084
+    - name: "http"
+      port: 80 #8084
+      targetPort: 8084 #8084
+      protocol: TCP
   selector:
-    io.kompose.service: accounts-service
+    app: accounts-service

@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: transfer-service-monitor
+  namespace: default
+  labels:
+    release: myapp
+
+spec:
+  jobLabel: transfer-service
+  endpoints:
+    - port: "http"                 # порт из Service
+      path: /actuator/prometheus       # путь до метрик
+      interval: 15s                  # интервал сбора
+      #scrapeTimeout: 10s            # таймаут
+  selector:
+    matchLabels:
+      app: transfer-service
+  namespaceSelector:
+    any: true

@@ -6,6 +6,7 @@ metadata:
     kompose.version: 1.36.0 (ae2a39403)
   labels:
     io.kompose.service: exchange-generation-service
+    app: exchange-generation-service
   name: exchange-generation-service
 spec:
   replicas: 1
@@ -19,6 +20,7 @@ spec:
         kompose.version: 1.36.0 (ae2a39403)
       labels:
         io.kompose.service: exchange-generation-service
+        app: exchange-generation-service
     spec:
       initContainers:
         - name: delay

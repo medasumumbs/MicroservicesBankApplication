@@ -85,7 +85,7 @@ http://localhost:8087/
 http://localhost:8072/
 ```
 
-## Развертывание и запуск через Kubernetes + Helm
+## Развертывание и запуск через Kubernetes + Helm (v3.17.3)
 1. Необходимо клонировать репозиторий:
 ```bash
    git clone https://github.com/medasumumbs/MicroservicesBankApplication.git

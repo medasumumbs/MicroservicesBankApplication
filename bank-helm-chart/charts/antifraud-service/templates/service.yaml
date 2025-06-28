@@ -6,11 +6,15 @@ metadata:
     kompose.version: 1.36.0 (ae2a39403)
   labels:
     io.kompose.service: antifraud-service
+    app: antifraud-service
   name: antifraud-service
 spec:
+  type: {{.Values.service.type }}
   ports:
-    - name: "8096"
-      port: 80
-      targetPort: 8096
+    - name: "http"
+      port: 80 #8096
+      targetPort: 8096 #8096
+      protocol: TCP
+
   selector:
-    io.kompose.service: antifraud-service
+    app: antifraud-service

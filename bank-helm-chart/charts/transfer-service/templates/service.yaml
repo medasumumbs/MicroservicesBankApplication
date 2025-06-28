@@ -6,11 +6,14 @@ metadata:
     kompose.version: 1.36.0 (ae2a39403)
   labels:
     io.kompose.service: transfer-service
+    app: transfer-service
   name: transfer-service
 spec:
+  type: {{.Values.service.type }}
   ports:
-    - name: "8100"
-      port: 80
+    - name: "http"
+      port: 80 #8100
       targetPort: 8100
+      protocol: TCP
   selector:
-    io.kompose.service: transfer-service
+    app: transfer-service

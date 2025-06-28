@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: cash-in-cash-out-service-monitor
+  namespace: default
+  labels:
+    release: myapp
+
+spec:
+  jobLabel: cash-in-cash-out-service
+  endpoints:
+    - port: "http"                 # порт из Service
+      path: /actuator/prometheus       # путь до метрик
+      interval: 15s                  # интервал сбора
+      #scrapeTimeout: 10s            # таймаут
+  selector:
+    matchLabels:
+      app: cash-in-cash-out-service
+  namespaceSelector:
+    any: true

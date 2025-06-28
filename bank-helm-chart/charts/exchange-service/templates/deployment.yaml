@@ -6,6 +6,7 @@ metadata:
     kompose.version: 1.36.0 (ae2a39403)
   labels:
     io.kompose.service: exchange-service
+    app: exchange-service
   name: exchange-service
 spec:
   replicas: 1
@@ -18,6 +19,7 @@ spec:
         kompose.cmd: kompose convert -c
         kompose.version: 1.36.0 (ae2a39403)
       labels:
+        app: exchange-service
         io.kompose.service: exchange-service
     spec:
       volumes:

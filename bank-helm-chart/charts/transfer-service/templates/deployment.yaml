@@ -6,6 +6,7 @@ metadata:
     kompose.version: 1.36.0 (ae2a39403)
   labels:
     io.kompose.service: transfer-service
+    app: transfer-service
   name: transfer-service
 spec:
   replicas: 1
@@ -19,6 +20,7 @@ spec:
         kompose.version: 1.36.0 (ae2a39403)
       labels:
         io.kompose.service: transfer-service
+        app: transfer-service
     spec:
       initContainers:
         - name: delay

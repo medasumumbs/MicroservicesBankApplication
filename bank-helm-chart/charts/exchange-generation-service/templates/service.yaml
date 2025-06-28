@@ -6,11 +6,14 @@ metadata:
     kompose.version: 1.36.0 (ae2a39403)
   labels:
     io.kompose.service: exchange-generation-service
+    app: exchange-generation-service
   name: exchange-generation-service
 spec:
+  type: {{.Values.service.type }}
   ports:
-    - name: "8092"
-      port: 8092
-      targetPort: 8092
+    - name: "http"
+      port: 80 #8092
+      targetPort: 8092 #8092
+      protocol: TCP
   selector:
-    io.kompose.service: exchange-generation-service
+    app: exchange-generation-service

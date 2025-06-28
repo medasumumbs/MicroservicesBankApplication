@@ -5,12 +5,15 @@ metadata:
     kompose.cmd: kompose convert -c
     kompose.version: 1.36.0 (ae2a39403)
   labels:
+    app: exchange-service
     io.kompose.service: exchange-service
   name: exchange-service
 spec:
+  type: {{.Values.service.type }}
   ports:
-    - name: "8093"
-      port: 80
-      targetPort: 8093
+    - name: "http"
+      port: 80 # 8093
+      targetPort: 8093 #8093
+      protocol: TCP
   selector:
-    io.kompose.service: exchange-service
+    app: exchange-service
